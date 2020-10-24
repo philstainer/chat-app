@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  backend:
+    container_name: 'backend-test-unit'
+    build:
+      context: 'backend'
+      dockerfile: 'Dockerfile.dev'
+      target: 'unit-test'
+    volumes:
+      - './backend:/app/backend'
+      - '/app/backend/node_modules/'
+      - './.git:/app/.git'
+    tty: true
+    stdin_open: false
