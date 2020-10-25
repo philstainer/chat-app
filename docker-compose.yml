@@ -19,7 +19,7 @@ services:
       - mongodb
     environment:
       BACKEND_COOKIE_SECRET: ${BACKEND_COOKIE_SECRET}
-      MONGO_URI: 'mongodb://mongodb/${MONGO_INITDB_DATABASE}'
+      MONGO_URI: 'mongodb://mongodb/${MONGO_DATABASE}'
     volumes:
       - './backend:/app/backend'
       - '/app/backend/node_modules/'

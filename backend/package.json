@@ -6,10 +6,23 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node src/index.js",
     "dev": "cross-env NODE_ENV=development nodemon --exec babel-node src/index.js",
-    "test": "jest --watch"
+    "test": "jest --watch",
+    "test:update": "jest --coverage"
   },
   "jest": {
     "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/index.js",
+      "!src/app.js",
+      "!src/utils/logger.js",
+      "!src/utils/accessEnv.js",
+      "!src/utils/dbConnection.js",
+      "!src/graphql/apolloServer.js",
+      "!src/graphql/context.js",
+      "!src/graphql/schemas.js",
+      "!src/graphql/resolvers.js"
+    ],
     "coverageThreshold": {
       "global": {
         "branches": 90,
@@ -37,7 +50,6 @@
     "@babel/node": "^7.12.1",
     "@babel/plugin-transform-runtime": "^7.12.1",
     "@babel/preset-env": "^7.12.1",
-    "apollo-server-testing": "^2.18.2",
     "babel-plugin-inline-import": "^3.0.0",
     "cross-env": "^7.0.2",
     "jest": "^26.6.1",
