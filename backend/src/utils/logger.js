@@ -13,7 +13,7 @@ const LoggerLevel = {
 const PROD_LOG_LEVEL = LoggerLevel.error;
 const DEV_LOG_LEVEL = LoggerLevel.debug;
 
-const isProd = accessEnv('NODE_ENV') === 'production';
+const isProduction = accessEnv('NODE_ENV') === 'production';
 
 const logger = createLogger({
   format: format.combine(
@@ -24,12 +24,12 @@ const logger = createLogger({
   ),
   transports: [
     new transports.Console({
-      level: isProd ? PROD_LOG_LEVEL : DEV_LOG_LEVEL,
+      level: isProduction ? PROD_LOG_LEVEL : DEV_LOG_LEVEL,
     }),
   ],
 });
 
-if (!isProd) {
+if (!isProduction) {
   logger.debug('Logging initialized at debug level');
 }
 
