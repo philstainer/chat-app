@@ -13,7 +13,7 @@ const LoggerLevel = {
 const PROD_LOG_LEVEL = LoggerLevel.error;
 const DEV_LOG_LEVEL = LoggerLevel.debug;
 
-const isProd = accessEnv('NODE_ENV', 'development') === 'production';
+const isProd = accessEnv('NODE_ENV') === 'production';
 
 const logger = createLogger({
   format: format.combine(

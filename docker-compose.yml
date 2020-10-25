@@ -1,13 +1,25 @@
 version: '3.8'
 services:
+  mongodb:
+    container_name: 'mongodb'
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodata:/data/db
+
   backend:
     container_name: 'backend'
     build:
       context: 'backend'
       dockerfile: 'Dockerfile.dev'
       target: 'dev'
+    depends_on:
+      - mongodb
     environment:
       BACKEND_COOKIE_SECRET: ${BACKEND_COOKIE_SECRET}
+      MONGO_URI: 'mongodb://mongodb/${MONGO_INITDB_DATABASE}'
     volumes:
       - './backend:/app/backend'
       - '/app/backend/node_modules/'
@@ -15,3 +27,6 @@ services:
       - 4000:4000
     tty: true
     stdin_open: false
+
+volumes:
+  mongodata:
