@@ -1,0 +1,3 @@
+const chatResolver = {};
+
+export { chatResolver };

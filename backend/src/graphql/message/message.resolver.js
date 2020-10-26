@@ -1,0 +1,3 @@
+const messageResolver = {};
+
+export { messageResolver };
