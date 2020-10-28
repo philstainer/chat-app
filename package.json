@@ -9,9 +9,9 @@
     "dev:up": "docker-compose up",
     "dev:down": "docker-compose down",
     "dev:build": "docker-compose up --build --force-recreate",
-    "test:up": "docker-compose -f docker-compose.test.yml --env-file .env.test up",
-    "test:down": "docker-compose -f docker-compose.test.yml --env-file .env.test down",
-    "test:build": "docker-compose -f docker-compose.test.yml --env-file .env.test up --build --force-recreate"
+    "test:up": "docker-compose -f docker-compose.test.yml up",
+    "test:down": "docker-compose -f docker-compose.test.yml down",
+    "test:build": "docker-compose -f docker-compose.test.yml up --build --force-recreate"
   },
   "devDependencies": {
     "@types/jest": "^26.0.15",

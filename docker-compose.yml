@@ -22,7 +22,7 @@ services:
       MONGO_URI: 'mongodb://mongodb/${MONGO_DATABASE}'
     volumes:
       - './backend:/app/backend'
-      - '/app/backend/node_modules/'
+      # - '/app/backend/node_modules/'
     ports:
       - 4000:4000
     tty: true

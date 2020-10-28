@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  backend:
+  backend-unit:
     container_name: 'backend-test-unit'
     build:
       context: 'backend'
@@ -8,7 +8,7 @@ services:
       target: 'unit-test'
     volumes:
       - './backend:/app/backend'
-      - '/app/backend/node_modules/'
+      # - '/app/backend/node_modules/'
       - './.git:/app/.git'
     tty: true
     stdin_open: false
