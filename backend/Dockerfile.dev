@@ -18,7 +18,7 @@ CMD ["yarn", "dev"]
 ##########################################################
 FROM dev as unit-test
 
-ENV GIT_WORK_TREE=/app/backend GIT_DIR=/app/.git
+ENV GIT_WORK_TREE=/app/ GIT_DIR=/app/.git
 
 RUN apk update && \
     apk add git
