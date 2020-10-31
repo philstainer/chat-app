@@ -12,7 +12,7 @@ const generateCookie = async (data, name, ctx, options) => {
     ...options,
   };
 
-  ctx.res.cookie(name, token, cookieOptions);
+  ctx.req.cookie(name, token, cookieOptions);
 };
 
 export { generateCookie };
