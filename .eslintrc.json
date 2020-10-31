@@ -8,8 +8,9 @@
     "node": true
   },
   "rules": {
+    "no-underscore-dangle": "off",
     "jsx-a11y/href-no-hash": ["off"],
-    "react/jsx-filename-extension": ["warn", {"extensions": [".js", ".jsx"]}],
+    "react/jsx-filename-extension": ["warn", { "extensions": [".js", ".jsx"] }],
     "import/prefer-default-export": "off",
     "max-len": [
       "warn",
