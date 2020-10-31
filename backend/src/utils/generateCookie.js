@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { accessEnv } from './accessEnv';
 
-const generateCookie = async (data, name, ctx, options) => {
+const generateCookie = (data, name, ctx, options) => {
   const token = jwt.sign(data, accessEnv('JWT_SECRET'));
 
   const cookieOptions = {
