@@ -6,15 +6,15 @@ import { generateCookie } from '../../utils/generateCookie';
 
 const userResolver = {
   Mutation: {
-    signUp: async (parent, args, ctx, info) => {
-      const userId = ctx?.req?.userId;
+    register: async (parent, args, ctx, info) => {
+      const userId = ctx?.res?.userId;
 
       if (userId) {
-        logger.error(`${userId} - You are already logged in!`);
+        logger.error(`${userId} - You are already logged in`);
         throw new AuthenticationError('you are already logged in');
       }
 
-      const createdUser = await userController.createUser(args);
+      const createdUser = await userController.createUser(args.input);
 
       generateCookie({ sub: createdUser._id }, 'token', ctx);
 

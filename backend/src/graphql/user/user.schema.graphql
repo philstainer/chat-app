@@ -1,5 +1,11 @@
 type User {
-  _id: String
+  _id: ID!
+  email: String!
+  image: String
+  confirmed: Boolean
+  blocked: Boolean
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type Query {
@@ -7,9 +13,14 @@ type Query {
 }
 
 type Mutation {
-  _empty: String
+  register(input: UserRegisterInput!): User!
 }
 
 type Subscription {
   _empty: String
+}
+
+input UserRegisterInput {
+  email: String!
+  password: String!
 }

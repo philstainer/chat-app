@@ -7,24 +7,52 @@ import { User } from '../graphql/user/user.modal';
 import { generateToken } from '../utils/generateToken';
 
 jest.mock('bcryptjs');
-jest.mock('../graphql/user/user.modal.js');
 jest.mock('../utils/generateToken.js');
+jest.mock('../graphql/user/user.modal.js');
 
-test('should exist', () => {
-  expect(userController).toHaveProperty('createUser');
+test('should throw error when email is already registered', async () => {
+  const checkUserMock = {
+    select: jest.fn(() => checkUserMock),
+    lean: jest.fn(() => ({ email: faker.internet.email() })),
+  };
+
+  User.findOne.mockImplementation(() => checkUserMock);
+
+  const args = {
+    password: faker.internet.password(8),
+    email: faker.internet.email(),
+  };
+
+  await expect(() => userController.createUser(args)).rejects.toThrow(
+    'Email already registered'
+  );
 });
 
-test('should hash password', () => {
+test('should hash password', async () => {
+  const checkUserMock = {
+    select: jest.fn(() => checkUserMock),
+    lean: jest.fn(() => null),
+  };
+
+  User.findOne.mockImplementation(() => checkUserMock);
+
   const hashMock = jest.fn();
   bcrypt.hash.mockImplementation(hashMock);
 
   const password = faker.internet.password(8);
-  userController.createUser({ password });
+  await userController.createUser({ password });
 
   expect(hashMock).toHaveBeenCalledWith(password, 10);
 });
 
 test('should generate verify random token', async () => {
+  const checkUserMock = {
+    select: jest.fn(() => checkUserMock),
+    lean: jest.fn(() => null),
+  };
+
+  User.findOne.mockImplementation(() => checkUserMock);
+
   const tokenMock = jest.fn();
   generateToken.mockImplementation(tokenMock);
 
@@ -35,6 +63,13 @@ test('should generate verify random token', async () => {
 });
 
 test('should create user with args and hashed password', async () => {
+  const checkUserMock = {
+    select: jest.fn(() => checkUserMock),
+    lean: jest.fn(() => null),
+  };
+
+  User.findOne.mockImplementation(() => checkUserMock);
+
   const hashedPassword = 'hashed password';
   bcrypt.hash.mockImplementation(() => Promise.resolve(hashedPassword));
 
@@ -56,6 +91,13 @@ test('should create user with args and hashed password', async () => {
 });
 
 test('should create user with verify token and expiry', async () => {
+  const checkUserMock = {
+    select: jest.fn(() => checkUserMock),
+    lean: jest.fn(() => null),
+  };
+
+  User.findOne.mockImplementation(() => checkUserMock);
+
   const hashedPassword = 'hashed password';
   bcrypt.hash.mockImplementation(() => Promise.resolve(hashedPassword));
 
@@ -84,6 +126,13 @@ test('should create user with verify token and expiry', async () => {
 });
 
 test('should return created user', async () => {
+  const checkUserMock = {
+    select: jest.fn(() => checkUserMock),
+    lean: jest.fn(() => null),
+  };
+
+  User.findOne.mockImplementation(() => checkUserMock);
+
   const args = {
     password: faker.internet.password(8),
   };

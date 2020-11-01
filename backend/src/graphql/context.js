@@ -1,3 +1,3 @@
-const context = (req) => ({ ...req });
+const context = (res) => ({ ...res });
 
 export { context };

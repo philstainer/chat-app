@@ -5,6 +5,8 @@ import chatSchema from './chat/chat.schema.graphql';
 import messageSchema from './message/message.schema.graphql';
 
 const root = gql`
+  scalar DateTime
+
   type Query {
     _empty: String
   }
