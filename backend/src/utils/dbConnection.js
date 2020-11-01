@@ -5,7 +5,11 @@ import { accessEnv } from './accessEnv';
 if (accessEnv('NODE_ENV') === 'development') mongoose.set('debug', true);
 
 const connect = async () => {
-  const options = { useNewUrlParser: true, useUnifiedTopology: true };
+  const options = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+  };
 
   await mongoose.connect(accessEnv('MONGO_URI'), options);
 };
