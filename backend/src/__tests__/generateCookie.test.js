@@ -14,7 +14,7 @@ test('should generate JWT token with data', () => {
   accessEnv.mockImplementation(() => jwtSecret);
 
   const data = { sub: 12345 };
-  const ctx = { req: { cookie: jest.fn() } };
+  const ctx = { res: { cookie: jest.fn() } };
   generateCookie(data, null, ctx);
 
   expect(jwtMock).toHaveBeenCalledWith(data, jwtSecret);
@@ -26,10 +26,10 @@ test('should set cookie with name using ctx', () => {
 
   const data = { sub: 12345 };
   const name = 'token';
-  const ctx = { req: { cookie: jest.fn() } };
+  const ctx = { res: { cookie: jest.fn() } };
   generateCookie(data, name, ctx);
 
-  expect(ctx.req.cookie).toHaveBeenCalledWith(
+  expect(ctx.res.cookie).toHaveBeenCalledWith(
     name,
     token,
     expect.objectContaining({})
@@ -41,10 +41,10 @@ test('should set secure cookie for production', () => {
 
   accessEnv.mockImplementation(() => 'production');
 
-  const ctx = { req: { cookie: jest.fn() } };
+  const ctx = { res: { cookie: jest.fn() } };
   generateCookie({}, 'name', ctx);
 
-  expect(ctx.req.cookie).toHaveBeenCalledWith(
+  expect(ctx.res.cookie).toHaveBeenCalledWith(
     'name',
     'token',
     expect.objectContaining({ secure: true })
@@ -54,11 +54,11 @@ test('should set secure cookie for production', () => {
 test('should override options', () => {
   jwt.sign.mockImplementation(() => 'token');
 
-  const ctx = { req: { cookie: jest.fn() } };
+  const ctx = { res: { cookie: jest.fn() } };
   const options = { secure: true, newProperty: true };
   generateCookie({}, 'name', ctx, options);
 
-  expect(ctx.req.cookie).toHaveBeenCalledWith(
+  expect(ctx.res.cookie).toHaveBeenCalledWith(
     'name',
     'token',
     expect.objectContaining(options)

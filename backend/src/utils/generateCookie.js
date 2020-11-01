@@ -12,7 +12,7 @@ const generateCookie = (data, name, ctx, options) => {
     ...options,
   };
 
-  ctx.req.cookie(name, token, cookieOptions);
+  ctx.res.cookie(name, token, cookieOptions);
 };
 
 export { generateCookie };
