@@ -1,13 +1,14 @@
 import { AuthenticationError } from 'apollo-server-express';
 
 import { logger } from './logger';
+import { AUTH_LOGGED_IN_ERROR } from './constants';
 
 const isNotAuthenticated = (ctx) => {
   const userId = ctx?.res?.userId;
 
   if (userId) {
-    logger.error(`${userId} - You are already logged in`);
-    throw new AuthenticationError('You are already logged in');
+    logger.error(`${userId} - ${AUTH_LOGGED_IN_ERROR}`);
+    throw new AuthenticationError(AUTH_LOGGED_IN_ERROR);
   }
 };
 

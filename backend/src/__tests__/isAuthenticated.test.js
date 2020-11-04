@@ -1,7 +1,8 @@
 import { isAuthenticated } from '../utils/isAuthenticated';
+import { AUTH_LOGGED_OUT_ERROR } from '../utils/constants';
 
 test('should throw error when not logged in', () => {
-  expect(() => isAuthenticated()).toThrow('You must be logged in to do that');
+  expect(() => isAuthenticated()).toThrow(AUTH_LOGGED_OUT_ERROR);
 });
 
 test('should not throw error when logged in', () => {

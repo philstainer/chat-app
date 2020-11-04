@@ -5,6 +5,7 @@ import { userController, expiresAt } from '../graphql/user/user.controller';
 
 import { User } from '../graphql/user/user.modal';
 import { generateToken } from '../utils/generateToken';
+import { USER_EMAIL_ALREADY } from '../utils/constants';
 
 jest.mock('bcryptjs');
 jest.mock('../utils/generateToken.js');
@@ -26,7 +27,7 @@ test('should throw error when email is already registered', async () => {
   };
 
   await expect(() => userController.createUser(args)).rejects.toThrow(
-    'Email already registered'
+    USER_EMAIL_ALREADY
   );
 });
 

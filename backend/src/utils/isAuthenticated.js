@@ -1,13 +1,12 @@
 import { AuthenticationError } from 'apollo-server-express';
 
 import { logger } from './logger';
-
-const errorMessage = 'You must be logged in to do that';
+import { AUTH_LOGGED_OUT_ERROR } from './constants';
 
 const isAuthenticated = (ctx) => {
   if (!ctx?.res?.userId) {
-    logger.error(errorMessage);
-    throw new AuthenticationError(errorMessage);
+    logger.error(AUTH_LOGGED_OUT_ERROR);
+    throw new AuthenticationError(AUTH_LOGGED_OUT_ERROR);
   }
 };
 

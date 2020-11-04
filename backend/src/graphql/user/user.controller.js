@@ -4,6 +4,7 @@ import { AuthenticationError } from 'apollo-server-express';
 import { generateToken } from '../../utils/generateToken';
 import { User } from './user.modal';
 import { logger } from '../../utils/logger';
+import { USER_EMAIL_ALREADY } from '../../utils/constants';
 
 export const expiresAt = Date.now() + 1 * 60 * 60 * 1000;
 
@@ -14,8 +15,8 @@ const userController = {
       .lean();
 
     if (foundUser) {
-      logger.error('Email Already registered');
-      throw new AuthenticationError('Email already registered');
+      logger.error(USER_EMAIL_ALREADY);
+      throw new AuthenticationError(USER_EMAIL_ALREADY);
     }
 
     const password = await bcrypt.hash(args.input.password, 10);
