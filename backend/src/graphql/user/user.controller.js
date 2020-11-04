@@ -9,7 +9,7 @@ export const expiresAt = Date.now() + 1 * 60 * 60 * 1000;
 
 const userController = {
   createUser: async (args) => {
-    const foundUser = await User.findOne({ email: args.email })
+    const foundUser = await User.findOne({ email: args.input.email })
       .select('email')
       .lean();
 
@@ -18,12 +18,12 @@ const userController = {
       throw new AuthenticationError('Email already registered');
     }
 
-    const password = await bcrypt.hash(args.password, 10);
+    const password = await bcrypt.hash(args.input.password, 10);
 
     const verifyToken = await generateToken();
 
     const createdUser = User.create({
-      ...args,
+      ...args.input,
       password,
       verifyToken,
       verifyTokenExpiry: expiresAt,

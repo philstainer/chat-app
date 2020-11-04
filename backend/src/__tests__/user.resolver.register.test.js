@@ -3,19 +3,25 @@ import faker from 'faker';
 import { userResolver } from '../graphql/user/user.resolver';
 import { userController } from '../graphql/user/user.controller';
 import { generateCookie } from '../utils/generateCookie';
+import { isNotAuthenticated } from '../utils/isNotAuthenticated';
 
 const { register } = userResolver.Mutation;
 
 jest.mock('../graphql/user/user.controller.js');
 jest.mock('../utils/generateCookie.js');
 jest.mock('../utils/logger.js');
+jest.mock('../utils/isNotAuthenticated.js');
 
-test('should throw Auth error when signed in', async () => {
-  const ctx = { res: { userId: 12345 } };
+test('should check auth', async () => {
+  const authMock = jest.fn();
+  isNotAuthenticated.mockImplementation(authMock);
 
-  await expect(register(null, null, ctx, null)).rejects.toThrow(
-    'you are already logged in'
-  );
+  userController.createUser.mockImplementation(() => ({ _id: 123 }));
+
+  const ctx = { res: {} };
+  await register(null, null, ctx, null);
+
+  expect(authMock).toHaveBeenCalledWith(ctx);
 });
 
 test('should create user', async () => {
@@ -27,7 +33,7 @@ test('should create user', async () => {
 
   await register(null, args, ctx, null);
 
-  expect(createUserMock).toHaveBeenCalledWith(args.input);
+  expect(createUserMock).toHaveBeenCalledWith(args);
 });
 
 test('should create cookie', async () => {

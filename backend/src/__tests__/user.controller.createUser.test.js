@@ -19,8 +19,10 @@ test('should throw error when email is already registered', async () => {
   User.findOne.mockImplementation(() => checkUserMock);
 
   const args = {
-    password: faker.internet.password(8),
-    email: faker.internet.email(),
+    input: {
+      password: faker.internet.password(8),
+      email: faker.internet.email(),
+    },
   };
 
   await expect(() => userController.createUser(args)).rejects.toThrow(
@@ -39,10 +41,15 @@ test('should hash password', async () => {
   const hashMock = jest.fn();
   bcrypt.hash.mockImplementation(hashMock);
 
-  const password = faker.internet.password(8);
-  await userController.createUser({ password });
+  const args = {
+    input: {
+      email: faker.internet.email(),
+      password: faker.internet.password(8),
+    },
+  };
+  await userController.createUser(args);
 
-  expect(hashMock).toHaveBeenCalledWith(password, 10);
+  expect(hashMock).toHaveBeenCalledWith(args.input.password, 10);
 });
 
 test('should generate verify random token', async () => {
@@ -56,8 +63,13 @@ test('should generate verify random token', async () => {
   const tokenMock = jest.fn();
   generateToken.mockImplementation(tokenMock);
 
-  const password = faker.internet.password(8);
-  await userController.createUser({ password });
+  const args = {
+    input: {
+      email: faker.internet.email(),
+      password: faker.internet.password(8),
+    },
+  };
+  await userController.createUser(args);
 
   expect(tokenMock).toHaveBeenCalledTimes(1);
 });
@@ -77,13 +89,15 @@ test('should create user with args and hashed password', async () => {
   User.create.mockImplementation(userMock);
 
   const args = {
-    password: faker.internet.password(8),
-    email: faker.internet.email(),
+    input: {
+      password: faker.internet.password(8),
+      email: faker.internet.email(),
+    },
   };
   await userController.createUser(args);
 
   const expected = {
-    ...args,
+    ...args.input,
     password: hashedPassword,
   };
 
@@ -108,7 +122,9 @@ test('should create user with verify token and expiry', async () => {
   User.create.mockImplementation(userMock);
 
   const args = {
-    password: faker.internet.password(8),
+    input: {
+      password: faker.internet.password(8),
+    },
   };
 
   const date = Date.now();
@@ -117,7 +133,7 @@ test('should create user with verify token and expiry', async () => {
   await userController.createUser(args);
 
   const expected = {
-    ...args,
+    ...args.input,
     password: hashedPassword,
     verifyToken,
     verifyTokenExpiry: expiresAt,
@@ -134,7 +150,9 @@ test('should return created user', async () => {
   User.findOne.mockImplementation(() => checkUserMock);
 
   const args = {
-    password: faker.internet.password(8),
+    input: {
+      password: faker.internet.password(8),
+    },
   };
 
   User.create.mockImplementation(() => Promise.resolve(args));
