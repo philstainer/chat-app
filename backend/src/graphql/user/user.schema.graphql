@@ -14,6 +14,7 @@ type Query {
 
 type Mutation {
   register(input: UserRegisterInput!): User!
+  login(input: UserRegisterInput): User!
 }
 
 type Subscription {
