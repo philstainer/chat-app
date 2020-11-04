@@ -9,7 +9,7 @@ type User {
 }
 
 type Query {
-  _empty: String
+  me: User!
 }
 
 type Mutation {

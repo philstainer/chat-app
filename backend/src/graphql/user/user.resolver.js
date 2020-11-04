@@ -11,6 +11,21 @@ import { selectedFields } from '../../utils/selectedFields';
 import { USER_NOT_FOUND_ERROR } from '../../utils/constants';
 
 const userResolver = {
+  Query: {
+    me: async (parent, args, ctx, info) => {
+      isAuthenticated(ctx);
+
+      const selected = selectedFields(info);
+
+      const foundUser = await User.findById(ctx?.req?.userId)
+        .select(selected)
+        .lean();
+
+      if (!foundUser) throw new AuthenticationError(USER_NOT_FOUND_ERROR);
+
+      return foundUser;
+    },
+  },
   Mutation: {
     register: async (parent, args, ctx, info) => {
       isNotAuthenticated(ctx);
