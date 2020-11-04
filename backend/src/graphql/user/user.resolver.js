@@ -2,10 +2,12 @@ import { AuthenticationError } from 'apollo-server-express';
 import bcrypt from 'bcryptjs';
 
 import { userController } from './user.controller';
+import { User } from './user.modal';
+
 import { generateCookie } from '../../utils/generateCookie';
 import { isNotAuthenticated } from '../../utils/isNotAuthenticated';
+import { isAuthenticated } from '../../utils/isAuthenticated';
 import { selectedFields } from '../../utils/selectedFields';
-import { User } from './user.modal';
 import { USER_NOT_FOUND_ERROR } from '../../utils/constants';
 
 const userResolver = {
@@ -40,6 +42,13 @@ const userResolver = {
       generateCookie({ sub: foundUser._id }, 'token', ctx);
 
       return foundUser;
+    },
+    logout: (parent, args, ctx, info) => {
+      isAuthenticated(ctx);
+
+      ctx.res.clearCookie('token');
+
+      return true;
     },
   },
 };
