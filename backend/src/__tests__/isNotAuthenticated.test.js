@@ -2,7 +2,7 @@ import { isNotAuthenticated } from '../utils/isNotAuthenticated';
 import { AUTH_LOGGED_IN_ERROR } from '../utils/constants';
 
 test('should throw error when logged in', () => {
-  const ctx = { res: { userId: 12345 } };
+  const ctx = { req: { userId: 12345 } };
 
   expect(() => isNotAuthenticated(ctx)).toThrow(AUTH_LOGGED_IN_ERROR);
 });

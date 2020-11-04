@@ -24,7 +24,7 @@ test('should call isNotAuthenticated', async () => {
   User.findOne.mockImplementation(userMock.findOne);
   bcrypt.compare.mockImplementation(() => true);
 
-  const ctx = { res: { userId: 12345 } };
+  const ctx = { req: { userId: 12345 } };
 
   await login(null, null, ctx, null);
 
@@ -140,7 +140,7 @@ test('should call generateCookie', async () => {
 
   bcrypt.compare.mockImplementation(() => true);
 
-  const ctx = { res: {} };
+  const ctx = { req: {} };
 
   await login(null, null, ctx, null);
 

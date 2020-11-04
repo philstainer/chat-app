@@ -18,7 +18,7 @@ test('should check auth', async () => {
 
   userController.createUser.mockImplementation(() => ({ _id: 123 }));
 
-  const ctx = { res: {} };
+  const ctx = { req: {} };
   await register(null, null, ctx, null);
 
   expect(authMock).toHaveBeenCalledWith(ctx);
@@ -26,7 +26,7 @@ test('should check auth', async () => {
 
 test('should create user', async () => {
   const args = { input: { email: faker.internet.email() } };
-  const ctx = { res: {} };
+  const ctx = { req: {} };
 
   const createUserMock = jest.fn(() => ({ _id: 123 }));
   userController.createUser.mockImplementation(createUserMock);
