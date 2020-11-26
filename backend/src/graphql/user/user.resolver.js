@@ -1,5 +1,8 @@
 import { AuthenticationError } from 'apollo-server-express';
 import bcrypt from 'bcryptjs';
+import ejs from 'ejs';
+import path from 'path';
+import sgMail from '@sendgrid/mail';
 
 import { userController } from './user.controller';
 import { User } from './user.modal';
@@ -9,6 +12,7 @@ import { isNotAuthenticated } from '../../utils/isNotAuthenticated';
 import { isAuthenticated } from '../../utils/isAuthenticated';
 import { selectedFields } from '../../utils/selectedFields';
 import { USER_NOT_FOUND_ERROR } from '../../utils/constants';
+import { accessEnv } from '../../utils/accessEnv';
 
 const userResolver = {
   Query: {
@@ -33,6 +37,22 @@ const userResolver = {
       const createdUser = await userController.createUser(args);
 
       generateCookie({ sub: createdUser._id }, 'token', ctx);
+
+      // Generate and send email
+      const html = await ejs.renderFile(
+        path.join(__dirname, '../../templates/confirm-account.ejs'),
+        {
+          URL: `${ctx?.req?.protocol}://${ctx?.req?.get('host')}`,
+          CODE: createdUser.verifyToken,
+        }
+      );
+
+      await sgMail.send({
+        to: createdUser.email,
+        from: accessEnv('SENDGRID_API_FROM'),
+        subject: 'Account confirmation',
+        html,
+      });
 
       return createdUser;
     },

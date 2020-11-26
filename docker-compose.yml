@@ -22,6 +22,7 @@ services:
       MONGO_URI: 'mongodb://mongodb/${MONGO_DATABASE}'
       JWT_SECRET: ${JWT_SECRET}
       SENDGRID_API_KEY: ${SENDGRID_API_KEY}
+      SENDGRID_API_FROM: ${SENDGRID_API_FROM}
     volumes:
       - './backend:/app/backend'
       # - '/app/backend/node_modules/'

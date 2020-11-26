@@ -1,9 +1,11 @@
 import faker from 'faker';
+import sgMail from '@sendgrid/mail';
 
 import { userResolver } from '../graphql/user/user.resolver';
 import { userController } from '../graphql/user/user.controller';
 import { generateCookie } from '../utils/generateCookie';
 import { isNotAuthenticated } from '../utils/isNotAuthenticated';
+import { accessEnv } from '../utils/accessEnv';
 
 const { register } = userResolver.Mutation;
 
@@ -11,6 +13,8 @@ jest.mock('../graphql/user/user.controller.js');
 jest.mock('../utils/generateCookie.js');
 jest.mock('../utils/logger.js');
 jest.mock('../utils/isNotAuthenticated.js');
+jest.mock('../utils/accessEnv');
+jest.mock('@sendgrid/mail');
 
 test('should check auth', async () => {
   const authMock = jest.fn();
@@ -18,7 +22,7 @@ test('should check auth', async () => {
 
   userController.createUser.mockImplementation(() => ({ _id: 123 }));
 
-  const ctx = { req: {} };
+  const ctx = { req: { get: () => {} } };
   await register(null, null, ctx, null);
 
   expect(authMock).toHaveBeenCalledWith(ctx);
@@ -26,7 +30,7 @@ test('should check auth', async () => {
 
 test('should create user', async () => {
   const args = { input: { email: faker.internet.email() } };
-  const ctx = { req: {} };
+  const ctx = { req: { get: () => {} } };
 
   const createUserMock = jest.fn(() => ({ _id: 123 }));
   userController.createUser.mockImplementation(createUserMock);
@@ -37,6 +41,8 @@ test('should create user', async () => {
 });
 
 test('should create cookie', async () => {
+  const ctx = { req: { get: () => {} } };
+
   const createdUser = { _id: 123, email: faker.internet.email() };
   userController.createUser.mockImplementation(() =>
     Promise.resolve(createdUser)
@@ -45,22 +51,52 @@ test('should create cookie', async () => {
   const cookieMock = jest.fn();
   generateCookie.mockImplementation(cookieMock);
 
-  await register(null, { input: {} }, null, null);
+  await register(null, { input: {} }, ctx, null);
 
   expect(cookieMock).toHaveBeenCalledWith(
     { sub: createdUser._id },
     'token',
-    null
+    ctx
+  );
+});
+
+test('should send confirm email', async () => {
+  const ctx = { req: { get: () => {} } };
+
+  const createdUser = {
+    _id: 123,
+    email: faker.internet.email(),
+    verifyToken: faker.random.uuid(),
+  };
+  userController.createUser.mockImplementation(() =>
+    Promise.resolve(createdUser)
+  );
+
+  const from = faker.internet.email();
+  accessEnv.mockImplementationOnce(() => from);
+
+  const sendEmailMock = jest.fn();
+  sgMail.send.mockImplementationOnce(sendEmailMock);
+
+  await register(null, { input: {} }, ctx, null);
+
+  expect(sendEmailMock).toHaveBeenCalledWith(
+    expect.objectContaining({
+      from,
+      to: createdUser.email,
+    })
   );
 });
 
 test('should return created user', async () => {
+  const ctx = { req: { get: () => {} } };
+
   const createdUser = { _id: 123, email: faker.internet.email() };
   userController.createUser.mockImplementation(() =>
     Promise.resolve(createdUser)
   );
 
-  const returnedUser = await register(null, { input: {} }, null, null);
+  const returnedUser = await register(null, { input: {} }, ctx, null);
 
   expect(returnedUser).toEqual(createdUser);
 });
