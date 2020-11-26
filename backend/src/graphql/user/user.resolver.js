@@ -8,6 +8,7 @@ import { userController } from './user.controller';
 import { User } from './user.modal';
 
 import { generateCookie } from '../../utils/generateCookie';
+import { generateToken } from '../../utils/generateToken';
 import { isNotAuthenticated } from '../../utils/isNotAuthenticated';
 import { isAuthenticated } from '../../utils/isAuthenticated';
 import { selectedFields } from '../../utils/selectedFields';
@@ -101,6 +102,50 @@ const userResolver = {
         verified: true,
         verifyToken: null,
       });
+
+      return true;
+    },
+    resetPasswordRequest: async (parent, args, ctx, info) => {
+      isNotAuthenticated(ctx);
+
+      // Ignore users with resetToken that hasn't expired
+      const foundUser = await User.findOne({
+        email: args?.input?.email,
+        $or: [
+          { resetTokenExpiry: null },
+          { resetTokenExpiry: { $lte: Date.now() } },
+        ],
+      })
+        .select('_id')
+        .lean();
+
+      if (foundUser) {
+        // Generate Token and expiry
+        const resetToken = await generateToken();
+        const resetTokenExpiry = Date.now() + 1 * 60 * 15 * 1000; // 15 Minutes
+
+        // Update User
+        await User.findByIdAndUpdate(foundUser._id, {
+          resetToken,
+          resetTokenExpiry,
+        });
+
+        // Generate and send reset email
+        const html = await ejs.renderFile(
+          path.join(__dirname, '../../templates/reset-password.ejs'),
+          {
+            URL: `${ctx?.req?.protocol}://${ctx?.req?.get('host')}`,
+            TOKEN: resetToken,
+          }
+        );
+
+        await sgMail.send({
+          to: args?.input?.email,
+          from: accessEnv('SENDGRID_API_FROM'),
+          subject: 'Reset Password',
+          html,
+        });
+      }
 
       return true;
     },

@@ -17,6 +17,8 @@ const UserSchema = new Schema(
     state: { online: Boolean, available: Boolean },
     verifyToken: String,
     verified: { type: Boolean, default: false },
+    resetToken: String,
+    resetTokenExpiry: Date,
     blocked: Boolean,
   },
   { timestamps: true }
