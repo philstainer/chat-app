@@ -6,8 +6,6 @@ import { User } from './user.modal';
 import { logger } from '../../utils/logger';
 import { USER_EMAIL_ALREADY } from '../../utils/constants';
 
-export const expiresAt = Date.now() + 1 * 60 * 15 * 1000; // 15 minutes
-
 const userController = {
   createUser: async (args) => {
     const foundUser = await User.findOne({ email: args.input.email })
@@ -27,7 +25,6 @@ const userController = {
       ...args.input,
       password,
       verifyToken,
-      verifyTokenExpiry: expiresAt,
     });
 
     return createdUser;

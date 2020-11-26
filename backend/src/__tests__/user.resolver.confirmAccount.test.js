@@ -59,7 +59,6 @@ test('should set user to be verified, remove token and expiry', async () => {
   expect(updateMock).toHaveBeenCalledWith(user._id, {
     verified: true,
     verifyToken: null,
-    verifyTokenExpiry: null,
   });
 });
 

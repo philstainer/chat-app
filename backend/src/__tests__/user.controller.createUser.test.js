@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import faker from 'faker';
 
-import { userController, expiresAt } from '../graphql/user/user.controller';
+import { userController } from '../graphql/user/user.controller';
 
 import { User } from '../graphql/user/user.modal';
 import { generateToken } from '../utils/generateToken';
@@ -137,7 +137,6 @@ test('should create user with verify token and expiry', async () => {
     ...args.input,
     password: hashedPassword,
     verifyToken,
-    verifyTokenExpiry: expiresAt,
   };
   expect(userMock).toHaveBeenCalledWith(expected);
 });

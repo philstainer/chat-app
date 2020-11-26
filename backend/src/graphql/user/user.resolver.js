@@ -91,7 +91,6 @@ const userResolver = {
     confirmAccount: async (parent, args, ctx, info) => {
       const foundUser = await User.findOne({
         verifyToken: args?.input?.token,
-        verifyTokenExpiry: { $gte: Date.now() }, // Confirm token expiry > Date.now
       })
         .select('_id')
         .lean();
@@ -101,7 +100,6 @@ const userResolver = {
       await User.findByIdAndUpdate(foundUser._id, {
         verified: true,
         verifyToken: null,
-        verifyTokenExpiry: null,
       });
 
       return true;

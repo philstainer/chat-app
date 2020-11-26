@@ -15,7 +15,6 @@ const UserSchema = new Schema(
     contacts: [{ type: ObjectId, ref: 'users', required: true }],
     logs: { lastLogin: Date, lastPasswordReset: Date, last_activity: Date },
     state: { online: Boolean, available: Boolean },
-    verifyTokenExpiry: Date,
     verifyToken: String,
     verified: { type: Boolean, default: false },
     blocked: Boolean,
