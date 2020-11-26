@@ -21,6 +21,7 @@ services:
       BACKEND_COOKIE_SECRET: ${BACKEND_COOKIE_SECRET}
       MONGO_URI: 'mongodb://mongodb/${MONGO_DATABASE}'
       JWT_SECRET: ${JWT_SECRET}
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
     volumes:
       - './backend:/app/backend'
       # - '/app/backend/node_modules/'
