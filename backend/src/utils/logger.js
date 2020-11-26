@@ -15,6 +15,7 @@ const DEV_LOG_LEVEL = LoggerLevel.debug;
 
 const isProduction = accessEnv('NODE_ENV') === 'production';
 const isTest = accessEnv('NODE_ENV') === 'test';
+const isDev = accessEnv('NODE_ENV') === 'development';
 
 const logger = createLogger({
   format: format.combine(
@@ -31,7 +32,7 @@ const logger = createLogger({
   ],
 });
 
-if (!isProduction && !isTest) {
+if (isDev) {
   logger.debug('Logging initialized at debug level');
 }
 
