@@ -14,8 +14,9 @@ type Query {
 
 type Mutation {
   register(input: UserRegisterInput!): User!
-  login(input: UserRegisterInput): User!
+  login(input: UserRegisterInput!): User!
   logout: Boolean
+  confirmAccount(input: ConfirmAccountInput!): Boolean
 }
 
 type Subscription {
@@ -25,4 +26,8 @@ type Subscription {
 input UserRegisterInput {
   email: String!
   password: String!
+}
+
+input ConfirmAccountInput {
+  token: String!
 }

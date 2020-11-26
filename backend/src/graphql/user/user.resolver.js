@@ -1,4 +1,4 @@
-import { AuthenticationError } from 'apollo-server-express';
+import { AuthenticationError, UserInputError } from 'apollo-server-express';
 import bcrypt from 'bcryptjs';
 import ejs from 'ejs';
 import path from 'path';
@@ -11,7 +11,10 @@ import { generateCookie } from '../../utils/generateCookie';
 import { isNotAuthenticated } from '../../utils/isNotAuthenticated';
 import { isAuthenticated } from '../../utils/isAuthenticated';
 import { selectedFields } from '../../utils/selectedFields';
-import { USER_NOT_FOUND_ERROR } from '../../utils/constants';
+import {
+  USER_NOT_FOUND_ERROR,
+  USER_CONFIRM_ACCOUNT_ERROR,
+} from '../../utils/constants';
 import { accessEnv } from '../../utils/accessEnv';
 
 const userResolver = {
@@ -82,6 +85,24 @@ const userResolver = {
       isAuthenticated(ctx);
 
       ctx.res.clearCookie('token');
+
+      return true;
+    },
+    confirmAccount: async (parent, args, ctx, info) => {
+      const foundUser = await User.findOne({
+        verifyToken: args?.input?.token,
+        verifyTokenExpiry: { $gte: Date.now() }, // Confirm token expiry > Date.now
+      })
+        .select('_id')
+        .lean();
+
+      if (!foundUser) throw new UserInputError(USER_CONFIRM_ACCOUNT_ERROR);
+
+      await User.findByIdAndUpdate(foundUser._id, {
+        verified: true,
+        verifyToken: null,
+        verifyTokenExpiry: null,
+      });
 
       return true;
     },

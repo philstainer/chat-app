@@ -6,7 +6,7 @@ import { User } from './user.modal';
 import { logger } from '../../utils/logger';
 import { USER_EMAIL_ALREADY } from '../../utils/constants';
 
-export const expiresAt = Date.now() + 1 * 60 * 60 * 1000;
+export const expiresAt = Date.now() + 1 * 60 * 15 * 1000; // 15 minutes
 
 const userController = {
   createUser: async (args) => {
