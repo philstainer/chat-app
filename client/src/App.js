@@ -1,5 +1,9 @@
-function App() {
-  return <div className="App">Learn React</div>;
-}
+import { Theme } from './components/Theme';
 
-export default App;
+export const App = () => {
+  return (
+    <Theme>
+      <div className="App">Learn Reacts</div>
+    </Theme>
+  );
+};
