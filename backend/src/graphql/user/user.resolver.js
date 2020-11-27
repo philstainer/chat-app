@@ -14,7 +14,7 @@ import { isAuthenticated } from '../../utils/isAuthenticated';
 import { selectedFields } from '../../utils/selectedFields';
 import {
   USER_NOT_FOUND_ERROR,
-  USER_CONFIRM_ACCOUNT_ERROR,
+  INVALID_TOKEN_ERROR,
 } from '../../utils/constants';
 import { accessEnv } from '../../utils/accessEnv';
 
@@ -96,7 +96,7 @@ const userResolver = {
         .select('_id')
         .lean();
 
-      if (!foundUser) throw new UserInputError(USER_CONFIRM_ACCOUNT_ERROR);
+      if (!foundUser) throw new UserInputError(INVALID_TOKEN_ERROR);
 
       await User.findByIdAndUpdate(foundUser._id, {
         verified: true,
@@ -148,6 +148,38 @@ const userResolver = {
       }
 
       return true;
+    },
+    resetPassword: async (parent, args, ctx, info) => {
+      isNotAuthenticated(ctx);
+
+      // Find user with non expired token
+      const foundUser = await User.findOne({
+        resetToken: args?.input?.token,
+        resetTokenExpiry: { $gte: Date.now() },
+      })
+        .select('_id')
+        .lean();
+
+      if (!foundUser) throw new UserInputError(INVALID_TOKEN_ERROR);
+
+      // Generate selected fields
+      const selected = selectedFields(info);
+
+      // Hash password
+      const password = await bcrypt.hash(args?.input?.password, 10);
+
+      // Update user with new password
+      const updatedUser = await User.findByIdAndUpdate(
+        foundUser?._id,
+        { password, resetToken: null, resetTokenExpiry: null },
+        { new: true }
+      )
+        .select(selected)
+        .lean();
+
+      generateCookie({ sub: updatedUser?._id }, 'token', ctx);
+
+      return updatedUser;
     },
   },
 };

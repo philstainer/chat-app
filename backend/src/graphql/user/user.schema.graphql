@@ -18,6 +18,7 @@ type Mutation {
   logout: Boolean
   confirmAccount(input: ConfirmAccountInput!): Boolean
   resetPasswordRequest(input: ResetPasswordRequestInput!): Boolean
+  resetPassword(input: ResetPasswordInput): User!
 }
 
 type Subscription {
@@ -35,4 +36,9 @@ input ConfirmAccountInput {
 
 input ResetPasswordRequestInput {
   email: String!
+}
+
+input ResetPasswordInput {
+  token: String!
+  password: String!
 }

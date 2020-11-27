@@ -2,7 +2,7 @@ import faker from 'faker';
 
 import { userResolver } from '../graphql/user/user.resolver';
 import { User } from '../graphql/user/user.modal';
-import { USER_CONFIRM_ACCOUNT_ERROR } from '../utils/constants';
+import { INVALID_TOKEN_ERROR } from '../utils/constants';
 
 const { confirmAccount } = userResolver.Mutation;
 
@@ -36,9 +36,7 @@ test('should throw error when user not found', async () => {
   };
   User.findOne.mockImplementationOnce(userMock.findOne);
 
-  await expect(() => confirmAccount()).rejects.toThrow(
-    USER_CONFIRM_ACCOUNT_ERROR
-  );
+  await expect(() => confirmAccount()).rejects.toThrow(INVALID_TOKEN_ERROR);
 });
 
 test('should set user to be verified, remove token and expiry', async () => {
