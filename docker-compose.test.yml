@@ -12,3 +12,15 @@ services:
       - './.git:/app/.git'
     tty: true
     stdin_open: false
+
+  client-unit:
+    container_name: 'client-test-unit'
+    build:
+      context: 'client'
+      dockerfile: 'Dockerfile.dev'
+      target: 'unit-test'
+    volumes:
+      - './client:/app/client'
+      - './.git:/app/.git'
+    tty: true
+    stdin_open: false
