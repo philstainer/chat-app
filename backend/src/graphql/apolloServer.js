@@ -1,4 +1,5 @@
 import { ApolloServer, PubSub, mergeSchemas } from 'apollo-server-express';
+import { ApolloServerPluginInlineTrace } from 'apollo-server-core';
 
 import { accessEnv } from '../utils/accessEnv';
 
@@ -18,5 +19,5 @@ const schema = mergeSchemas({
 export const apolloServer = new ApolloServer({
   schema,
   context,
-  tracing: !isProduction,
+  plugins: [...(!isProduction && [ApolloServerPluginInlineTrace()])],
 });
