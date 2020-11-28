@@ -21,15 +21,13 @@ import { accessEnv } from '../../utils/accessEnv';
 const userResolver = {
   Query: {
     me: async (parent, args, ctx, info) => {
-      isAuthenticated(ctx);
+      if (!ctx?.req?.userId) return null;
 
       const selected = selectedFields(info);
 
       const foundUser = await User.findById(ctx?.req?.userId)
         .select(selected)
         .lean();
-
-      if (!foundUser) throw new AuthenticationError(USER_NOT_FOUND_ERROR);
 
       return foundUser;
     },
