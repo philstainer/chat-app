@@ -16,7 +16,7 @@ app.use(cookieParser(accessEnv('BACKEND_COOKIE_SECRET')));
 app.use(compression());
 
 // Cors
-app.use(cors({ credentials: true, origin: '*' }));
+app.use(cors({ credentials: true, origin: true }));
 
 // Populate req.
 app.use(getUserIdentity);
