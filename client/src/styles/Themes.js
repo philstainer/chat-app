@@ -1,10 +1,18 @@
-const defaultStyles = {
+import { rem } from 'polished';
+
+const white = 'rgba(255, 255, 255, 1)';
+const offWhite = 'rgba(245, 246, 250, 1)';
+const dark = 'rgba(34, 40, 49, 1)';
+const darkLight = 'rgba(57, 62, 70, 1)';
+const border = 'rgba(112, 112, 112, .2)';
+const highlight = 'rgba(0, 109, 238, 1)';
+
+const globalStyles = {
   fontSizes: {
-    root: '62.5%',
-    small: '1.2rem',
-    medium: '1.4rem',
-    large: '2.8rem',
-    xLarge: '5rem',
+    small: rem('12px'),
+    medium: rem('14px'),
+    large: rem('28px'),
+    xLarge: rem('50px'),
   },
   fonts: ['Open Sans'],
   fontWeights: {
@@ -12,18 +20,22 @@ const defaultStyles = {
     normal: 400,
     bold: 600,
   },
-  highlight: 'rgba(0, 109, 238, 1)',
+  highlight,
+  border,
+  white,
 };
 
 export const themes = {
   light: {
-    ...defaultStyles,
-    background: 'rgba(245, 246, 250, 1)',
-    text: 'rgba(34, 40, 49, 1)',
+    ...globalStyles,
+    background: offWhite,
+    backgroundLight: white,
+    text: dark,
   },
   dark: {
-    ...defaultStyles,
-    background: 'rgba(34, 40, 49, 1)',
-    text: 'rgba(245, 246, 250, 1)',
+    ...globalStyles,
+    background: dark,
+    backgroundLight: darkLight,
+    text: offWhite,
   },
 };

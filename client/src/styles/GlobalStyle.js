@@ -3,7 +3,6 @@ import { createGlobalStyle } from 'styled-components';
 export const GlobalStyle = createGlobalStyle`
   html {
     box-sizing: border-box;
-    font-size: ${({ theme }) => theme.fontSizes.root};
   }
 
   *, *:before, *:after {
@@ -18,7 +17,8 @@ export const GlobalStyle = createGlobalStyle`
     font-family: ${({ theme }) => theme.fonts[0]}, sans-serif;
     line-height: 1.3;
     color: ${({ theme }) => theme.text};
-    background-color: ${({ theme }) => theme.background};;
+    background-color: ${({ theme }) => theme.background};
+    overflow: hidden;
   }
 
   ul {
@@ -37,6 +37,7 @@ export const GlobalStyle = createGlobalStyle`
   h2,
   h3 {
     margin: 0;
+    font-weight: ${({ theme }) => theme.fontWeights.bold};
   }
 
   button,
