@@ -27,7 +27,11 @@ StyledForm.Input = styled.input`
 `;
 StyledForm.displayName = 'StyledForm.Input';
 
-StyledForm.InputError = styled.p``;
+StyledForm.InputError = styled.p`
+  font-size: ${({ theme }) => theme?.fontSizes?.small};
+  color: ${({ theme }) => theme?.error};
+  margin-top: ${rem('5px')};
+`;
 StyledForm.InputError.displayName = 'StyledForm.InputError';
 
 StyledForm.Label = styled.label`
