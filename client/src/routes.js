@@ -3,10 +3,11 @@ import { Switch, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 
 import { PrivateRoute } from './components/PrivateRoute';
-import { PublicRoute } from './components/PublicRoute';
+import { MotionRoute } from './components/MotionRoute';
 
 const HomePage = lazy(() => import('./pages/Home'));
 const LoginPage = lazy(() => import('./pages/Login'));
+const RegisterPage = lazy(() => import('./pages/Register'));
 
 export const Routes = () => {
   const location = useLocation();
@@ -17,7 +18,8 @@ export const Routes = () => {
         <Switch location={location} key={location.key}>
           <PrivateRoute exact path="/" component={HomePage} />
 
-          <PublicRoute path="/login" component={LoginPage} />
+          <MotionRoute path="/login" component={LoginPage} />
+          <MotionRoute path="/register" component={RegisterPage} />
         </Switch>
       </Suspense>
     </AnimatePresence>
