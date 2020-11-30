@@ -19,8 +19,14 @@ StyledPage.Title = styled.h1`
 `;
 StyledPage.Title.displayName = 'StyledPage.Title';
 
+StyledPage.Description = styled.p`
+  margin-top: ${rem('10px')};
+`;
+StyledPage.Description.displayName = 'StyledPage.Description';
+
 StyledPage.Actions = styled.div`
   display: flex;
+  justify-content: space-between;
 `;
 StyledPage.Actions.displayName = 'StyledPage.Actions';
 
@@ -28,6 +34,7 @@ StyledPage.Action = styled(Link)`
   display: flex;
   align-items: center;
   font-size: ${({ theme }) => theme?.fontSizes?.small};
+  color: ${({ theme, color }) => color && `${theme?.[color]} !important`};
 
   & > svg {
     stroke: ${({ theme }) => theme?.fontSizes?.text};
