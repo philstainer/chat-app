@@ -8,6 +8,7 @@ import { MotionRoute } from './components/MotionRoute';
 const HomePage = lazy(() => import('./pages/Home'));
 const LoginPage = lazy(() => import('./pages/Login'));
 const RegisterPage = lazy(() => import('./pages/Register'));
+const VerifyPage = lazy(() => import('./pages/Verify'));
 
 export const Routes = () => {
   const location = useLocation();
@@ -20,6 +21,7 @@ export const Routes = () => {
 
           <MotionRoute path="/login" component={LoginPage} />
           <MotionRoute path="/register" component={RegisterPage} />
+          <MotionRoute path="/verify/:token" component={VerifyPage} />
         </Switch>
       </Suspense>
     </AnimatePresence>
