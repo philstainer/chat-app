@@ -10,7 +10,7 @@ import { renderWithRouter } from '../utils/renderWithRouter';
 import { REGISTER } from '../operations/mutations/register';
 import { RegisterFormContainer } from '../containers/RegisterFormContainer';
 
-test('should call register mutation on on form submit', async () => {
+test('should call register mutation on form submit', async () => {
   const email = faker.internet.email();
   const password = 'Pa33ord12345!';
 
