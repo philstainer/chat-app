@@ -13,7 +13,7 @@ const UserSchema = new Schema(
     phone: String,
     image: String,
     contacts: [{ type: ObjectId, ref: 'users', required: true }],
-    logs: { lastLogin: Date, lastPasswordReset: Date, last_activity: Date },
+    logs: { lastLogin: Date, lastPasswordReset: Date, lastActivity: Date },
     state: { online: Boolean, available: Boolean },
     verifyToken: String,
     verified: { type: Boolean, default: false },
