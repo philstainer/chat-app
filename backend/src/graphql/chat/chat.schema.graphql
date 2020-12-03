@@ -1,9 +1,11 @@
 type Chat {
-  _id: String
+  _id: ID!
+  participants: [User!]!
+  lastMessage: Message
 }
 
 type Query {
-  _empty: String
+  chats: [Chat!]!
 }
 
 type Mutation {

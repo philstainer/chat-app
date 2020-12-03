@@ -1,5 +1,5 @@
 type Message {
-  _id: String
+  _id: ID!
 }
 
 type Query {

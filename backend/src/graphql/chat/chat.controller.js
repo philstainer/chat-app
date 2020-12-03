@@ -1,3 +1,0 @@
-const chatController = {};
-
-export { chatController };
