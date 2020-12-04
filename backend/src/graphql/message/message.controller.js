@@ -1,3 +1,0 @@
-const messageController = {};
-
-export { messageController };
