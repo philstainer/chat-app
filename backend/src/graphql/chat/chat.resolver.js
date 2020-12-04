@@ -23,8 +23,7 @@ export const chatResolver = {
         participants: { $in: [ctx?.req?.userId] },
       })
         .select(selected)
-        .sort({ updatedAt: 'desc' })
-        .lean();
+        .sort({ updatedAt: 'desc' });
 
       // Should return all found chats
       return foundChats;
@@ -35,10 +34,12 @@ export const chatResolver = {
       // Should be logged in
       isAuthenticated(ctx);
 
+      // Filter out logged in user id
       const participants = args?.input?.participants.filter(
         (item) => item !== ctx?.req?.userId
       );
 
+      // Don't create empty chat
       if (participants.length === 0)
         throw new UserInputError(INVALID_PARTICIPANTS_ERROR);
 
@@ -47,6 +48,7 @@ export const chatResolver = {
         participants: [ctx?.req?.userId, ...participants],
       });
 
+      // Publish chat to subscriptions
       pubsub.publish(CHAT_CREATED, { chatCreated: createdChat });
 
       return createdChat;
@@ -57,9 +59,21 @@ export const chatResolver = {
       subscribe: withFilter(
         () => pubsub.asyncIterator([CHAT_CREATED]),
         (payload, variables, ctx) => {
+          // Only send to participants
           return payload.chatCreated.participants.includes(ctx.userId);
         }
       ),
+    },
+  },
+
+  Chat: {
+    participants: async (parent, args, ctx, info) => {
+      // Populate participants
+      const { participants } = await parent
+        .populate('participants')
+        .execPopulate();
+
+      return participants;
     },
   },
 };
