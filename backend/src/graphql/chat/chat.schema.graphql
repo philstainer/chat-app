@@ -9,9 +9,13 @@ type Query {
 }
 
 type Mutation {
-  _empty: String
+  createChat(input: CreateChatInput!): Chat!
 }
 
 type Subscription {
   _empty: String
+}
+
+input CreateChatInput {
+  participants: [ID!]!
 }

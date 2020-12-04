@@ -1,6 +1,9 @@
+import { UserInputError } from 'apollo-server-express';
+
 import { Chat } from './chat.modal';
 import { isAuthenticated } from '../../utils/isAuthenticated';
 import { selectedFields } from '../../utils/selectedFields';
+import { INVALID_PARTICIPANTS_ERROR } from '../../utils/constants';
 
 export const chatResolver = {
   Query: {
@@ -20,6 +23,26 @@ export const chatResolver = {
 
       // Should return all found chats
       return foundChats;
+    },
+  },
+  Mutation: {
+    createChat: async (parent, args, ctx, info) => {
+      // Should be logged in
+      isAuthenticated(ctx);
+
+      const participants = args?.input?.participants.filter(
+        (item) => item !== ctx?.req?.userId
+      );
+
+      if (participants.length === 0)
+        throw new UserInputError(INVALID_PARTICIPANTS_ERROR);
+
+      // Should create chat with participants
+      const createdChat = await Chat.create({
+        participants: [ctx?.req?.userId, ...participants],
+      });
+
+      return createdChat;
     },
   },
 };
