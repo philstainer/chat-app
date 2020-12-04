@@ -5,11 +5,11 @@ type Message {
 }
 
 type Query {
-  messages(input: MessagesInput): [Message!]!
+  messages(input: MessagesInput!): [Message!]!
 }
 
 type Mutation {
-  _empty: String
+  addMessage(input: MessageInput!): Message!
 }
 
 type Subscription {
@@ -20,4 +20,9 @@ input MessagesInput {
   chatId: ID!
   skip: Int
   limit: Int
+}
+
+input MessageInput {
+  chatId: ID!
+  text: String!
 }
