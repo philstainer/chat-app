@@ -6,6 +6,7 @@ import { selectedFields } from '../utils/selectedFields';
 import { generateCookie } from '../utils/generateCookie';
 import { isNotAuthenticated } from '../utils/isNotAuthenticated';
 import { USER_NOT_FOUND_ERROR } from '../utils/constants';
+import { FakeObjectId } from '../utils/fixtures';
 
 const { login } = userResolver.Mutation;
 
@@ -24,7 +25,7 @@ test('should call isNotAuthenticated', async () => {
   User.findOne.mockImplementation(userMock.findOne);
   bcrypt.compare.mockImplementation(() => true);
 
-  const ctx = { req: { userId: 12345 } };
+  const ctx = { req: { userId: FakeObjectId() } };
 
   await login(null, null, ctx, null);
 
@@ -124,7 +125,7 @@ test('should throw error when password compare fails', async () => {
 
 test('should call generateCookie', async () => {
   const user = {
-    _id: 12345,
+    _id: FakeObjectId(),
     email: faker.internet.email(),
   };
 
@@ -148,7 +149,7 @@ test('should call generateCookie', async () => {
 });
 test('should return found user', async () => {
   const user = {
-    _id: 12345,
+    _id: FakeObjectId(),
     email: faker.internet.email(),
   };
 

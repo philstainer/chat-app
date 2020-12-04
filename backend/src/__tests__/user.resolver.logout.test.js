@@ -1,5 +1,6 @@
 import { userResolver } from '../graphql/user/user.resolver';
 import { isAuthenticated } from '../utils/isAuthenticated';
+import { FakeObjectId } from '../utils/fixtures';
 
 const { logout } = userResolver.Mutation;
 
@@ -9,7 +10,10 @@ test('should call isAuthenticated', () => {
   const authMock = jest.fn();
   isAuthenticated.mockImplementation(authMock);
 
-  const ctx = { req: { userId: 12345 }, res: { clearCookie: jest.fn() } };
+  const ctx = {
+    req: { userId: FakeObjectId() },
+    res: { clearCookie: jest.fn() },
+  };
 
   logout(null, null, ctx, null);
 
@@ -17,7 +21,10 @@ test('should call isAuthenticated', () => {
 });
 
 test('should clear token cookie', () => {
-  const ctx = { req: { userId: 12345 }, res: { clearCookie: jest.fn() } };
+  const ctx = {
+    req: { userId: FakeObjectId() },
+    res: { clearCookie: jest.fn() },
+  };
 
   logout(null, null, ctx, null);
 
@@ -25,7 +32,10 @@ test('should clear token cookie', () => {
 });
 
 test('should return true on success', () => {
-  const ctx = { req: { userId: 12345 }, res: { clearCookie: jest.fn() } };
+  const ctx = {
+    req: { userId: FakeObjectId() },
+    res: { clearCookie: jest.fn() },
+  };
 
   const returnValue = logout(null, null, ctx, null);
 

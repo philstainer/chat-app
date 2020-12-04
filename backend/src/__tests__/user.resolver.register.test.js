@@ -6,6 +6,7 @@ import { userController } from '../graphql/user/user.controller';
 import { generateCookie } from '../utils/generateCookie';
 import { isNotAuthenticated } from '../utils/isNotAuthenticated';
 import { accessEnv } from '../utils/accessEnv';
+import { FakeObjectId } from '../utils/fixtures';
 
 const { register } = userResolver.Mutation;
 
@@ -20,7 +21,7 @@ test('should check auth', async () => {
   const authMock = jest.fn();
   isNotAuthenticated.mockImplementation(authMock);
 
-  userController.createUser.mockImplementation(() => ({ _id: 123 }));
+  userController.createUser.mockImplementation(() => ({ _id: FakeObjectId() }));
 
   const ctx = { req: { get: () => {} } };
   await register(null, null, ctx, null);
@@ -32,7 +33,7 @@ test('should create user', async () => {
   const args = { input: { email: faker.internet.email() } };
   const ctx = { req: { get: () => {} } };
 
-  const createUserMock = jest.fn(() => ({ _id: 123 }));
+  const createUserMock = jest.fn(() => ({ _id: FakeObjectId() }));
   userController.createUser.mockImplementation(createUserMock);
 
   await register(null, args, ctx, null);
@@ -43,7 +44,7 @@ test('should create user', async () => {
 test('should create cookie', async () => {
   const ctx = { req: { get: () => {} } };
 
-  const createdUser = { _id: 123, email: faker.internet.email() };
+  const createdUser = { _id: FakeObjectId(), email: faker.internet.email() };
   userController.createUser.mockImplementation(() =>
     Promise.resolve(createdUser)
   );
@@ -64,7 +65,7 @@ test('should send confirm email', async () => {
   const ctx = { req: { get: () => {} } };
 
   const createdUser = {
-    _id: 123,
+    _id: FakeObjectId(),
     email: faker.internet.email(),
     verifyToken: faker.random.uuid(),
   };
@@ -91,7 +92,7 @@ test('should send confirm email', async () => {
 test('should return created user', async () => {
   const ctx = { req: { get: () => {} } };
 
-  const createdUser = { _id: 123, email: faker.internet.email() };
+  const createdUser = { _id: FakeObjectId(), email: faker.internet.email() };
   userController.createUser.mockImplementation(() =>
     Promise.resolve(createdUser)
   );

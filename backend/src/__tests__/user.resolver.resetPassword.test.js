@@ -4,9 +4,9 @@ import bcrypt from 'bcryptjs';
 import { userResolver } from '../graphql/user/user.resolver';
 import { User } from '../graphql/user/user.modal';
 import { AUTH_LOGGED_IN_ERROR, INVALID_TOKEN_ERROR } from '../utils/constants';
-import { accessEnv } from '../utils/accessEnv';
 import { selectedFields } from '../utils/selectedFields';
 import { generateCookie } from '../utils/generateCookie';
+import { FakeObjectId } from '../utils/fixtures';
 
 const { resetPassword } = userResolver.Mutation;
 
@@ -18,7 +18,7 @@ jest.mock('../utils/selectedFields');
 jest.mock('bcryptjs');
 
 test('should throw error when logged in', async () => {
-  const ctx = { req: { userId: 12345 } };
+  const ctx = { req: { userId: FakeObjectId() } };
 
   await expect(() => resetPassword(null, null, ctx, null)).rejects.toThrow(
     AUTH_LOGGED_IN_ERROR
@@ -95,7 +95,7 @@ test('should generate select fields', async () => {
 
 test('should update user with new password', async () => {
   const user = {
-    _id: faker.random.uuid(),
+    _id: FakeObjectId(),
   };
 
   // FindOne Mock
@@ -150,7 +150,7 @@ test('should generate user cookie', async () => {
 
   // FindByIdAndUpdate Mock
   const updatedUser = {
-    _id: faker.random.uuid(),
+    _id: FakeObjectId(),
   };
 
   const updateMock = {
@@ -184,7 +184,7 @@ test('should return user', async () => {
 
   // FindByIdAndUpdate Mock
   const updatedUser = {
-    _id: faker.random.uuid(),
+    _id: FakeObjectId(),
   };
 
   const updateMock = {

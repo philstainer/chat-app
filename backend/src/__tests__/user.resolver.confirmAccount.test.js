@@ -3,6 +3,7 @@ import faker from 'faker';
 import { userResolver } from '../graphql/user/user.resolver';
 import { User } from '../graphql/user/user.modal';
 import { INVALID_TOKEN_ERROR } from '../utils/constants';
+import { FakeObjectId } from '../utils/fixtures';
 
 const { confirmAccount } = userResolver.Mutation;
 
@@ -40,7 +41,7 @@ test('should throw error when user not found', async () => {
 });
 
 test('should set user to be verified, remove token and expiry', async () => {
-  const user = { _id: faker.random.uuid() };
+  const user = { _id: FakeObjectId() };
 
   const userMock = {
     findOne: jest.fn(() => userMock),

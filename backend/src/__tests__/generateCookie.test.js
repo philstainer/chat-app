@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 
 import { generateCookie } from '../utils/generateCookie';
 import { accessEnv } from '../utils/accessEnv';
+import { FakeObjectId } from '../utils/fixtures';
 
 jest.mock('jsonwebtoken');
 jest.mock('../utils/accessEnv');
@@ -13,7 +14,7 @@ test('should generate JWT token with data', () => {
   const jwtSecret = 'jwtSecret';
   accessEnv.mockImplementation(() => jwtSecret);
 
-  const data = { sub: 12345 };
+  const data = { sub: FakeObjectId() };
   const ctx = { res: { cookie: jest.fn() } };
   generateCookie(data, null, ctx);
 
@@ -24,7 +25,7 @@ test('should set cookie with name using ctx', () => {
   const token = 'token here';
   jwt.sign.mockImplementation(() => token);
 
-  const data = { sub: 12345 };
+  const data = { sub: FakeObjectId() };
   const name = 'token';
   const ctx = { res: { cookie: jest.fn() } };
   generateCookie(data, name, ctx);

@@ -1,10 +1,8 @@
-import faker from 'faker';
-
 import { Chat } from '../graphql/chat/chat.modal';
 import { chatResolver } from '../graphql/chat/chat.resolver';
 import { isAuthenticated } from '../utils/isAuthenticated';
 import { selectedFields } from '../utils/selectedFields';
-import { FakeChat } from '../utils/fixtures';
+import { FakeChat, FakeObjectId } from '../utils/fixtures';
 
 const { chats } = chatResolver.Query;
 
@@ -23,7 +21,7 @@ test('should call isAuthenticated', () => {
   };
   Chat.find.mockImplementationOnce(chatMock.find);
 
-  const ctx = { req: { userId: faker.random.uuid() } };
+  const ctx = { req: { userId: FakeObjectId() } };
 
   chats(null, null, ctx, null);
 

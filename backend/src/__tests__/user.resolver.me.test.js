@@ -3,6 +3,7 @@ import faker from 'faker';
 import { userResolver } from '../graphql/user/user.resolver';
 import { User } from '../graphql/user/user.modal';
 import { selectedFields } from '../utils/selectedFields';
+import { FakeObjectId } from '../utils/fixtures';
 
 const { me } = userResolver.Query;
 
@@ -26,7 +27,7 @@ test('should call selectedFields', async () => {
   const selectMock = jest.fn();
   selectedFields.mockImplementation(selectMock);
 
-  const ctx = { req: { userId: 12345 } };
+  const ctx = { req: { userId: FakeObjectId() } };
   const info = { name: null };
   await me(null, null, ctx, info);
 
@@ -44,7 +45,7 @@ test('should get user via userId from req on ctx', async () => {
   const selected = '_id name';
   selectedFields.mockImplementation(() => selected);
 
-  const ctx = { req: { userId: 12345 } };
+  const ctx = { req: { userId: FakeObjectId() } };
   await me(null, null, ctx, null);
 
   expect(userMock.findById).toHaveBeenCalledWith(ctx.req.userId);
@@ -54,7 +55,7 @@ test('should get user via userId from req on ctx', async () => {
 
 test('should return user', async () => {
   const user = {
-    _id: 12345,
+    _id: FakeObjectId(),
     email: faker.internet.email(),
   };
 
@@ -65,7 +66,7 @@ test('should return user', async () => {
   };
   User.findById.mockImplementation(userMock.findById);
 
-  const ctx = { req: { userId: 12345 } };
+  const ctx = { req: { userId: FakeObjectId() } };
   const returnedUser = await me(null, null, ctx, null);
 
   expect(returnedUser).toEqual(user);
