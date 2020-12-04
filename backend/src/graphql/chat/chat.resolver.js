@@ -23,6 +23,7 @@ export const chatResolver = {
         participants: { $in: [ctx?.req?.userId] },
       })
         .select(selected)
+        .sort({ updatedAt: 'desc' })
         .lean();
 
       // Should return all found chats

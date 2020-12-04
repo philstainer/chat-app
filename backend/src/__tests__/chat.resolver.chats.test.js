@@ -17,6 +17,7 @@ test('should call isAuthenticated', () => {
   const chatMock = {
     find: jest.fn(() => chatMock),
     select: () => chatMock,
+    sort: () => chatMock,
     lean: () => 'chat',
   };
   Chat.find.mockImplementationOnce(chatMock.find);
@@ -35,6 +36,7 @@ test('should call selectedFields', async () => {
   const chatMock = {
     find: jest.fn(() => chatMock),
     select: () => chatMock,
+    sort: () => chatMock,
     lean: () => 'chat',
   };
   Chat.find.mockImplementationOnce(chatMock.find);
@@ -49,6 +51,7 @@ test('should get all chats for user via userId', async () => {
   const chatMock = {
     find: jest.fn(() => chatMock),
     select: () => chatMock,
+    sort: () => chatMock,
     lean: () => 'chat',
   };
   Chat.find.mockImplementationOnce(chatMock.find);
@@ -64,6 +67,7 @@ test('should return chats', async () => {
   const chatMock = {
     find: jest.fn(() => chatMock),
     select: () => chatMock,
+    sort: () => chatMock,
     lean: () => fakeChats,
   };
   Chat.find.mockImplementationOnce(chatMock.find);
