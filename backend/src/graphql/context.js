@@ -1,7 +1,5 @@
-import { PubSub } from 'apollo-server-express';
+export const context = ({ connection, ...ctx }) => {
+  if (connection) return connection.context;
 
-const pubsub = new PubSub();
-
-const context = (ctx) => ({ ...ctx, pubsub });
-
-export { context };
+  return { ...ctx };
+};
