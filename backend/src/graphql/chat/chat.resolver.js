@@ -1,9 +1,13 @@
-import { UserInputError } from 'apollo-server-express';
+import { UserInputError, withFilter } from 'apollo-server-express';
 
+import { pubsub } from '../pubsub';
 import { Chat } from './chat.modal';
 import { isAuthenticated } from '../../utils/isAuthenticated';
 import { selectedFields } from '../../utils/selectedFields';
-import { INVALID_PARTICIPANTS_ERROR } from '../../utils/constants';
+import {
+  INVALID_PARTICIPANTS_ERROR,
+  CHAT_CREATED,
+} from '../../utils/constants';
 
 export const chatResolver = {
   Query: {
@@ -42,7 +46,19 @@ export const chatResolver = {
         participants: [ctx?.req?.userId, ...participants],
       });
 
+      pubsub.publish(CHAT_CREATED, { chatCreated: createdChat });
+
       return createdChat;
+    },
+  },
+  Subscription: {
+    chatCreated: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator([CHAT_CREATED]),
+        (payload, variables, ctx) => {
+          return payload.chatCreated.participants.includes(ctx.userId);
+        }
+      ),
     },
   },
 };

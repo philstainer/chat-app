@@ -8,3 +8,6 @@ export const INVALID_PARTICIPANTS_ERROR = 'Participants cannot be empty';
 // Auth
 export const AUTH_LOGGED_IN_ERROR = 'You are already logged in';
 export const AUTH_LOGGED_OUT_ERROR = 'You must be logged in to do that';
+
+// Subscription Types
+export const CHAT_CREATED = 'CHAT_CREATED';
