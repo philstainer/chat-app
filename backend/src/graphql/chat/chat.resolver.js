@@ -2,7 +2,6 @@ import { UserInputError, withFilter } from 'apollo-server-express';
 
 import { pubsub } from '../pubsub';
 import { Chat } from './chat.modal';
-import { participantsLoader } from '../loaders/participants.loader';
 import { isAuthenticated } from '../../utils/isAuthenticated';
 import { selectedFields } from '../../utils/selectedFields';
 import {
@@ -70,7 +69,7 @@ export const chatResolver = {
 
   Chat: {
     participants: async (parent, args, ctx, info) => {
-      return participantsLoader.load(parent.participants);
+      return ctx.participantsLoader.load(parent.participants);
     },
   },
 };
