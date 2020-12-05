@@ -10,7 +10,7 @@ export const wsAuthentication = (webSocket) => {
   return new Promise((resolve, reject) => {
     const { cookie } = webSocket.upgradeReq.headers;
 
-    const cookies = cookie.split(';').reduce((obj, curr) => {
+    const cookies = cookie?.split(';').reduce((obj, curr) => {
       const [name, value] = curr.trim().split('=');
 
       return { ...obj, [name]: unescape(value) };
