@@ -2,6 +2,7 @@ import { UserInputError, withFilter } from 'apollo-server-express';
 
 import { pubsub } from '../pubsub';
 import { Chat } from './chat.modal';
+import { participantsLoader } from '../loaders/participants.loader';
 import { isAuthenticated } from '../../utils/isAuthenticated';
 import { selectedFields } from '../../utils/selectedFields';
 import {
@@ -23,7 +24,8 @@ export const chatResolver = {
         participants: { $in: [ctx?.req?.userId] },
       })
         .select(selected)
-        .sort({ updatedAt: 'desc' });
+        .sort({ updatedAt: 'desc' })
+        .lean();
 
       // Should return all found chats
       return foundChats;
@@ -68,12 +70,7 @@ export const chatResolver = {
 
   Chat: {
     participants: async (parent, args, ctx, info) => {
-      // Populate participants
-      const { participants } = await parent
-        .populate('participants')
-        .execPopulate();
-
-      return participants;
+      return participantsLoader.load(parent.participants);
     },
   },
 };
