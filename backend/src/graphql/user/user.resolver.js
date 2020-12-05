@@ -44,7 +44,7 @@ const userResolver = {
       const html = await ejs.renderFile(
         path.join(__dirname, '../../templates/confirm-account.ejs'),
         {
-          URL: `${ctx?.req?.protocol}://${ctx?.req?.get('host')}`,
+          URL: accessEnv('FRONTEND_URI'),
           CODE: createdUser.verifyToken,
         }
       );
@@ -132,7 +132,7 @@ const userResolver = {
         const html = await ejs.renderFile(
           path.join(__dirname, '../../templates/reset-password.ejs'),
           {
-            URL: `${ctx?.req?.protocol}://${ctx?.req?.get('host')}`,
+            URL: accessEnv('FRONTEND_URI'),
             TOKEN: resetToken,
           }
         );

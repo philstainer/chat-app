@@ -74,7 +74,9 @@ test('should send confirm email', async () => {
   );
 
   const from = faker.internet.email();
-  accessEnv.mockImplementationOnce(() => from);
+  accessEnv
+    .mockImplementationOnce(() => 'url')
+    .mockImplementationOnce(() => from);
 
   const sendEmailMock = jest.fn();
   sgMail.send.mockImplementationOnce(sendEmailMock);

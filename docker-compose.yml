@@ -23,6 +23,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       SENDGRID_API_KEY: ${SENDGRID_API_KEY}
       SENDGRID_API_FROM: ${SENDGRID_API_FROM}
+      FRONTEND_URI: ${FRONTEND_URI}
     volumes:
       - './backend:/app/backend'
       # - '/app/backend/node_modules/'
@@ -40,7 +41,7 @@ services:
     depends_on:
       - backend
     environment:
-      REACT_APP_API_URI: 'http://localhost:4000/graphql'
+      REACT_APP_BACKEND_HOST: ${BACKEND_URI}
     volumes:
       - './client:/app/client'
     ports:

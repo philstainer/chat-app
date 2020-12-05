@@ -70,7 +70,9 @@ test('should generate reset token with expiry and send reset email', async () =>
 
   // Mock from
   const from = faker.internet.email();
-  accessEnv.mockImplementationOnce(() => from);
+  accessEnv
+    .mockImplementationOnce(() => 'url')
+    .mockImplementationOnce(() => from);
 
   const args = { input: { email: faker.internet.email() } };
   await resetPasswordRequest(null, args, null, null);
