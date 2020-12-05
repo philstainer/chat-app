@@ -68,8 +68,13 @@ export const chatResolver = {
   },
 
   Chat: {
-    participants: async (parent, args, ctx, info) => {
+    participants: (parent, args, ctx, info) => {
       return ctx.participantsLoader.load(parent.participants);
+    },
+    lastMessage: (parent, args, ctx, info) => {
+      if (!parent?.lastMessage) return null;
+
+      return ctx.messageLoader.load(parent.lastMessage);
     },
   },
 };
