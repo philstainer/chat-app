@@ -13,7 +13,7 @@ type Mutation {
 }
 
 type Subscription {
-  messageAdded(input: MessageAddedInput!): Message!
+  messageAdded: Message!
 }
 
 input MessagesInput {
@@ -25,8 +25,4 @@ input MessagesInput {
 input MessageInput {
   chatId: ID!
   text: String!
-}
-
-input MessageAddedInput {
-  chatId: ID!
 }

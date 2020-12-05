@@ -11,6 +11,7 @@ import { MESSAGE_ADDED } from '../utils/constants';
 const { addMessage } = messageResolver.Mutation;
 
 jest.mock('../utils/isAuthenticated.js');
+jest.mock('../utils/isParticipant.js');
 jest.mock('../graphql/message/message.modal.js');
 jest.mock('../graphql/chat/chat.modal.js');
 jest.mock('../graphql/pubsub.js');

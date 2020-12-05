@@ -8,6 +8,7 @@ const { messages } = messageResolver.Query;
 
 jest.mock('../utils/isAuthenticated.js');
 jest.mock('../utils/selectedFields.js');
+jest.mock('../utils/isParticipant.js');
 jest.mock('../graphql/message/message.modal.js');
 
 test('should call isAuthenticated', async () => {

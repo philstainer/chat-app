@@ -6,12 +6,16 @@ import { Chat } from '../chat/chat.modal';
 import { isAuthenticated } from '../../utils/isAuthenticated';
 import { selectedFields } from '../../utils/selectedFields';
 import { MESSAGE_ADDED } from '../../utils/constants';
+import { isParticipant } from '../../utils/isParticipant';
 
 const messageResolver = {
   Query: {
     messages: async (parent, args, ctx, info) => {
       // Should be logged in
       isAuthenticated(ctx);
+
+      // Should be a participant in chat
+      await isParticipant(args?.input?.chatId, ctx?.req?.userId);
 
       // Should generate selectedFields via info
       const selected = selectedFields(info);
@@ -33,6 +37,9 @@ const messageResolver = {
     addMessage: async (parent, args, ctx, info) => {
       // Should be logged in
       isAuthenticated(ctx);
+
+      // Should be a participant in chat
+      await isParticipant(args?.input?.chatId, ctx?.req?.userId);
 
       // Should create new message
       const createdMessage = await Message.create({
@@ -58,10 +65,7 @@ const messageResolver = {
       subscribe: withFilter(
         () => pubsub.asyncIterator([MESSAGE_ADDED]),
         (payload, variables, ctx) => {
-          // Only send messages to chat
-          return (
-            payload.messageAdded.chatId.toString() === variables.input.chatId
-          );
+          return isParticipant(payload.messageAdded.chatId, ctx.userId);
         }
       ),
     },
