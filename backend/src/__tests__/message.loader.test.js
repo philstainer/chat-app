@@ -5,18 +5,20 @@ import { messageLoader } from '../graphql/loaders/message.loader';
 jest.mock('../graphql/message/message.modal.js');
 
 test('should return participants', async () => {
-  const foundMessage = FakeMessage();
+  const foundMessages = [FakeMessage()];
 
   const findMock = {
     find: jest.fn(() => findMock),
-    lean: jest.fn(() => [foundMessage]),
+    lean: jest.fn(() => foundMessages),
   };
   Message.find.mockImplementationOnce(findMock.find);
 
-  const result = await messageLoader.load(foundMessage._id);
+  const loader = messageLoader();
+
+  const result = await loader.loadMany([foundMessages[0]._id.toString()]);
 
   expect(findMock.find).toHaveBeenCalled();
   expect(findMock.lean).toHaveBeenCalled();
 
-  expect(result).toMatchObject(foundMessage);
+  expect(result).toMatchObject(foundMessages);
 });

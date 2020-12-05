@@ -1,25 +1,26 @@
 import { User } from '../graphql/user/user.modal';
 import { FakeUser } from '../utils/fixtures';
-import { participantsLoader } from '../graphql/loaders/participants.loader';
+import { userLoader } from '../graphql/loaders/user.loader';
 
 jest.mock('../graphql/user/user.modal.js');
 
 test('should filter out duplicates', async () => {
   const foundUsers = [FakeUser(), FakeUser()];
 
-  const parentMock = {
-    find: jest.fn(() => parentMock),
+  const findMock = {
+    find: jest.fn(() => findMock),
     lean: jest.fn(() => foundUsers),
   };
-  User.find.mockImplementationOnce(parentMock.find);
+  User.find.mockImplementationOnce(findMock.find);
 
   const participants = [
-    foundUsers[0]._id,
-    foundUsers[0]._id,
-    foundUsers[1]._id,
+    foundUsers[0]._id.toString(),
+    foundUsers[0]._id.toString(),
+    foundUsers[1]._id.toString(),
   ];
 
-  await participantsLoader.load(participants);
+  const loader = userLoader();
+  await loader.loadMany(participants);
 
   const expected = {
     _id: {
@@ -27,8 +28,8 @@ test('should filter out duplicates', async () => {
     },
   };
 
-  expect(parentMock.find).toHaveBeenCalledWith(expected);
-  expect(parentMock.lean).toHaveBeenCalled();
+  expect(findMock.find).toHaveBeenCalledWith(expected);
+  expect(findMock.lean).toHaveBeenCalled();
 });
 
 test('should return participants', async () => {
@@ -41,12 +42,13 @@ test('should return participants', async () => {
   User.find.mockImplementationOnce(parentMock.find);
 
   const participants = [
-    foundUsers[0]._id,
-    foundUsers[0]._id,
-    foundUsers[1]._id,
+    foundUsers[0]._id.toString(),
+    foundUsers[0]._id.toString(),
+    foundUsers[1]._id.toString(),
   ];
 
-  const result = await participantsLoader.load(participants);
+  const loader = userLoader();
+  const result = await loader.loadMany(participants);
 
   const expected = [foundUsers[0], foundUsers[0], foundUsers[1]];
 

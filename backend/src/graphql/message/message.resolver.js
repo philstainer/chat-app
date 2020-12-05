@@ -66,6 +66,11 @@ const messageResolver = {
       ),
     },
   },
+  Message: {
+    sender: (parent, args, ctx, info) => {
+      return ctx.userLoader.load(parent.sender.toString());
+    },
+  },
 };
 
 export { messageResolver };

@@ -9,12 +9,16 @@ test('should call loader', async () => {
   };
 
   const ctx = {
-    participantsLoader: {
-      load: jest.fn(),
+    userLoader: {
+      loadMany: jest.fn(),
     },
   };
 
   participants(parent, null, ctx, null);
 
-  expect(ctx.participantsLoader.load).toHaveBeenCalledWith(parent.participants);
+  const expected = [
+    parent.participants[0]._id.toString(),
+    parent.participants[1]._id.toString(),
+  ];
+  expect(ctx.userLoader.loadMany).toHaveBeenCalledWith(expected);
 });

@@ -1,7 +1,7 @@
-import { participantsLoader } from './participants.loader';
+import { userLoader } from './user.loader';
 import { messageLoader } from './message.loader';
 
-export const loaders = {
-  participantsLoader,
-  messageLoader,
-};
+export const loaders = () => ({
+  userLoader: userLoader(),
+  messageLoader: messageLoader(),
+});

@@ -68,8 +68,10 @@ export const chatResolver = {
   },
 
   Chat: {
-    participants: (parent, args, ctx, info) => {
-      return ctx.participantsLoader.load(parent.participants);
+    participants: async (parent, args, ctx, info) => {
+      return ctx.userLoader.loadMany(
+        parent.participants.map((id) => id.toString())
+      );
     },
     lastMessage: (parent, args, ctx, info) => {
       if (!parent?.lastMessage) return null;
