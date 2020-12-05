@@ -1,7 +1,11 @@
+import { withFilter } from 'apollo-server-express';
+
+import { pubsub } from '../pubsub';
 import { Message } from './message.modal';
 import { Chat } from '../chat/chat.modal';
 import { isAuthenticated } from '../../utils/isAuthenticated';
 import { selectedFields } from '../../utils/selectedFields';
+import { MESSAGE_ADDED } from '../../utils/constants';
 
 const messageResolver = {
   Query: {
@@ -42,8 +46,24 @@ const messageResolver = {
         $set: { lastMessage: createdMessage?._id },
       });
 
+      // Publish chat to subscriptions
+      pubsub.publish(MESSAGE_ADDED, { messageAdded: createdMessage });
+
       // Should return message
       return createdMessage;
+    },
+  },
+  Subscription: {
+    messageAdded: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator([MESSAGE_ADDED]),
+        (payload, variables, ctx) => {
+          // Only send messages to chat
+          return (
+            payload.messageAdded.chatId.toString() === variables.input.chatId
+          );
+        }
+      ),
     },
   },
 };

@@ -11,3 +11,4 @@ export const AUTH_LOGGED_OUT_ERROR = 'You must be logged in to do that';
 
 // Subscription Types
 export const CHAT_CREATED = 'CHAT_CREATED';
+export const MESSAGE_ADDED = 'MESSAGE_ADDED';

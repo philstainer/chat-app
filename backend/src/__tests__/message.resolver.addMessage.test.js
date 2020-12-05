@@ -5,12 +5,15 @@ import { Chat } from '../graphql/chat/chat.modal';
 import { messageResolver } from '../graphql/message/message.resolver';
 import { isAuthenticated } from '../utils/isAuthenticated';
 import { FakeObjectId, FakeMessage } from '../utils/fixtures';
+import { pubsub } from '../graphql/pubsub';
+import { MESSAGE_ADDED } from '../utils/constants';
 
 const { addMessage } = messageResolver.Mutation;
 
 jest.mock('../utils/isAuthenticated.js');
 jest.mock('../graphql/message/message.modal.js');
 jest.mock('../graphql/chat/chat.modal.js');
+jest.mock('../graphql/pubsub.js');
 
 test('should call isAuthenticated', async () => {
   const authMock = jest.fn();
@@ -46,6 +49,23 @@ test('should update chat with message id', async () => {
 
   expect(updateMock).toHaveBeenCalledWith(args.input.chatId, {
     $set: { lastMessage: fakeMessage._id },
+  });
+});
+
+test('should publish created message', async () => {
+  const fakeMessage = FakeMessage();
+  Message.create.mockImplementationOnce(() => fakeMessage);
+
+  const updateMock = jest.fn();
+  Chat.findByIdAndUpdate.mockImplementationOnce(updateMock);
+
+  const publishMock = jest.fn();
+  pubsub.publish.mockImplementationOnce(publishMock);
+
+  await addMessage(null, null, null, null);
+
+  expect(publishMock).toHaveBeenCalledWith(MESSAGE_ADDED, {
+    messageAdded: fakeMessage,
   });
 });
 
