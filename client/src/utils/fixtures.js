@@ -17,8 +17,8 @@ export const FakeUser = (extra) => ({
 
 export const FakeChat = (extra) => ({
   _id: faker.random.uuid(),
-  participants: [],
-  lastMessage: faker.lorem.sentence(5),
+  participants: [FakeUser(), FakeUser()],
+  lastMessage: FakeMessage(),
   createdAt: faker.date.recent(),
   updatedAt: faker.date.recent(),
   ...extra,
@@ -27,7 +27,7 @@ export const FakeChat = (extra) => ({
 export const FakeMessage = (extra) => ({
   _id: faker.random.uuid(),
   chatId: faker.random.uuid(),
-  body: faker.lorem.sentence(5),
+  text: faker.lorem.sentence(5),
   sender: faker.random.uuid(),
   deliveredTo: [],
   seenBy: [],
