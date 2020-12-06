@@ -25,7 +25,7 @@ const messageResolver = {
         chatId: args?.input?.chatId,
       })
         .select(selected)
-        .sort({ createdAt: 'desc' })
+        .sort({ createdAt: 'asc' })
         .limit(args?.input?.limit || 20)
         .skip(args?.input?.skip || 0)
         .lean();
