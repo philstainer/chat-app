@@ -1,10 +1,9 @@
-import { ApolloClient, InMemoryCache, HttpLink, split } from '@apollo/client';
+import { ApolloClient, HttpLink, split } from '@apollo/client';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
+import { cache } from './cache';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
-
-export const cache = new InMemoryCache();
 
 const BACKEND_HOST = process.env.REACT_APP_BACKEND_HOST;
 
