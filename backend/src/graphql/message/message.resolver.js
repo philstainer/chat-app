@@ -25,12 +25,12 @@ const messageResolver = {
         chatId: args?.input?.chatId,
       })
         .select(selected)
-        .sort({ createdAt: 'asc' })
+        .sort({ createdAt: 'desc' })
         .limit(args?.input?.limit || 20)
         .skip(args?.input?.skip || 0)
         .lean();
 
-      return foundMessages;
+      return foundMessages.reverse();
     },
   },
   Mutation: {

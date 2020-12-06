@@ -21,7 +21,7 @@ test('should call isAuthenticated', async () => {
     sort: () => messageMock,
     limit: () => messageMock,
     skip: () => messageMock,
-    lean: () => 'messages',
+    lean: () => [],
   };
   Message.find.mockImplementationOnce(messageMock.find);
 
@@ -41,7 +41,7 @@ test('should call selectedFields', async () => {
     sort: () => messageMock,
     limit: () => messageMock,
     skip: () => messageMock,
-    lean: () => 'messages',
+    lean: () => [],
   };
   Message.find.mockImplementationOnce(messageMock.find);
 
@@ -58,7 +58,7 @@ test('should get all messages for chat', async () => {
     sort: () => messageMock,
     limit: jest.fn(() => messageMock),
     skip: jest.fn(() => messageMock),
-    lean: () => 'messages',
+    lean: () => [],
   };
   Message.find.mockImplementationOnce(messageMock.find);
 
@@ -70,7 +70,7 @@ test('should get all messages for chat', async () => {
   expect(messageMock.skip).toHaveBeenCalledWith(args.input.skip);
 });
 
-test('should return messages', async () => {
+test('should return reversed order messages', async () => {
   const fakeMessages = [FakeMessage(), FakeMessage()];
 
   const messageMock = {
@@ -79,12 +79,12 @@ test('should return messages', async () => {
     sort: () => messageMock,
     limit: () => messageMock,
     skip: () => messageMock,
-    lean: () => fakeMessages,
+    lean: () => [...fakeMessages],
   };
   Message.find.mockImplementationOnce(messageMock.find);
 
   const args = { input: { chatId: FakeObjectId() } };
   const result = await messages(null, args, null, null);
 
-  expect(result).toBe(fakeMessages);
+  expect(result).toEqual(fakeMessages.reverse());
 });
