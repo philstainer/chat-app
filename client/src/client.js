@@ -2,6 +2,8 @@ import { ApolloClient, InMemoryCache, HttpLink, split } from '@apollo/client';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 export const cache = new InMemoryCache();
 
 const BACKEND_HOST = process.env.REACT_APP_BACKEND_HOST;
@@ -33,4 +35,5 @@ const splitLink = split(
 export const client = new ApolloClient({
   link: splitLink,
   cache,
+  connectToDevTools: isDevelopment,
 });
