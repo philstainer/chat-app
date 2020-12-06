@@ -45,6 +45,7 @@ export const GlobalStyle = createGlobalStyle`
   select,
   textarea {
     font-family: inherit;
+    font-size: inherit;
     color: inherit;
   }
 `;
