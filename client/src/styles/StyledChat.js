@@ -6,26 +6,25 @@ export const StyledChat = styled.div``;
 StyledChat.Wrapper = styled.div`
   display: flex;
   overflow: hidden;
-
-  background: ${({ theme }) => theme?.backgroundLight};
 `;
 StyledChat.Wrapper.displayName = 'StyledChat.Wrapper';
 
 StyledChat.Left = styled.div`
   height: 100vh;
-  flex: 0 0 100%;
+  flex: 0 0 100vw;
   display: flex;
   flex-direction: column;
+  background: ${({ theme }) => theme?.backgroundLight};
 `;
 StyledChat.Left.displayName = 'StyledChat.Left';
 
 StyledChat.Right = styled.div`
   height: 100vh;
-  flex: 0 0 100%;
+  flex: 0 0 100vw;
   display: flex;
   flex-direction: column;
-
-  /* transform: translate(-50%, 0%); */
+  background: ${({ theme }) => theme?.backgroundLight};
+  transform: translateX(-100vw);
 `;
 StyledChat.Right.displayName = 'StyledChat.Right';
 
