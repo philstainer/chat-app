@@ -10,8 +10,9 @@ const error = 'rgba(232, 49, 81, 1)';
 
 const globalStyles = {
   fontSizes: {
-    small: rem('12px'),
-    medium: rem('14px'),
+    xSmall: rem('12px'),
+    small: rem('14px'),
+    medium: rem('16px'),
     large: rem('28px'),
     xLarge: rem('50px'),
   },

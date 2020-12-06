@@ -28,14 +28,14 @@ StyledForm.Input = styled.input`
 StyledForm.displayName = 'StyledForm.Input';
 
 StyledForm.InputError = styled.p`
-  font-size: ${({ theme }) => theme?.fontSizes?.small};
+  font-size: ${({ theme }) => theme?.fontSizes?.xSmall};
   color: ${({ theme }) => theme?.error};
   margin-top: ${rem('5px')};
 `;
 StyledForm.InputError.displayName = 'StyledForm.InputError';
 
 StyledForm.Label = styled.label`
-  font-size: ${({ theme }) => theme?.fontSizes?.small};
+  font-size: ${({ theme }) => theme?.fontSizes?.xSmall};
   font-weight: ${({ theme }) => theme?.fontWeights?.bold};
   text-transform: uppercase;
   margin-top: ${rem('20px')};

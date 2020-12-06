@@ -33,7 +33,7 @@ StyledPage.Actions.displayName = 'StyledPage.Actions';
 StyledPage.Action = styled(Link)`
   display: flex;
   align-items: center;
-  font-size: ${({ theme }) => theme?.fontSizes?.small};
+  font-size: ${({ theme }) => theme?.fontSizes?.xSmall};
   color: ${({ theme, color }) => color && `${theme?.[color]} !important`};
 
   & > svg {
