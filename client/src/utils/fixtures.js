@@ -28,7 +28,7 @@ export const FakeMessage = (extra) => ({
   _id: faker.random.uuid(),
   chatId: faker.random.uuid(),
   text: faker.lorem.sentence(5),
-  sender: faker.random.uuid(),
+  sender: FakeUser(),
   deliveredTo: [],
   seenBy: [],
   active: faker.random.boolean(),
