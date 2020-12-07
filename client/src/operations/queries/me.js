@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 
 export const ME = gql`
   query me {
@@ -6,7 +6,13 @@ export const ME = gql`
       _id
       email
       image
-      confirmed
+      verified
     }
   }
 `;
+
+export const useMe = () => {
+  const query = useQuery(ME);
+
+  return query;
+};

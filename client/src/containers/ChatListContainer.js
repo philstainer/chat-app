@@ -28,8 +28,8 @@ export const ChatListContainer = () => {
   if (error) return <div>An error occurred {JSON.stringify(error)}</div>;
 
   return (
-    <StyledChat.Chats>
+    <StyledChat.Body>
       <ChatList chats={data.chats} setActiveChat={setActiveChat} />
-    </StyledChat.Chats>
+    </StyledChat.Body>
   );
 };

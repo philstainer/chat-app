@@ -3,6 +3,7 @@ import { rem } from 'polished';
 
 export const StyledChat = styled.div``;
 
+// Layout
 StyledChat.Wrapper = styled.div`
   display: flex;
   overflow: hidden;
@@ -36,12 +37,18 @@ StyledChat.Header = styled.div`
 `;
 StyledChat.Header.displayName = 'StyledChat.Header';
 
-StyledChat.Chats = styled.div`
+StyledChat.Body = styled.div`
   flex: 1;
   overflow-y: auto;
 `;
-StyledChat.Chats.displayName = 'StyledChat.Chats';
+StyledChat.Body.displayName = 'StyledChat.Body';
 
+StyledChat.Footer = styled.div`
+  flex: 0 0 60px;
+`;
+StyledChat.Footer.displayName = 'StyledChat.Footer';
+
+// Chats
 StyledChat.Chat = styled.div`
   display: flex;
 
@@ -84,3 +91,5 @@ StyledChat.ChatContent = styled.div`
   flex: 1;
 `;
 StyledChat.ChatContent.displayName = 'StyledChat.ChatContent';
+
+// Chat

@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^12.1.10",
     "framer-motion": "^2.9.4",
     "graphql": "^15.4.0",
+    "moment": "^2.29.1",
     "polished": "^4.0.5",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",

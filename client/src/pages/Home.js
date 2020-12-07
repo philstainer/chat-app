@@ -1,7 +1,13 @@
-import { ChatListContainer } from '../containers/ChatListContainer';
+import { useReactiveVar } from '@apollo/client';
+import { activeChat } from '../cache';
+
 import { StyledChat } from '../styles/StyledChat';
+import { ChatListContainer } from '../containers/ChatListContainer';
+import { ChatContainer } from '../containers/ChatContainer';
 
 export const Home = () => {
+  const rActiveChat = useReactiveVar(activeChat);
+
   return (
     <StyledChat.Wrapper>
       <StyledChat.Left>
@@ -9,9 +15,12 @@ export const Home = () => {
         <ChatListContainer />
       </StyledChat.Left>
 
-      <StyledChat.Right>
-        <StyledChat.Header>Menu</StyledChat.Header>
-      </StyledChat.Right>
+      {rActiveChat && (
+        <StyledChat.Right>
+          <StyledChat.Header>Menu 2</StyledChat.Header>
+          <ChatContainer chatId={rActiveChat} />
+        </StyledChat.Right>
+      )}
     </StyledChat.Wrapper>
   );
 };
