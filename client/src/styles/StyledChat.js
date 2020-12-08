@@ -30,6 +30,8 @@ StyledChat.Right = styled.div`
 StyledChat.Right.displayName = 'StyledChat.Right';
 
 StyledChat.Header = styled.div`
+  display: flex;
+  align-items: center;
   flex: 0 0 60px;
   background: ${({ theme }) => theme?.background};
   border-bottom: 1px solid ${({ theme }) => theme?.border};

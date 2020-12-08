@@ -3,6 +3,7 @@ import { activeChat } from '../cache';
 
 import { StyledChat } from '../styles/StyledChat';
 import { ChatListContainer } from '../containers/ChatListContainer';
+import { ChatHeaderContainer } from '../containers/ChatHeaderContainer';
 import { ChatContainer } from '../containers/ChatContainer';
 import { ChatFooterContainer } from '../containers/ChatFooterContainer';
 
@@ -18,7 +19,7 @@ export const Home = () => {
 
       {rActiveChat && (
         <StyledChat.Right>
-          <StyledChat.Header>Menu 2</StyledChat.Header>
+          <ChatHeaderContainer />
           <ChatContainer chatId={rActiveChat} />
           <ChatFooterContainer />
         </StyledChat.Right>
