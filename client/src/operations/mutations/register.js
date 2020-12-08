@@ -7,7 +7,7 @@ export const REGISTER = gql`
       _id
       email
       image
-      confirmed
+      verified
     }
   }
 `;

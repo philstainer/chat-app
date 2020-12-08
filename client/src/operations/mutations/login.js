@@ -7,7 +7,7 @@ export const LOGIN = gql`
       _id
       email
       image
-      confirmed
+      verified
     }
   }
 `;

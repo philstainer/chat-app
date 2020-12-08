@@ -7,7 +7,7 @@ export const RESET = gql`
       _id
       email
       image
-      confirmed
+      verified
     }
   }
 `;

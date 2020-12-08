@@ -111,7 +111,7 @@ test('should update local cache', async () => {
   expect(updatedUserCache).toHaveProperty('_id', fakeUser._id);
   expect(updatedUserCache).toHaveProperty('email', fakeUser.email);
   expect(updatedUserCache).toHaveProperty('image', fakeUser.image);
-  expect(updatedUserCache).toHaveProperty('confirmed', fakeUser.confirmed);
+  expect(updatedUserCache).toHaveProperty('verified', fakeUser.verified);
 });
 
 test('should redirect after mutation', async () => {

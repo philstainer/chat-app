@@ -89,7 +89,7 @@ test('should call reset mutation on form submit, update cache and redirect on su
   expect(updatedUserCache).toHaveProperty('_id', fakeUser._id);
   expect(updatedUserCache).toHaveProperty('email', fakeUser.email);
   expect(updatedUserCache).toHaveProperty('image', fakeUser.image);
-  expect(updatedUserCache).toHaveProperty('confirmed', fakeUser.confirmed);
+  expect(updatedUserCache).toHaveProperty('verified', fakeUser.verified);
 
   expect(history.location.pathname).toEqual('/');
 });
