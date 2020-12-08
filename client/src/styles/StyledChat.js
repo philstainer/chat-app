@@ -45,6 +45,11 @@ StyledChat.Body.displayName = 'StyledChat.Body';
 
 StyledChat.Footer = styled.div`
   flex: 0 0 60px;
+  display: flex;
+
+  padding: ${rem('10px')} ${rem('20px')};
+  justify-content: space-between;
+  align-items: center;
 `;
 StyledChat.Footer.displayName = 'StyledChat.Footer';
 

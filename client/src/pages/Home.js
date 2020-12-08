@@ -4,6 +4,7 @@ import { activeChat } from '../cache';
 import { StyledChat } from '../styles/StyledChat';
 import { ChatListContainer } from '../containers/ChatListContainer';
 import { ChatContainer } from '../containers/ChatContainer';
+import { ChatFooterContainer } from '../containers/ChatFooterContainer';
 
 export const Home = () => {
   const rActiveChat = useReactiveVar(activeChat);
@@ -19,6 +20,7 @@ export const Home = () => {
         <StyledChat.Right>
           <StyledChat.Header>Menu 2</StyledChat.Header>
           <ChatContainer chatId={rActiveChat} />
+          <ChatFooterContainer />
         </StyledChat.Right>
       )}
     </StyledChat.Wrapper>
