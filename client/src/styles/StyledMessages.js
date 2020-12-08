@@ -6,11 +6,13 @@ export const StyledMessages = styled.div`
   flex-direction: column;
   padding: ${rem('20px')};
 `;
+StyledMessages.displayName = 'StyledMessages';
 
 StyledMessages.Text = styled.div`
   padding: ${rem('5px')};
   font-size: ${({ theme }) => theme?.fontSizes?.small};
 `;
+StyledMessages.Text.displayName = 'StyledMessages.Text';
 
 StyledMessages.Date = styled.div`
   font-size: ${rem('10px')};
@@ -18,6 +20,7 @@ StyledMessages.Date = styled.div`
   align-self: flex-end;
   opacity: 0.8;
 `;
+StyledMessages.Date.displayName = 'StyledMessages.Date';
 
 StyledMessages.Message = styled.div`
   display: flex;
@@ -52,3 +55,4 @@ StyledMessages.Message = styled.div`
     ${({ isMe }) => isMe && 'align-self: flex-end;'};
   }
 `;
+StyledMessages.Message.displayName = 'StyledMessages.Message';
