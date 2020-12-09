@@ -1,28 +1,26 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
 import { activeChat } from '../cache';
 import { ChatHeaderContainer } from '../containers/ChatHeaderContainer';
 import { FakeChat } from '../utils/fixtures';
 
-test('should render back arrow', async () => {
-  render(<ChatHeaderContainer />);
-
-  const svg = screen.getByTestId('goBack');
-
-  expect(svg).toBeInTheDocument();
-});
-
-test('should set activeChat to null on back arrow click', async () => {
+test('should render header', async () => {
   const fakeChat = FakeChat();
 
-  activeChat(fakeChat._id);
+  activeChat(fakeChat);
 
   render(<ChatHeaderContainer />);
 
-  expect(activeChat()).toBe(fakeChat._id);
+  const arrow = screen.getByTestId('arrow');
+  const video = screen.getByTestId('video');
+  const phone = screen.getByTestId('phone');
 
-  const svg = screen.getByTestId('goBack');
-  fireEvent.click(svg);
+  const image = screen.getByRole('img', { name: /participants/i });
+  const email = screen.getByTestId('email');
 
-  expect(activeChat()).toBeNull();
+  expect(arrow).toBeInTheDocument();
+  expect(video).toBeInTheDocument();
+  expect(phone).toBeInTheDocument();
+  expect(image).toBeInTheDocument();
+  expect(email).toBeInTheDocument();
 });

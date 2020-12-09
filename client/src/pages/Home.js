@@ -15,9 +15,7 @@ export const Home = () => {
       <$App>
         <$App.Header>Menu</$App.Header>
 
-        <$App.Content>
-          <ChatListContainer />
-        </$App.Content>
+        <ChatListContainer />
       </$App>
 
       {rActiveChat && (

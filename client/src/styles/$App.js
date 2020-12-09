@@ -30,7 +30,7 @@ $App.Header = styled.div`
   flex: 0 0 60px;
   background: ${({ theme }) => theme?.background};
   border-bottom: 1px solid ${({ theme }) => theme?.border};
-  padding: ${rem('20px')};
+  padding: ${rem('10px')} ${rem('20px')};
 `;
 $App.Header.displayName = '$App.Header';
 

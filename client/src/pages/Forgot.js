@@ -1,6 +1,5 @@
-import { ArrowLeft } from 'react-feather';
-
 import { $Page } from '../styles/$Page';
+import { $Icons } from '../styles/$Icons';
 import { ForgotFormContainer } from '../containers/ForgotFormContainer';
 
 export const Forgot = () => {
@@ -12,7 +11,7 @@ export const Forgot = () => {
 
       <$Page.Actions>
         <$Page.Action to="/login">
-          <ArrowLeft size={24} />
+          <$Icons.ArrowLeft size={24} />
           BACK
         </$Page.Action>
       </$Page.Actions>
