@@ -1,28 +1,28 @@
 import styled from 'styled-components';
 import { rem } from 'polished';
 
-export const StyledMessages = styled.div`
+export const $Messages = styled.div`
   display: flex;
   flex-direction: column;
   padding: ${rem('20px')};
 `;
-StyledMessages.displayName = 'StyledMessages';
+$Messages.displayName = '$Messages';
 
-StyledMessages.Text = styled.div`
+$Messages.Text = styled.div`
   padding: ${rem('5px')};
   font-size: ${({ theme }) => theme?.fontSizes?.small};
 `;
-StyledMessages.Text.displayName = 'StyledMessages.Text';
+$Messages.Text.displayName = '$Messages.Text';
 
-StyledMessages.Date = styled.div`
+$Messages.Date = styled.div`
   font-size: ${rem('10px')};
   margin-left: 5px;
   align-self: flex-end;
   opacity: 0.8;
 `;
-StyledMessages.Date.displayName = 'StyledMessages.Date';
+$Messages.Date.displayName = '$Messages.Date';
 
-StyledMessages.Message = styled.div`
+$Messages.Message = styled.div`
   display: flex;
   flex-direction: row;
   margin-bottom: ${rem('15px')};
@@ -42,7 +42,7 @@ StyledMessages.Message = styled.div`
         background: ${theme?.highlight};
         color: ${theme?.white};`};
 
-  /* & > ${StyledMessages.Text} {
+  /* & > ${$Messages.Text} {
     ${({ theme, isMe }) =>
     isMe &&
     `border-bottom-left-radius: 10px;
@@ -51,8 +51,8 @@ StyledMessages.Message = styled.div`
         color: ${theme?.white};`};
   } */
 
-  & > ${StyledMessages.Date} {
+  & > ${$Messages.Date} {
     ${({ isMe }) => isMe && 'align-self: flex-end;'};
   }
 `;
-StyledMessages.Message.displayName = 'StyledMessages.Message';
+$Messages.Message.displayName = '$Messages.Message';

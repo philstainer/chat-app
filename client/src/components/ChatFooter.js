@@ -1,11 +1,8 @@
 import PropTypes from 'prop-types';
 import { Send } from 'react-feather';
 
-import {
-  StyledInput,
-  StyledPaperclip,
-  StyledSend,
-} from '../styles/StyledChatFooter';
+import { $App } from '../styles/$App';
+import { $Input, $Paperclip, $Send } from '../styles/$ChatFooter';
 
 export const ChatFooter = ({
   text,
@@ -16,9 +13,9 @@ export const ChatFooter = ({
   inputRef,
 }) => {
   return (
-    <>
-      <StyledPaperclip size={24} />
-      <StyledInput
+    <$App.Footer>
+      <$Paperclip size={24} />
+      <$Input
         type="text"
         value={text}
         onChange={handleSetText}
@@ -27,10 +24,10 @@ export const ChatFooter = ({
         ref={inputRef}
         autoFocus
       />
-      <StyledSend onClick={handleAddMessage} disabled={isSubmitting}>
+      <$Send onClick={handleAddMessage} disabled={isSubmitting}>
         <Send size={18} />
-      </StyledSend>
-    </>
+      </$Send>
+    </$App.Footer>
   );
 };
 

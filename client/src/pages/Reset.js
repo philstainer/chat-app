@@ -1,22 +1,22 @@
 import { ArrowLeft } from 'react-feather';
 
-import { StyledPage } from '../styles/StyledPage';
+import { $Page } from '../styles/$Page';
 import { ResetFormContainer } from '../containers/ResetFormContainer';
 
 export const Reset = () => {
   return (
-    <StyledPage>
-      <StyledPage.Title size="large">Reset Password</StyledPage.Title>
+    <$Page>
+      <$Page.Title size="large">Reset Password</$Page.Title>
 
       <ResetFormContainer />
 
-      <StyledPage.Actions>
-        <StyledPage.Action to="/login">
+      <$Page.Actions>
+        <$Page.Action to="/login">
           <ArrowLeft size={24} />
           BACK
-        </StyledPage.Action>
-      </StyledPage.Actions>
-    </StyledPage>
+        </$Page.Action>
+      </$Page.Actions>
+    </$Page>
   );
 };
 

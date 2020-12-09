@@ -1,7 +1,6 @@
 import { createRef, useCallback, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
 
-import { StyledChat } from '../styles/StyledChat';
 import { ChatFooter } from '../components/ChatFooter';
 
 import { useAddMessage } from '../operations/mutations/addMessage';
@@ -12,7 +11,7 @@ const inputRef = createRef();
 export const ChatFooterContainer = () => {
   const { mutate, loading } = useAddMessage();
 
-  const chatId = useReactiveVar(activeChat);
+  const rActiveChat = useReactiveVar(activeChat);
   const [text, setText] = useState('');
 
   const handleAddMessage = useCallback(async () => {
@@ -20,27 +19,25 @@ export const ChatFooterContainer = () => {
     if (text === '') return;
 
     try {
-      await mutate({ variables: { messageInput: { chatId, text } } });
+      await mutate({
+        variables: { messageInput: { chatId: rActiveChat?._id, text } },
+      });
       setText('');
       inputRef.current?.focus();
-    } catch (error) {
-      console.log(error);
-    }
-  }, [mutate, chatId, text]);
+    } catch (error) {}
+  }, [mutate, rActiveChat, text]);
 
-  const handleSetText = (e) => setText(e.target.value);
-  const handleEnter = (e) => e.key === 'Enter' && handleAddMessage();
+  const handleSetText = e => setText(e.target.value);
+  const handleEnter = e => e.key === 'Enter' && handleAddMessage();
 
   return (
-    <StyledChat.Footer>
-      <ChatFooter
-        handleAddMessage={handleAddMessage}
-        isSubmitting={loading}
-        text={text}
-        handleSetText={handleSetText}
-        handleEnter={handleEnter}
-        inputRef={inputRef}
-      />
-    </StyledChat.Footer>
+    <ChatFooter
+      handleAddMessage={handleAddMessage}
+      isSubmitting={loading}
+      text={text}
+      handleSetText={handleSetText}
+      handleEnter={handleEnter}
+      inputRef={inputRef}
+    />
   );
 };

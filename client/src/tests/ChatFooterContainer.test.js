@@ -48,7 +48,7 @@ test('should call mutation and reset text', async () => {
   const fakeChat = FakeChat();
   const text = 'Hello, John!';
 
-  activeChat(fakeChat._id);
+  activeChat(fakeChat);
 
   const mutationMock = {
     request: {

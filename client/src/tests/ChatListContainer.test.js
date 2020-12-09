@@ -102,5 +102,5 @@ test('should set active chat onClick', async () => {
 
   fireEvent.click(chat);
 
-  expect(activeChat()).toBe(fakeChat._id);
+  expect(activeChat()._id).toBe(fakeChat._id);
 });

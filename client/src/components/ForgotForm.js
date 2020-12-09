@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-import { StyledForm } from '../styles/StyledForm';
+import { $Form } from '../styles/$Form';
 import { Button } from './Button';
 
 const schema = yup.object().shape({
@@ -21,21 +21,21 @@ export const ForgotForm = ({ onSubmit }) => {
   const { isSubmitting } = formState;
 
   return (
-    <StyledForm onSubmit={handleSubmit(onSubmit)}>
-      <StyledForm.Label htmlFor="email">EMAIL</StyledForm.Label>
-      <StyledForm.Input
+    <$Form onSubmit={handleSubmit(onSubmit)}>
+      <$Form.Label htmlFor="email">EMAIL</$Form.Label>
+      <$Form.Input
         id="email"
         name="email"
         type="text"
         ref={register}
         data-testid="email"
       />
-      <StyledForm.InputError>{errors.email?.message}</StyledForm.InputError>
+      <$Form.InputError>{errors.email?.message}</$Form.InputError>
 
       <Button type="submit" loading={isSubmitting}>
         Send reset
       </Button>
-    </StyledForm>
+    </$Form>
   );
 };
 

@@ -4,7 +4,8 @@ import { Button } from '../components/Button';
 test('should render button', async () => {
   render(<Button>Add</Button>);
 
-  expect(screen.getByTestId('StyledButton')).toBeInTheDocument();
+  const button = screen.getByRole('button', { name: /add/i });
+  expect(button).toBeInTheDocument();
 });
 
 test('should render button with props', async () => {
@@ -12,7 +13,8 @@ test('should render button with props', async () => {
 
   render(<Button onClick={handleClick}>Add</Button>);
 
-  fireEvent.click(screen.getByTestId('StyledButton'));
+  const button = screen.getByRole('button', { name: /add/i });
+  fireEvent.click(button);
 
   expect(handleClick).toHaveBeenCalled();
 });
@@ -20,6 +22,6 @@ test('should render button with props', async () => {
 test('should handle loading prop', async () => {
   render(<Button loading={true}>Add</Button>);
 
-  expect(screen.getByTestId('StyledButton')).toBeDisabled();
-  expect(screen.getByTestId('StyledButton.Loader')).toBeInTheDocument();
+  const loader = screen.getByTestId('$Button.Loader');
+  expect(loader).toBeInTheDocument();
 });

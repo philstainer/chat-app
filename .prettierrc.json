@@ -7,5 +7,6 @@
   "tabWidth": 2,
   "bracketSpacing": true,
   "proseWrap": "always",
-  "endOfLine": "lf"
+  "endOfLine": "lf",
+  "arrowParens": "avoid"
 }

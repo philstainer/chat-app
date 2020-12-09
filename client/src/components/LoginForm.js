@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-import { StyledForm } from '../styles/StyledForm';
+import { $Form } from '../styles/$Form';
 import { Button } from './Button';
 
 const schema = yup.object().shape({
@@ -22,24 +22,24 @@ export const LoginForm = ({ onSubmit }) => {
   const { isSubmitting } = formState;
 
   return (
-    <StyledForm onSubmit={handleSubmit(onSubmit)}>
-      <StyledForm.Label htmlFor="email">EMAIL</StyledForm.Label>
-      <StyledForm.Input id="email" name="email" type="text" ref={register} />
-      <StyledForm.InputError>{errors.email?.message}</StyledForm.InputError>
+    <$Form onSubmit={handleSubmit(onSubmit)}>
+      <$Form.Label htmlFor="email">EMAIL</$Form.Label>
+      <$Form.Input id="email" name="email" type="text" ref={register} />
+      <$Form.InputError>{errors.email?.message}</$Form.InputError>
 
-      <StyledForm.Label htmlFor="password">PASSWORD</StyledForm.Label>
-      <StyledForm.Input
+      <$Form.Label htmlFor="password">PASSWORD</$Form.Label>
+      <$Form.Input
         id="password"
         name="password"
         type="password"
         ref={register}
       />
-      <StyledForm.InputError>{errors.password?.message}</StyledForm.InputError>
+      <$Form.InputError>{errors.password?.message}</$Form.InputError>
 
       <Button type="submit" loading={isSubmitting}>
         Login
       </Button>
-    </StyledForm>
+    </$Form>
   );
 };
 

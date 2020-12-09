@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { rem, opacify } from 'polished';
 
-export const StyledForm = styled.form`
+export const $Form = styled.form`
   display: flex;
   flex-direction: column;
   margin: ${rem('50px')} 0;
@@ -10,9 +10,9 @@ export const StyledForm = styled.form`
     margin-top: ${rem('50px')};
   }
 `;
-StyledForm.displayName = 'StyledForm';
+$Form.displayName = '$Form';
 
-StyledForm.Input = styled.input`
+$Form.Input = styled.input`
   padding: ${rem('12px')} ${rem('10px')};
   border: 1px solid ${({ theme }) => theme?.border};
   border-radius: 2px;
@@ -25,20 +25,20 @@ StyledForm.Input = styled.input`
       theme?.border && opacify(0.2, theme?.border)};
   }
 `;
-StyledForm.displayName = 'StyledForm.Input';
+$Form.displayName = '$Form.Input';
 
-StyledForm.InputError = styled.p`
+$Form.InputError = styled.p`
   font-size: ${({ theme }) => theme?.fontSizes?.xSmall};
   color: ${({ theme }) => theme?.error};
   margin-top: ${rem('5px')};
 `;
-StyledForm.InputError.displayName = 'StyledForm.InputError';
+$Form.InputError.displayName = '$Form.InputError';
 
-StyledForm.Label = styled.label`
+$Form.Label = styled.label`
   font-size: ${({ theme }) => theme?.fontSizes?.xSmall};
   font-weight: ${({ theme }) => theme?.fontWeights?.bold};
   text-transform: uppercase;
   margin-top: ${rem('20px')};
   margin-bottom: ${rem('5px')};
 `;
-StyledForm.displayName = 'StyledForm.Label';
+$Form.displayName = '$Form.Label';

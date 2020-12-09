@@ -7,11 +7,14 @@ import { ME } from '../operations/queries/me';
 import { MESSAGES } from '../operations/queries/messages';
 import { MESSAGE_ADDED } from '../operations/subscriptions/messageAdded';
 import { ChatContainer } from '../containers/ChatContainer';
+import { activeChat } from '../cache';
 
 window.HTMLElement.prototype.scrollIntoView = function () {};
 
 test('should fetch me and messages on mount', async () => {
   const fakeChat = FakeChat();
+
+  activeChat(fakeChat);
 
   const meMock = {
     request: {
@@ -42,7 +45,7 @@ test('should fetch me and messages on mount', async () => {
       mocks={[meMock, messagesMock, subscriptionMock]}
       addTypename={false}
     >
-      <ChatContainer chatId={fakeChat._id} />
+      <ChatContainer />
     </MockedProvider>
   );
 
@@ -59,6 +62,8 @@ test('should render messages correctly', async () => {
     FakeMessage({ sender: fakeUsers[0] }),
     FakeMessage({ sender: fakeUsers[1] }),
   ];
+
+  activeChat(fakeChat);
 
   const meMock = {
     request: {
@@ -89,7 +94,7 @@ test('should render messages correctly', async () => {
       mocks={[meMock, messagesMock, subscriptionMock]}
       addTypename={false}
     >
-      <ChatContainer chatId={fakeChat._id} />
+      <ChatContainer />
     </MockedProvider>
   );
 

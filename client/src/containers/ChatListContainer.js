@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 
 import { activeChat } from '../cache';
 import { ChatList } from '../components/ChatList';
-import { StyledChat } from '../styles/StyledChat';
 
 import { useChats } from '../operations/queries/chats';
 import {
@@ -10,7 +9,7 @@ import {
   chatUpdateQuery,
 } from '../operations/subscriptions/chatCreated';
 
-const setActiveChat = (id) => activeChat(id);
+const setActiveChat = chat => activeChat(chat);
 
 export const ChatListContainer = () => {
   const { data, error, loading, subscribeToMore } = useChats();
@@ -27,9 +26,5 @@ export const ChatListContainer = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>An error occurred {JSON.stringify(error)}</div>;
 
-  return (
-    <StyledChat.Body>
-      <ChatList chats={data.chats} setActiveChat={setActiveChat} />
-    </StyledChat.Body>
-  );
+  return <ChatList chats={data.chats} setActiveChat={setActiveChat} />;
 };

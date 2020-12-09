@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { rem } from 'polished';
 
-export const StyledPage = styled.div`
+export const $Page = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -11,26 +11,26 @@ export const StyledPage = styled.div`
   max-height: 100vh;
   padding: ${rem('30px')};
 `;
-StyledPage.displayName = 'StyledPage';
+$Page.displayName = '$Page';
 
-StyledPage.Title = styled.h1`
+$Page.Title = styled.h1`
   font-size: ${({ theme, size }) =>
     size ? theme?.fontSizes?.[size] : theme?.fontSizes?.xLarge};
 `;
-StyledPage.Title.displayName = 'StyledPage.Title';
+$Page.Title.displayName = '$Page.Title';
 
-StyledPage.Description = styled.p`
+$Page.Description = styled.p`
   margin-top: ${rem('10px')};
 `;
-StyledPage.Description.displayName = 'StyledPage.Description';
+$Page.Description.displayName = '$Page.Description';
 
-StyledPage.Actions = styled.div`
+$Page.Actions = styled.div`
   display: flex;
   justify-content: space-between;
 `;
-StyledPage.Actions.displayName = 'StyledPage.Actions';
+$Page.Actions.displayName = '$Page.Actions';
 
-StyledPage.Action = styled(Link)`
+$Page.Action = styled(Link)`
   display: flex;
   align-items: center;
   font-size: ${({ theme }) => theme?.fontSizes?.xSmall};
@@ -41,4 +41,4 @@ StyledPage.Action = styled(Link)`
     margin-right: 5px;
   }
 `;
-StyledPage.Action.displayName = 'StyledPage.Action';
+$Page.Action.displayName = '$Page.Action';

@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types';
 import { createRef, useEffect } from 'react';
+import { useReactiveVar } from '@apollo/client';
 
 import { Messages } from '../components/Messages';
-import { StyledChat } from '../styles/StyledChat';
 
+import { activeChat } from '../cache';
 import { useMe } from '../operations/queries/me';
 import { useMessages } from '../operations/queries/messages';
 import {
@@ -11,8 +11,9 @@ import {
   messageUpdateQuery,
 } from '../operations/subscriptions/messageAdded';
 
-export const ChatContainer = ({ chatId }) => {
+export const ChatContainer = () => {
   const messagesEndRef = createRef();
+  const rActiveChat = useReactiveVar(activeChat);
 
   const { data: meData, loading: loadingMe, error: meError } = useMe();
   const {
@@ -21,7 +22,7 @@ export const ChatContainer = ({ chatId }) => {
     error: messagesError,
     subscribeToMore,
   } = useMessages({
-    variables: { messagesInput: { chatId } },
+    variables: { messagesInput: { chatId: rActiveChat?._id } },
   });
 
   useEffect(() => {
@@ -41,16 +42,10 @@ export const ChatContainer = ({ chatId }) => {
   if (meError || messagesError) return <div>An error occurred</div>;
 
   return (
-    <StyledChat.Body>
-      <Messages
-        messages={messagesData.messages}
-        me={meData.me}
-        messagesEndRef={messagesEndRef}
-      />
-    </StyledChat.Body>
+    <Messages
+      messages={messagesData.messages}
+      me={meData.me}
+      messagesEndRef={messagesEndRef}
+    />
   );
-};
-
-ChatContainer.propTypes = {
-  chatId: PropTypes.string.isRequired,
 };

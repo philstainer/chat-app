@@ -2,12 +2,12 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 import { Paperclip } from 'react-feather';
 
-export const StyledPaperclip = styled(Paperclip)`
+export const $Paperclip = styled(Paperclip)`
   margin-right: ${rem('10px')};
   cursor: pointer;
 `;
 
-export const StyledSend = styled.button`
+export const $Send = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,7 +23,7 @@ export const StyledSend = styled.button`
   cursor: pointer;
 `;
 
-export const StyledInput = styled.input`
+export const $Input = styled.input`
   flex: 1;
 
   padding: ${rem('8px')} ${rem('15px')};

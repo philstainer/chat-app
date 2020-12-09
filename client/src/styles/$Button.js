@@ -11,7 +11,7 @@ const Spin = keyframes`
   }
 `;
 
-export const StyledButton = styled.button`
+export const $Button = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -34,9 +34,9 @@ export const StyledButton = styled.button`
 
   cursor: ${({ isLoading }) => (isLoading ? 'wait' : 'pointer')};
 `;
-StyledButton.displayName = 'StyledButton';
+$Button.displayName = '$Button';
 
-StyledButton.Loader = styled(Loader)`
+$Button.Loader = styled(Loader)`
   animation: ${Spin} 4s infinite linear;
 `;
-StyledButton.Loader.displayName = 'StyledButton.Loader';
+$Button.Loader.displayName = '$Button.Loader';

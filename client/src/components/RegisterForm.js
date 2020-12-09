@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-import { StyledForm } from '../styles/StyledForm';
+import { $Form } from '../styles/$Form';
 import { Button } from './Button';
 
 const schema = yup.object().shape({
@@ -32,45 +32,41 @@ export const RegisterForm = ({ onSubmit }) => {
   const { isSubmitting } = formState;
 
   return (
-    <StyledForm onSubmit={handleSubmit(onSubmit)}>
-      <StyledForm.Label htmlFor="email">EMAIL</StyledForm.Label>
-      <StyledForm.Input
+    <$Form onSubmit={handleSubmit(onSubmit)}>
+      <$Form.Label htmlFor="email">EMAIL</$Form.Label>
+      <$Form.Input
         id="email"
         name="email"
         type="text"
         ref={register}
         data-testid="email"
       />
-      <StyledForm.InputError>{errors.email?.message}</StyledForm.InputError>
+      <$Form.InputError>{errors.email?.message}</$Form.InputError>
 
-      <StyledForm.Label htmlFor="password">CREATE PASSWORD</StyledForm.Label>
-      <StyledForm.Input
+      <$Form.Label htmlFor="password">CREATE PASSWORD</$Form.Label>
+      <$Form.Input
         id="password"
         name="password"
         type="password"
         ref={register}
         data-testid="password"
       />
-      <StyledForm.InputError>{errors.password?.message}</StyledForm.InputError>
+      <$Form.InputError>{errors.password?.message}</$Form.InputError>
 
-      <StyledForm.Label htmlFor="confirmPassword">
-        CONFIRM PASSWORD
-      </StyledForm.Label>
-      <StyledForm.Input
+      <$Form.Label htmlFor="confirmPassword">CONFIRM PASSWORD</$Form.Label>
+      <$Form.Input
         id="confirmPassword"
         name="confirmPassword"
         type="password"
         ref={register}
         data-testid="confirmPassword"
       />
-      <StyledForm.InputError>
-        {errors.confirmPassword?.message}
-      </StyledForm.InputError>
+      <$Form.InputError>{errors.confirmPassword?.message}</$Form.InputError>
 
       <Button type="submit" loading={isSubmitting}>
         Register
       </Button>
-    </StyledForm>
+    </$Form>
   );
 };
 

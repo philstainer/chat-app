@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import { ArrowLeft } from 'react-feather';
 
-import { StyledChat } from '../styles/StyledChat';
+import { $App } from '../styles/$App';
 
 export const ChatHeader = ({ closeChat }) => {
   return (
-    <StyledChat.Header>
+    <$App.Header>
       <ArrowLeft size={18} onClick={closeChat} data-testid="goBack" />
-    </StyledChat.Header>
+    </$App.Header>
   );
 };
 
