@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import ejs from 'ejs';
 import path from 'path';
 import sgMail from '@sendgrid/mail';
+import ms from 'ms';
 
 import { userController } from './user.controller';
 import { User } from './user.modal';
@@ -120,7 +121,7 @@ const userResolver = {
       if (foundUser) {
         // Generate Token and expiry
         const resetToken = await generateToken();
-        const resetTokenExpiry = Date.now() + 1 * 60 * 15 * 1000; // 15 Minutes
+        const resetTokenExpiry = Date.now() + ms('15m'); // 15 Minutes
 
         // Update User
         await User.findByIdAndUpdate(foundUser._id, {
