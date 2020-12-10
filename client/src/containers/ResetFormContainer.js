@@ -11,8 +11,6 @@ export const ResetFormContainer = () => {
   const onSubmit = async ({ password }) => {
     try {
       await mutate({ variables: { resetPasswordInput: { token, password } } });
-
-      history.replace('/');
     } catch (error) {
       if (error?.message.match(/already logged in/i))
         return history.replace('/');

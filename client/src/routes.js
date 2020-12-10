@@ -2,8 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Switch, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 
-import { PrivateRoute } from './components/PrivateRoute';
-import { MotionRoute } from './components/MotionRoute';
+import { DynamicRoute } from './components/DynamicRoute';
 import { MotionRedirect } from './components/MotionRedirect';
 
 const HomePage = lazy(() => import('./pages/Home'));
@@ -20,13 +19,13 @@ export const Routes = () => {
     <AnimatePresence exitBeforeEnter>
       <Suspense fallback={<div>Loading...</div>}>
         <Switch location={location} key={location.key}>
-          <PrivateRoute exact path="/" component={HomePage} />
+          <DynamicRoute exact path="/" component={HomePage} authenticated />
 
-          <MotionRoute path="/login" component={LoginPage} />
-          <MotionRoute path="/register" component={RegisterPage} />
-          <MotionRoute path="/verify/:token" component={VerifyPage} />
-          <MotionRoute path="/forgot" component={ForgotPage} />
-          <MotionRoute path="/reset/:token" component={ResetPage} />
+          <DynamicRoute path="/login" component={LoginPage} guest />
+          <DynamicRoute path="/register" component={RegisterPage} guest />
+          <DynamicRoute path="/verify/:token" component={VerifyPage} guest />
+          <DynamicRoute path="/forgot" component={ForgotPage} guest />
+          <DynamicRoute path="/reset/:token" component={ResetPage} guest />
           <MotionRedirect from="*" to="/" />
         </Switch>
       </Suspense>

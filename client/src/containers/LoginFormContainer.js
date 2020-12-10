@@ -10,8 +10,6 @@ export const LoginFormContainer = () => {
   const onSubmit = async ({ email, password }) => {
     try {
       await mutate({ variables: { loginInput: { email, password } } });
-
-      history.replace('/');
     } catch (error) {
       if (error?.message.match(/already logged in/i))
         return history.replace('/');
