@@ -1,13 +1,16 @@
 import jwt from 'jsonwebtoken';
+import ms from 'ms';
 import { accessEnv } from './accessEnv';
 
 const generateCookie = (data, name, ctx, options) => {
+  const isProduction = accessEnv('NODE_ENV') === 'production';
+
   const token = jwt.sign(data, accessEnv('JWT_SECRET'));
 
   const cookieOptions = {
     httpOnly: true,
-    maxAge: 365 * 24 * 60 * 60 * 1000,
-    secure: accessEnv('NODE_ENV') === 'production',
+    maxAge: ms('7d'),
+    secure: isProduction,
     signed: true,
     ...options,
   };

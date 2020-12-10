@@ -20,6 +20,7 @@ app.use(getUserIdentity);
 const corsOptions = {
   origin: true,
   credentials: true,
+  exposedHeaders: ['x-access-token'],
 };
 
 apolloServer.applyMiddleware({ app, cors: corsOptions, path: '/graphql' });

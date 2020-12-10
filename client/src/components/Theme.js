@@ -5,7 +5,7 @@ import { themes } from '../styles/Themes';
 import { useTheme } from '../hooks/useTheme';
 
 export const Theme = ({ children }) => {
-  const [theme] = useTheme();
+  const { theme } = useTheme();
 
   return (
     <ThemeProvider theme={themes[theme]}>
