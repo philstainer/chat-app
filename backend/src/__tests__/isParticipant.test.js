@@ -1,9 +1,9 @@
-import { Chat } from '../graphql/chat/chat.modal';
+import { Chat } from '../graphql/chat/chat.model';
 import { isParticipant } from '../utils/isParticipant';
 import { GENERAL_ERROR } from '../utils/constants';
 import { FakeObjectId } from '../utils/fixtures';
 
-jest.mock('../graphql/chat/chat.modal.js');
+jest.mock('../graphql/chat/chat.model.js');
 
 test('should get chat via chatId and userId', async () => {
   const chatId = FakeObjectId();

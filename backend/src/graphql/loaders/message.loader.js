@@ -1,8 +1,8 @@
 import DataLoader from 'dataloader';
-import { Message } from '../message/message.modal';
+import { Message } from '../message/message.model';
 
 export const messageLoader = () => {
-  const loader = new DataLoader(async (ids) => {
+  const loader = new DataLoader(async ids => {
     loader.clearAll(); // Fix for subscriptions
 
     const uniqueArray = [...new Set(ids)];
@@ -12,10 +12,10 @@ export const messageLoader = () => {
       _id: { $in: uniqueArray },
     }).lean();
 
-    const dataMap = new Map(data.map((item) => [item._id.toString(), item]));
+    const dataMap = new Map(data.map(item => [item._id.toString(), item]));
 
     // Loop over original array and populate
-    const result = ids.map((id) => dataMap.get(id.toString()));
+    const result = ids.map(id => dataMap.get(id.toString()));
 
     return result;
   });

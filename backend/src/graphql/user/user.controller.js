@@ -2,12 +2,12 @@ import bcrypt from 'bcryptjs';
 import { AuthenticationError } from 'apollo-server-express';
 
 import { generateToken } from '../../utils/generateToken';
-import { User } from './user.modal';
+import { User } from './user.model';
 import { logger } from '../../utils/logger';
 import { USER_EMAIL_ALREADY } from '../../utils/constants';
 
 const userController = {
-  createUser: async (args) => {
+  createUser: async args => {
     const foundUser = await User.findOne({ email: args.input.email })
       .select('email')
       .lean();

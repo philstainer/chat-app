@@ -1,4 +1,4 @@
-import { Chat } from '../graphql/chat/chat.modal';
+import { Chat } from '../graphql/chat/chat.model';
 import { chatResolver } from '../graphql/chat/chat.resolver';
 import { isAuthenticated } from '../utils/isAuthenticated';
 import { selectedFields } from '../utils/selectedFields';
@@ -8,7 +8,7 @@ const { chats } = chatResolver.Query;
 
 jest.mock('../utils/isAuthenticated.js');
 jest.mock('../utils/selectedFields.js');
-jest.mock('../graphql/chat/chat.modal.js');
+jest.mock('../graphql/chat/chat.model.js');
 
 test('should call isAuthenticated', () => {
   const authMock = jest.fn();

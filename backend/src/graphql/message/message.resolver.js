@@ -1,8 +1,8 @@
 import { withFilter } from 'apollo-server-express';
 
 import { pubsub } from '../pubsub';
-import { Message } from './message.modal';
-import { Chat } from '../chat/chat.modal';
+import { Message } from './message.model';
+import { Chat } from '../chat/chat.model';
 import { isAuthenticated } from '../../utils/isAuthenticated';
 import { selectedFields } from '../../utils/selectedFields';
 import { MESSAGE_ADDED } from '../../utils/constants';

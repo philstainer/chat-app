@@ -1,7 +1,7 @@
 import { UserInputError, withFilter } from 'apollo-server-express';
 
 import { pubsub } from '../pubsub';
-import { Chat } from './chat.modal';
+import { Chat } from './chat.model';
 import { isAuthenticated } from '../../utils/isAuthenticated';
 import { selectedFields } from '../../utils/selectedFields';
 import {
@@ -37,7 +37,7 @@ export const chatResolver = {
 
       // Filter out logged in user id
       const participants = args?.input?.participants.filter(
-        (item) => item !== ctx?.req?.userId
+        item => item !== ctx?.req?.userId
       );
 
       // Don't create empty chat
@@ -70,7 +70,7 @@ export const chatResolver = {
   Chat: {
     participants: async (parent, args, ctx, info) => {
       return ctx.userLoader.loadMany(
-        parent.participants.map((id) => id.toString())
+        parent.participants.map(id => id.toString())
       );
     },
     lastMessage: (parent, args, ctx, info) => {

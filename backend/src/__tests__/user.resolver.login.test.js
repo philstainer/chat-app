@@ -1,7 +1,7 @@
 import faker from 'faker';
 import bcrypt from 'bcryptjs';
 import { userResolver } from '../graphql/user/user.resolver';
-import { User } from '../graphql/user/user.modal';
+import { User } from '../graphql/user/user.model';
 import { selectedFields } from '../utils/selectedFields';
 import { generateCookie } from '../utils/generateCookie';
 import { isNotAuthenticated } from '../utils/isNotAuthenticated';
@@ -13,7 +13,7 @@ const { login } = userResolver.Mutation;
 jest.mock('../utils/isNotAuthenticated.js');
 jest.mock('../utils/selectedFields.js');
 jest.mock('../utils/generateCookie.js');
-jest.mock('../graphql/user/user.modal.js');
+jest.mock('../graphql/user/user.model.js');
 jest.mock('bcryptjs');
 
 test('should call isNotAuthenticated', async () => {

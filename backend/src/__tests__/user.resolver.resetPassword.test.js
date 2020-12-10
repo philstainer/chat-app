@@ -2,7 +2,7 @@ import faker from 'faker';
 import bcrypt from 'bcryptjs';
 
 import { userResolver } from '../graphql/user/user.resolver';
-import { User } from '../graphql/user/user.modal';
+import { User } from '../graphql/user/user.model';
 import { AUTH_LOGGED_IN_ERROR, INVALID_TOKEN_ERROR } from '../utils/constants';
 import { selectedFields } from '../utils/selectedFields';
 import { generateCookie } from '../utils/generateCookie';
@@ -10,7 +10,7 @@ import { FakeObjectId } from '../utils/fixtures';
 
 const { resetPassword } = userResolver.Mutation;
 
-jest.mock('../graphql/user/user.modal.js');
+jest.mock('../graphql/user/user.model.js');
 jest.mock('../utils/generateCookie.js');
 jest.mock('../utils/logger.js');
 jest.mock('../utils/accessEnv');

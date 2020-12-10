@@ -2,7 +2,7 @@ import faker from 'faker';
 import sgMail from '@sendgrid/mail';
 
 import { userResolver } from '../graphql/user/user.resolver';
-import { User } from '../graphql/user/user.modal';
+import { User } from '../graphql/user/user.model';
 import { AUTH_LOGGED_IN_ERROR } from '../utils/constants';
 import { accessEnv } from '../utils/accessEnv';
 import { generateToken } from '../utils/generateToken';
@@ -10,7 +10,7 @@ import { FakeObjectId } from '../utils/fixtures';
 
 const { resetPasswordRequest } = userResolver.Mutation;
 
-jest.mock('../graphql/user/user.modal.js');
+jest.mock('../graphql/user/user.model.js');
 jest.mock('../utils/generateToken.js');
 jest.mock('../utils/logger.js');
 jest.mock('../utils/accessEnv');

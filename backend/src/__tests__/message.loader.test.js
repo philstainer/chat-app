@@ -1,8 +1,8 @@
-import { Message } from '../graphql/message/message.modal';
+import { Message } from '../graphql/message/message.model';
 import { FakeMessage } from '../utils/fixtures';
 import { messageLoader } from '../graphql/loaders/message.loader';
 
-jest.mock('../graphql/message/message.modal.js');
+jest.mock('../graphql/message/message.model.js');
 
 test('should return participants', async () => {
   const foundMessages = [FakeMessage()];

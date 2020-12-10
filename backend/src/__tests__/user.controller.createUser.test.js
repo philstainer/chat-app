@@ -3,13 +3,13 @@ import faker from 'faker';
 
 import { userController } from '../graphql/user/user.controller';
 
-import { User } from '../graphql/user/user.modal';
+import { User } from '../graphql/user/user.model';
 import { generateToken } from '../utils/generateToken';
 import { USER_EMAIL_ALREADY } from '../utils/constants';
 
 jest.mock('bcryptjs');
 jest.mock('../utils/generateToken.js');
-jest.mock('../graphql/user/user.modal.js');
+jest.mock('../graphql/user/user.model.js');
 
 test('should throw error when email is already registered', async () => {
   const checkUserMock = {

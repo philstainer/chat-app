@@ -1,4 +1,4 @@
-import { Message } from '../graphql/message/message.modal';
+import { Message } from '../graphql/message/message.model';
 import { messageResolver } from '../graphql/message/message.resolver';
 import { isAuthenticated } from '../utils/isAuthenticated';
 import { selectedFields } from '../utils/selectedFields';
@@ -9,7 +9,7 @@ const { messages } = messageResolver.Query;
 jest.mock('../utils/isAuthenticated.js');
 jest.mock('../utils/selectedFields.js');
 jest.mock('../utils/isParticipant.js');
-jest.mock('../graphql/message/message.modal.js');
+jest.mock('../graphql/message/message.model.js');
 
 test('should call isAuthenticated', async () => {
   const authMock = jest.fn();

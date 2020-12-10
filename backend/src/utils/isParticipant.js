@@ -1,5 +1,5 @@
 import { UserInputError } from 'apollo-server-express';
-import { Chat } from '../graphql/chat/chat.modal';
+import { Chat } from '../graphql/chat/chat.model';
 import { GENERAL_ERROR } from './constants';
 
 export const isParticipant = async (chatId, userId) => {

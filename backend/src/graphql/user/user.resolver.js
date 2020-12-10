@@ -6,7 +6,7 @@ import sgMail from '@sendgrid/mail';
 import ms from 'ms';
 
 import { userController } from './user.controller';
-import { User } from './user.modal';
+import { User } from './user.model';
 
 import { generateCookie } from '../../utils/generateCookie';
 import { generateToken } from '../../utils/generateToken';
