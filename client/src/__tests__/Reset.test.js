@@ -1,15 +1,16 @@
 import { screen, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { InMemoryCache } from '@apollo/client';
 import { Route } from 'react-router-dom';
 import { GraphQLError } from 'graphql';
 import faker from 'faker';
 
-import { FakeUser } from '../utils/fixtures';
+import { FakeToken } from '../utils/fixtures';
 import { renderWithRouter } from '../utils/renderWithRouter';
 
 import { RESET } from '../operations/mutations/reset';
 import { Reset } from '../pages/Reset';
+import { accessToken } from '../cache';
+import { ACCESS_TOKEN } from '../utils/constants';
 
 test('should render form', async () => {
   renderWithRouter(
@@ -47,30 +48,31 @@ test('should display form errors', async () => {
   });
 });
 
-test('should call reset mutation on form submit, update cache and redirect on success', async () => {
-  const token = faker.random.uuid();
+test('should call reset mutation on form submit', async () => {
+  const resetToken = FakeToken();
   const password = 'Pa33ord12345!';
-  const fakeUser = FakeUser();
+  const token = FakeToken();
+
+  const setItemMock = jest.fn();
+  Storage.prototype.setItem = setItemMock;
 
   const resetMock = {
     request: {
       query: RESET,
-      variables: { resetPasswordInput: { token, password } },
+      variables: { resetPasswordInput: { token: resetToken, password } },
     },
     result: jest.fn(() => ({
-      data: { reset: { __typename: 'User', ...fakeUser } },
+      data: { resetPassword: { token } },
     })),
   };
 
-  const cache = new InMemoryCache();
-
-  const { history } = renderWithRouter(
-    <MockedProvider cache={cache} mocks={[resetMock]}>
+  renderWithRouter(
+    <MockedProvider mocks={[resetMock]} addTypename={false}>
       <Route path="/reset/:token">
         <Reset />
       </Route>
     </MockedProvider>,
-    { route: `/reset/${token}` }
+    { route: `/reset/${resetToken}` }
   );
 
   const passwordInput = screen.getByLabelText(/new password/i);
@@ -83,15 +85,8 @@ test('should call reset mutation on form submit, update cache and redirect on su
 
   await waitFor(() => expect(resetMock.result).toHaveBeenCalled());
 
-  const updatedCache = cache.extract();
-  const updatedUserCache = updatedCache[`User:${fakeUser._id}`];
-
-  expect(updatedUserCache).toHaveProperty('_id', fakeUser._id);
-  expect(updatedUserCache).toHaveProperty('email', fakeUser.email);
-  expect(updatedUserCache).toHaveProperty('image', fakeUser.image);
-  expect(updatedUserCache).toHaveProperty('verified', fakeUser.verified);
-
-  expect(history.location.pathname).toEqual('/');
+  expect(setItemMock).toHaveBeenCalledWith(ACCESS_TOKEN, token);
+  expect(accessToken()).toBe(token);
 });
 
 test('should redirect on already logged in error', async () => {

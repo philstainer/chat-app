@@ -1,22 +1,21 @@
 import { gql, useMutation } from '@apollo/client';
-import { ME } from '../queries/me';
+
+import { accessToken } from '../../cache';
+import { ACCESS_TOKEN } from '../../utils/constants';
 
 export const LOGIN = gql`
   mutation login($loginInput: UserRegisterInput!) {
     login(input: $loginInput) {
-      _id
-      email
-      image
-      verified
+      token
     }
   }
 `;
 
 const update = (cache, { data }) => {
-  cache.writeQuery({
-    query: ME,
-    data: { me: data?.login },
-  });
+  const { token } = data.login;
+
+  localStorage.setItem(ACCESS_TOKEN, token);
+  accessToken(token);
 };
 
 export const useLogin = () => {

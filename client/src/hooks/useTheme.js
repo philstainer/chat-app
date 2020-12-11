@@ -1,25 +1,25 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useReactiveVar } from '@apollo/client';
 
-// Get theme from localStorage or default to light
-const currentTheme = window?.localStorage?.getItem('theme') || 'light';
+import { THEME } from '../utils/constants';
+import { activeTheme } from '../cache';
 
 export const useTheme = () => {
-  const [theme, setTheme] = useState(currentTheme);
+  const theme = useReactiveVar(activeTheme);
 
   // Set theme
-  const setMode = (mode) => {
-    window.localStorage.setItem('theme', mode);
-    setTheme(mode);
+  const setMode = mode => {
+    window.localStorage.setItem(THEME, mode);
+    activeTheme(mode);
   };
 
   // Toggle between light and dark
-  const themeToggler = () => {
+  const themeToggler = () =>
     theme === 'light' ? setMode('dark') : setMode('light');
-  };
 
   // Add theme listeners on mount
   useEffect(() => {
-    const handleSystemThemeChange = (e) => {
+    const handleSystemThemeChange = e => {
       const newColorScheme = e.matches ? 'dark' : 'light';
 
       setMode(newColorScheme);
@@ -36,5 +36,5 @@ export const useTheme = () => {
     };
   }, []);
 
-  return [theme, themeToggler];
+  return { theme, themeToggler };
 };

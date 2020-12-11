@@ -5,6 +5,7 @@ import { ApolloProvider } from '@apollo/client';
 import { client } from './client';
 
 import { App } from './App';
+import './storageEvents';
 
 ReactDOM.render(
   <React.StrictMode>

@@ -1,22 +1,21 @@
 import { gql, useMutation } from '@apollo/client';
-import { ME } from '../queries/me';
+
+import { accessToken } from '../../cache';
+import { ACCESS_TOKEN } from '../../utils/constants';
 
 export const RESET = gql`
   mutation reset($resetPasswordInput: ResetPasswordInput) {
     resetPassword(input: $resetPasswordInput) {
-      _id
-      email
-      image
-      verified
+      token
     }
   }
 `;
 
 const update = (cache, { data }) => {
-  cache.writeQuery({
-    query: ME,
-    data: { me: data?.reset },
-  });
+  const { token } = data.resetPassword;
+
+  localStorage.setItem(ACCESS_TOKEN, token);
+  accessToken(token);
 };
 
 export const useReset = () => {

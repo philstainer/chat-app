@@ -1,14 +1,15 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { InMemoryCache } from '@apollo/client';
 import { GraphQLError } from 'graphql';
 import faker from 'faker';
 
-import { FakeUser } from '../utils/fixtures';
+import { FakeToken } from '../utils/fixtures';
 import { renderWithRouter } from '../utils/renderWithRouter';
 
 import { REGISTER } from '../operations/mutations/register';
 import { RegisterFormContainer } from '../containers/RegisterFormContainer';
+import { accessToken } from '../cache';
+import { ACCESS_TOKEN } from '../utils/constants';
 
 test('should call register mutation on form submit', async () => {
   const email = faker.internet.email();
@@ -19,7 +20,7 @@ test('should call register mutation on form submit', async () => {
       query: REGISTER,
       variables: { registerInput: { email, password } },
     },
-    result: jest.fn(() => ({ data: { register: FakeUser() } })),
+    result: jest.fn(() => ({ data: { register: { token: FakeToken() } } })),
   };
 
   renderWithRouter(
@@ -42,25 +43,24 @@ test('should call register mutation on form submit', async () => {
   await waitFor(() => expect(registerMock.result).toHaveBeenCalled());
 });
 
-test('should update local cache', async () => {
+test('should update localStorage with token and set accessToken', async () => {
   const email = faker.internet.email();
   const password = 'Pa33ord12345!';
-  const fakeUser = FakeUser();
+  const token = FakeToken();
+
+  const setItemMock = jest.fn();
+  Storage.prototype.setItem = setItemMock;
 
   const registerMock = {
     request: {
       query: REGISTER,
       variables: { registerInput: { email, password } },
     },
-    result: jest.fn(() => ({
-      data: { register: { __typename: 'User', ...fakeUser } },
-    })),
+    result: jest.fn(() => ({ data: { register: { token } } })),
   };
 
-  const cache = new InMemoryCache();
-
   renderWithRouter(
-    <MockedProvider cache={cache} mocks={[registerMock]}>
+    <MockedProvider mocks={[registerMock]} addTypename={false}>
       <RegisterFormContainer />
     </MockedProvider>
   );
@@ -78,48 +78,8 @@ test('should update local cache', async () => {
 
   await waitFor(() => expect(registerMock.result).toHaveBeenCalled());
 
-  const updatedCache = cache.extract();
-  const updatedUserCache = updatedCache[`User:${fakeUser._id}`];
-
-  expect(updatedUserCache).toHaveProperty('_id', fakeUser._id);
-  expect(updatedUserCache).toHaveProperty('email', fakeUser.email);
-  expect(updatedUserCache).toHaveProperty('image', fakeUser.image);
-  expect(updatedUserCache).toHaveProperty('verified', fakeUser.verified);
-});
-
-test('should redirect after mutation', async () => {
-  const email = faker.internet.email();
-  const password = 'Pa33ord12345!';
-
-  const registerMock = {
-    request: {
-      query: REGISTER,
-      variables: { registerInput: { email, password } },
-    },
-    result: jest.fn(() => ({ data: { register: FakeUser() } })),
-  };
-
-  const { history } = renderWithRouter(
-    <MockedProvider mocks={[registerMock]} addTypename={false}>
-      <RegisterFormContainer />
-    </MockedProvider>,
-    { route: '/register' }
-  );
-
-  const emailInput = screen.getByLabelText(/email/i);
-  const passwordInput = screen.getByLabelText(/create password/i);
-  const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
-  const registerButton = screen.getByText(/register/i);
-
-  fireEvent.change(emailInput, { target: { value: email } });
-  fireEvent.change(passwordInput, { target: { value: password } });
-  fireEvent.change(confirmPasswordInput, { target: { value: password } });
-
-  fireEvent.click(registerButton);
-
-  await waitFor(() => expect(registerMock.result).toHaveBeenCalled());
-
-  expect(history.location.pathname).toEqual('/');
+  expect(setItemMock).toHaveBeenCalledWith(ACCESS_TOKEN, token);
+  expect(accessToken()).toBe(token);
 });
 
 test('should redirect on already logged in error', async () => {
@@ -157,4 +117,41 @@ test('should redirect on already logged in error', async () => {
   await waitFor(() => expect(registerMock.result).toHaveBeenCalled());
 
   expect(history.location.pathname).toEqual('/');
+});
+
+test('should not redirect on already logged in error', async () => {
+  const email = faker.internet.email();
+  const password = 'Pa33ord12345!';
+
+  const registerMock = {
+    request: {
+      query: REGISTER,
+      variables: { registerInput: { email, password } },
+    },
+    result: jest.fn(() => ({
+      errors: [new GraphQLError('some other error')],
+    })),
+  };
+
+  const { history } = renderWithRouter(
+    <MockedProvider mocks={[registerMock]} addTypename={false}>
+      <RegisterFormContainer />
+    </MockedProvider>,
+    { route: '/register' }
+  );
+
+  const emailInput = screen.getByLabelText(/email/i);
+  const passwordInput = screen.getByLabelText(/create password/i);
+  const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
+  const registerButton = screen.getByText(/register/i);
+
+  fireEvent.change(emailInput, { target: { value: email } });
+  fireEvent.change(passwordInput, { target: { value: password } });
+  fireEvent.change(confirmPasswordInput, { target: { value: password } });
+
+  fireEvent.click(registerButton);
+
+  await waitFor(() => expect(registerMock.result).toHaveBeenCalled());
+
+  expect(history.location.pathname).toEqual('/register');
 });

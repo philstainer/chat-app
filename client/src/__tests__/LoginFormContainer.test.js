@@ -1,14 +1,15 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { InMemoryCache } from '@apollo/client';
 import { GraphQLError } from 'graphql';
 import faker from 'faker';
 
-import { FakeUser } from '../utils/fixtures';
+import { FakeToken } from '../utils/fixtures';
 import { renderWithRouter } from '../utils/renderWithRouter';
 
 import { LOGIN } from '../operations/mutations/login';
 import { LoginFormContainer } from '../containers/LoginFormContainer';
+import { accessToken } from '../cache';
+import { ACCESS_TOKEN } from '../utils/constants';
 
 test('should render form', async () => {
   render(
@@ -44,13 +45,14 @@ test('should render errors on submit', async () => {
 test('should call login mutation on form submit', async () => {
   const email = faker.internet.email();
   const password = 'Pa33ord12345!';
+  const token = FakeToken();
 
   const loginMock = {
     request: {
       query: LOGIN,
       variables: { loginInput: { email, password } },
     },
-    result: jest.fn(() => ({ data: { login: FakeUser() } })),
+    result: jest.fn(() => ({ data: { login: { token } } })),
   };
 
   renderWithRouter(
@@ -71,80 +73,41 @@ test('should call login mutation on form submit', async () => {
   await waitFor(() => expect(loginMock.result).toHaveBeenCalled());
 });
 
-test('should update local cache', async () => {
+test('should update localStorage with token and set accessToken', async () => {
   const email = faker.internet.email();
   const password = 'Pa33ord12345!';
-  const fakeUser = FakeUser();
+  const token = FakeToken();
+
+  const setItemMock = jest.fn();
+  Storage.prototype.setItem = setItemMock;
 
   const loginMock = {
     request: {
       query: LOGIN,
       variables: { loginInput: { email, password } },
     },
-    result: jest.fn(() => ({
-      data: { login: { __typename: 'User', ...fakeUser } },
-    })),
+    result: jest.fn(() => ({ data: { login: { token } } })),
   };
 
-  const cache = new InMemoryCache();
-
   renderWithRouter(
-    <MockedProvider cache={cache} mocks={[loginMock]}>
+    <MockedProvider mocks={[loginMock]} addTypename={false}>
       <LoginFormContainer />
     </MockedProvider>
   );
 
   const emailInput = screen.getByLabelText(/email/i);
   const passwordInput = screen.getByLabelText(/password/i);
-  const submitButton = screen.getByRole('button', { name: /login/i });
+  const button = screen.getByText(/login/i);
 
   fireEvent.change(emailInput, { target: { value: email } });
   fireEvent.change(passwordInput, { target: { value: password } });
 
-  fireEvent.click(submitButton);
+  fireEvent.click(button);
 
   await waitFor(() => expect(loginMock.result).toHaveBeenCalled());
 
-  const updatedCache = cache.extract();
-  const updatedUserCache = updatedCache[`User:${fakeUser._id}`];
-
-  expect(updatedUserCache).toHaveProperty('_id', fakeUser._id);
-  expect(updatedUserCache).toHaveProperty('email', fakeUser.email);
-  expect(updatedUserCache).toHaveProperty('image', fakeUser.image);
-  expect(updatedUserCache).toHaveProperty('verified', fakeUser.verified);
-});
-
-test('should redirect after mutation', async () => {
-  const email = faker.internet.email();
-  const password = 'Pa33ord12345!';
-
-  const loginMock = {
-    request: {
-      query: LOGIN,
-      variables: { loginInput: { email, password } },
-    },
-    result: jest.fn(() => ({ data: { login: FakeUser() } })),
-  };
-
-  const { history } = renderWithRouter(
-    <MockedProvider mocks={[loginMock]} addTypename={false}>
-      <LoginFormContainer />
-    </MockedProvider>,
-    { route: '/login' }
-  );
-
-  const emailInput = screen.getByLabelText(/email/i);
-  const passwordInput = screen.getByLabelText(/password/i);
-  const submitButton = screen.getByRole('button', { name: /login/i });
-
-  fireEvent.change(emailInput, { target: { value: email } });
-  fireEvent.change(passwordInput, { target: { value: password } });
-
-  fireEvent.click(submitButton);
-
-  await waitFor(() => expect(loginMock.result).toHaveBeenCalled());
-
-  expect(history.location.pathname).toEqual('/');
+  expect(setItemMock).toHaveBeenCalledWith(ACCESS_TOKEN, token);
+  expect(accessToken()).toBe(token);
 });
 
 test('should redirect on already logged in error', async () => {
@@ -180,4 +143,39 @@ test('should redirect on already logged in error', async () => {
   await waitFor(() => expect(loginMock.result).toHaveBeenCalled());
 
   expect(history.location.pathname).toEqual('/');
+});
+
+test('should not redirect on already logged in error', async () => {
+  const email = faker.internet.email();
+  const password = 'Pa33ord12345!';
+
+  const loginMock = {
+    request: {
+      query: LOGIN,
+      variables: { loginInput: { email, password } },
+    },
+    result: jest.fn(() => ({
+      errors: [new GraphQLError('some other error')],
+    })),
+  };
+
+  const { history } = renderWithRouter(
+    <MockedProvider mocks={[loginMock]} addTypename={false}>
+      <LoginFormContainer />
+    </MockedProvider>,
+    { route: '/login' }
+  );
+
+  const emailInput = screen.getByLabelText(/email/i);
+  const passwordInput = screen.getByLabelText(/password/i);
+  const submitButton = screen.getByRole('button', { name: /login/i });
+
+  fireEvent.change(emailInput, { target: { value: email } });
+  fireEvent.change(passwordInput, { target: { value: password } });
+
+  fireEvent.click(submitButton);
+
+  await waitFor(() => expect(loginMock.result).toHaveBeenCalled());
+
+  expect(history.location.pathname).toEqual('/login');
 });
