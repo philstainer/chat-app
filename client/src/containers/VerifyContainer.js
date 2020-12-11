@@ -15,7 +15,9 @@ export const VerifyContainer = () => {
       await mutate({ variables: { confirmAccountInput: { token } } });
 
       history.replace('/');
-    } catch (error) {}
+    } catch (error) {
+      history.replace('/');
+    }
   }, [mutate, history, token]);
 
   return <Verify handleVerify={handleVerify} />;
