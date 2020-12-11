@@ -23,7 +23,7 @@ export const Routes = () => {
 
           <DynamicRoute path="/login" component={LoginPage} guest />
           <DynamicRoute path="/register" component={RegisterPage} guest />
-          <DynamicRoute path="/verify/:token" component={VerifyPage} guest />
+          <DynamicRoute path="/verify/:token" component={VerifyPage} />
           <DynamicRoute path="/forgot" component={ForgotPage} guest />
           <DynamicRoute path="/reset/:token" component={ResetPage} guest />
           <MotionRedirect from="*" to="/" />
