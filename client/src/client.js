@@ -1,38 +1,11 @@
-import { ApolloClient, HttpLink, split } from '@apollo/client';
-import { WebSocketLink } from '@apollo/client/link/ws';
-import { getMainDefinition } from '@apollo/client/utilities';
+import { ApolloClient } from '@apollo/client';
+
 import { cache } from './cache';
-
-const isDevelopment = process.env.NODE_ENV === 'development';
-
-const BACKEND_HOST = process.env.REACT_APP_BACKEND_HOST;
-
-const httpLink = new HttpLink({
-  uri: BACKEND_HOST,
-  credentials: 'include',
-});
-
-const wsLink = new WebSocketLink({
-  uri: BACKEND_HOST.replace(/(https|http)/, 'ws'),
-  options: {
-    reconnect: true,
-  },
-});
-
-const splitLink = split(
-  ({ query }) => {
-    const definition = getMainDefinition(query);
-    return (
-      definition.kind === 'OperationDefinition' &&
-      definition.operation === 'subscription'
-    );
-  },
-  wsLink,
-  httpLink
-);
+import { link } from './link';
+import { IS_DEV } from './utils/constants';
 
 export const client = new ApolloClient({
-  link: splitLink,
+  link,
   cache,
-  connectToDevTools: isDevelopment,
+  connectToDevTools: IS_DEV,
 });
