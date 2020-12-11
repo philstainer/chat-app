@@ -20,7 +20,7 @@ export const chatResolver = {
 
       // Should get all chats for user
       const foundChats = await Chat.find({
-        participants: { $in: [ctx?.req?.userId] },
+        participants: { $in: [ctx?.userId] },
       })
         .select(selected)
         .sort({ updatedAt: 'desc' })
@@ -37,7 +37,7 @@ export const chatResolver = {
 
       // Filter out logged in user id
       const participants = args?.input?.participants.filter(
-        item => item !== ctx?.req?.userId
+        item => item !== ctx?.userId
       );
 
       // Don't create empty chat
@@ -46,7 +46,7 @@ export const chatResolver = {
 
       // Should create chat with participants
       const createdChat = await Chat.create({
-        participants: [ctx?.req?.userId, ...participants],
+        participants: [ctx?.userId, ...participants],
       });
 
       // Publish chat to subscriptions
@@ -59,9 +59,11 @@ export const chatResolver = {
     chatCreated: {
       subscribe: withFilter(
         () => pubsub.asyncIterator([CHAT_CREATED]),
-        (payload, variables, ctx) => {
+        async (payload, variables, ctx) => {
+          if (!ctx?.userId) return false;
+
           // Only send to participants
-          return payload.chatCreated.participants.includes(ctx.userId);
+          return payload.chatCreated.participants.includes(ctx?.userId);
         }
       ),
     },

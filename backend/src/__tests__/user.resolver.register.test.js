@@ -2,76 +2,143 @@ import faker from 'faker';
 import sgMail from '@sendgrid/mail';
 
 import { userResolver } from '../graphql/user/user.resolver';
-import { userController } from '../graphql/user/user.controller';
-import { generateCookie } from '../utils/generateCookie';
 import { isNotAuthenticated } from '../utils/isNotAuthenticated';
+import { User } from '../graphql/user/user.model';
 import { accessEnv } from '../utils/accessEnv';
-import { FakeObjectId } from '../utils/fixtures';
+import { FakeObjectId, FakeToken, FakeUser } from '../utils/fixtures';
+import {
+  generateJwtToken,
+  generateRefreshToken,
+  setTokenCookie,
+  hashPassword,
+  randomTokenString,
+} from '../utils/helpers';
+import { USER_FOUND_ERROR, REFRESH_TOKEN } from '../utils/constants';
 
 const { register } = userResolver.Mutation;
 
-jest.mock('../graphql/user/user.controller.js');
-jest.mock('../utils/generateCookie.js');
-jest.mock('../utils/logger.js');
 jest.mock('../utils/isNotAuthenticated.js');
+jest.mock('../utils/helpers.js');
+jest.mock('../utils/logger.js');
 jest.mock('../utils/accessEnv');
+jest.mock('../graphql/user/user.model.js');
 jest.mock('@sendgrid/mail');
 
-test('should check auth', async () => {
+test('should call isNotAuthenticated', async () => {
   const authMock = jest.fn();
-  isNotAuthenticated.mockImplementation(authMock);
+  isNotAuthenticated.mockImplementationOnce(authMock);
 
-  userController.createUser.mockImplementation(() => ({ _id: FakeObjectId() }));
+  const findOneMock = {
+    findOne: () => findOneMock,
+    select: () => findOneMock,
+    lean: () => null,
+  };
+  User.findOne.mockImplementationOnce(findOneMock.findOne);
 
-  const ctx = { req: { get: () => {} } };
+  const ctx = { userId: FakeObjectId() };
+
   await register(null, null, ctx, null);
 
-  expect(authMock).toHaveBeenCalledWith(ctx);
+  expect(authMock).toHaveBeenCalled();
 });
 
-test('should create user', async () => {
-  const args = { input: { email: faker.internet.email() } };
-  const ctx = { req: { get: () => {} } };
-
-  const createUserMock = jest.fn(() => ({ _id: FakeObjectId() }));
-  userController.createUser.mockImplementation(createUserMock);
-
-  await register(null, args, ctx, null);
-
-  expect(createUserMock).toHaveBeenCalledWith(args);
-});
-
-test('should create cookie', async () => {
-  const ctx = { req: { get: () => {} } };
-
-  const createdUser = { _id: FakeObjectId(), email: faker.internet.email() };
-  userController.createUser.mockImplementation(() =>
-    Promise.resolve(createdUser)
-  );
-
-  const cookieMock = jest.fn();
-  generateCookie.mockImplementation(cookieMock);
-
-  await register(null, { input: {} }, ctx, null);
-
-  expect(cookieMock).toHaveBeenCalledWith(
-    { sub: createdUser._id },
-    'token',
-    ctx
-  );
-});
-
-test('should send confirm email', async () => {
-  const ctx = { req: { get: () => {} } };
-
-  const createdUser = {
-    _id: FakeObjectId(),
-    email: faker.internet.email(),
-    verifyToken: faker.random.uuid(),
+test('should check if user email exists', async () => {
+  const findOneMock = {
+    findOne: jest.fn(() => findOneMock),
+    select: () => findOneMock,
+    lean: () => null,
   };
-  userController.createUser.mockImplementation(() =>
-    Promise.resolve(createdUser)
+  User.findOne.mockImplementationOnce(findOneMock.findOne);
+
+  await register(null, null, null, null);
+
+  expect(findOneMock.findOne).toHaveBeenCalled();
+});
+
+test('should throw error when user exists', async () => {
+  const findOneMock = {
+    findOne: jest.fn(() => findOneMock),
+    select: () => findOneMock,
+    lean: () => 'user',
+  };
+  User.findOne.mockImplementationOnce(findOneMock.findOne);
+
+  await expect(() => register(null, null, null, null)).rejects.toThrow(
+    USER_FOUND_ERROR
   );
+});
+
+test('should create user with hashedPassword and verify token', async () => {
+  const findOneMock = {
+    findOne: jest.fn(() => findOneMock),
+    select: () => findOneMock,
+    lean: () => null,
+  };
+  User.findOne.mockImplementationOnce(findOneMock.findOne);
+
+  const hashedPassword = faker.internet.password(8);
+  hashPassword.mockImplementationOnce(() => hashedPassword);
+
+  const verifyToken = faker.random.uuid();
+  randomTokenString.mockImplementationOnce(() => verifyToken);
+
+  const createUserMock = jest.fn();
+  User.create.mockImplementationOnce(createUserMock);
+
+  const args = { input: { email: faker.internet.email() } };
+  await register(null, args, null, null);
+
+  expect(createUserMock).toHaveBeenCalledWith({
+    ...args.input,
+    password: hashedPassword,
+    verifyToken,
+  });
+});
+
+test('should generate tokens and set refresh cookie', async () => {
+  const createdUser = 'createdUser';
+
+  const findOneMock = {
+    findOne: jest.fn(() => findOneMock),
+    select: () => findOneMock,
+    lean: () => null,
+  };
+  User.findOne.mockImplementationOnce(findOneMock.findOne);
+
+  User.create.mockImplementationOnce(() => createdUser);
+
+  const jwtTokenMock = jest.fn();
+  generateJwtToken.mockImplementationOnce(jwtTokenMock);
+
+  const refreshToken = { token: FakeToken() };
+  const refreshTokenMock = jest.fn(() => refreshToken);
+  generateRefreshToken.mockImplementationOnce(refreshTokenMock);
+
+  const setTokenMock = jest.fn();
+  setTokenCookie.mockImplementationOnce(setTokenMock);
+
+  const ctx = { req: { ip: faker.internet.ip() } };
+  await register(null, null, ctx, null);
+
+  expect(jwtTokenMock).toHaveBeenCalledWith(createdUser);
+  expect(refreshTokenMock).toHaveBeenCalledWith('createdUser', ctx.req.ip);
+  expect(setTokenMock).toHaveBeenCalledWith(
+    REFRESH_TOKEN,
+    refreshToken.token,
+    ctx.res
+  );
+});
+
+test('should send confirmation email', async () => {
+  const createdUser = FakeUser();
+  const findOneMock = {
+    findOne: jest.fn(() => findOneMock),
+    select: () => findOneMock,
+    lean: () => null,
+  };
+  User.findOne.mockImplementationOnce(findOneMock.findOne);
+
+  User.create.mockImplementationOnce(() => createdUser);
 
   const from = faker.internet.email();
   accessEnv
@@ -81,7 +148,7 @@ test('should send confirm email', async () => {
   const sendEmailMock = jest.fn();
   sgMail.send.mockImplementationOnce(sendEmailMock);
 
-  await register(null, { input: {} }, ctx, null);
+  await register(null, { input: {} }, null, null);
 
   expect(sendEmailMock).toHaveBeenCalledWith(
     expect.objectContaining({
@@ -91,15 +158,20 @@ test('should send confirm email', async () => {
   );
 });
 
-test('should return created user', async () => {
-  const ctx = { req: { get: () => {} } };
+test('should return token', async () => {
+  const findOneMock = {
+    findOne: jest.fn(() => findOneMock),
+    select: () => findOneMock,
+    lean: () => null,
+  };
+  User.findOne.mockImplementationOnce(findOneMock.findOne);
 
-  const createdUser = { _id: FakeObjectId(), email: faker.internet.email() };
-  userController.createUser.mockImplementation(() =>
-    Promise.resolve(createdUser)
-  );
+  User.create.mockImplementationOnce(() => {});
 
-  const returnedUser = await register(null, { input: {} }, ctx, null);
+  const token = FakeToken();
+  generateJwtToken.mockImplementationOnce(() => token);
 
-  expect(returnedUser).toEqual(createdUser);
+  const result = await register(null, null, null, null);
+
+  expect(result.token).toEqual(token);
 });

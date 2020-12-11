@@ -1,19 +1,28 @@
 import { Message } from '../graphql/message/message.model';
+import { Chat } from '../graphql/chat/chat.model';
 import { messageResolver } from '../graphql/message/message.resolver';
 import { isAuthenticated } from '../utils/isAuthenticated';
 import { selectedFields } from '../utils/selectedFields';
 import { FakeObjectId, FakeMessage } from '../utils/fixtures';
+import { PERMISSIONS_ERROR } from '../utils/constants';
 
 const { messages } = messageResolver.Query;
 
+jest.mock('../graphql/message/message.model.js');
+jest.mock('../graphql/chat/chat.model.js');
 jest.mock('../utils/isAuthenticated.js');
 jest.mock('../utils/selectedFields.js');
-jest.mock('../utils/isParticipant.js');
-jest.mock('../graphql/message/message.model.js');
 
 test('should call isAuthenticated', async () => {
   const authMock = jest.fn();
   isAuthenticated.mockImplementationOnce(authMock);
+
+  const findOneMock = {
+    findOne: () => findOneMock,
+    select: () => findOneMock,
+    lean: () => 'chat',
+  };
+  Chat.findOne.mockImplementationOnce(findOneMock.findOne);
 
   const messageMock = {
     find: () => messageMock,
@@ -25,13 +34,59 @@ test('should call isAuthenticated', async () => {
   };
   Message.find.mockImplementationOnce(messageMock.find);
 
-  const ctx = { req: { userId: FakeObjectId() } };
+  const ctx = { userId: FakeObjectId() };
   await messages(null, null, ctx, null);
 
   expect(authMock).toHaveBeenCalledWith(ctx);
 });
 
+test('should get chat', async () => {
+  const findOneMock = {
+    findOne: jest.fn(() => findOneMock),
+    select: () => findOneMock,
+    lean: () => 'chat',
+  };
+  Chat.findOne.mockImplementationOnce(findOneMock.findOne);
+
+  const messageMock = {
+    find: () => messageMock,
+    select: () => messageMock,
+    sort: () => messageMock,
+    limit: () => messageMock,
+    skip: () => messageMock,
+    lean: () => [],
+  };
+  Message.find.mockImplementationOnce(messageMock.find);
+
+  const args = { input: { chatId: FakeObjectId() } };
+  await messages(null, args, null, null);
+
+  expect(findOneMock.findOne).toHaveBeenCalledWith(
+    expect.objectContaining({
+      _id: args.input.chatId,
+    })
+  );
+});
+
+test('should throw error when chat not found', async () => {
+  const findOneMock = {
+    findOne: jest.fn(() => findOneMock),
+    select: () => findOneMock,
+    lean: () => null,
+  };
+  Chat.findOne.mockImplementationOnce(findOneMock.findOne);
+
+  await expect(() => messages()).rejects.toThrow(PERMISSIONS_ERROR);
+});
+
 test('should call selectedFields', async () => {
+  const findOneMock = {
+    findOne: () => findOneMock,
+    select: () => findOneMock,
+    lean: () => 'chat',
+  };
+  Chat.findOne.mockImplementationOnce(findOneMock.findOne);
+
   const fieldsMock = jest.fn();
   selectedFields.mockImplementationOnce(fieldsMock);
 
@@ -52,25 +107,38 @@ test('should call selectedFields', async () => {
 });
 
 test('should get all messages for chat', async () => {
+  const findOneMock = {
+    findOne: () => findOneMock,
+    select: () => findOneMock,
+    lean: () => 'chat',
+  };
+  Chat.findOne.mockImplementationOnce(findOneMock.findOne);
+
   const messageMock = {
     find: jest.fn(() => messageMock),
     select: () => messageMock,
     sort: () => messageMock,
-    limit: jest.fn(() => messageMock),
-    skip: jest.fn(() => messageMock),
-    lean: () => [],
+    limit: () => messageMock,
+    skip: () => messageMock,
+    lean: () => [{ a: 1 }],
   };
   Message.find.mockImplementationOnce(messageMock.find);
 
   const args = { input: { chatId: FakeObjectId(), limit: 25, skip: 5 } };
+
   await messages(null, args, null, null);
 
   expect(messageMock.find).toHaveBeenCalledWith({ chatId: args.input.chatId });
-  expect(messageMock.limit).toHaveBeenCalledWith(args.input.limit);
-  expect(messageMock.skip).toHaveBeenCalledWith(args.input.skip);
 });
 
 test('should return reversed order messages', async () => {
+  const findOneMock = {
+    findOne: () => findOneMock,
+    select: () => findOneMock,
+    lean: () => 'chat',
+  };
+  Chat.findOne.mockImplementationOnce(findOneMock.findOne);
+
   const fakeMessages = [FakeMessage(), FakeMessage()];
 
   const messageMock = {

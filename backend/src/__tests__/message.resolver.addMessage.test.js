@@ -6,12 +6,11 @@ import { messageResolver } from '../graphql/message/message.resolver';
 import { isAuthenticated } from '../utils/isAuthenticated';
 import { FakeObjectId, FakeMessage } from '../utils/fixtures';
 import { pubsub } from '../graphql/pubsub';
-import { MESSAGE_ADDED } from '../utils/constants';
+import { MESSAGE_ADDED, PERMISSIONS_ERROR } from '../utils/constants';
 
 const { addMessage } = messageResolver.Mutation;
 
 jest.mock('../utils/isAuthenticated.js');
-jest.mock('../utils/isParticipant.js');
 jest.mock('../graphql/message/message.model.js');
 jest.mock('../graphql/chat/chat.model.js');
 jest.mock('../graphql/pubsub.js');
@@ -20,15 +19,56 @@ test('should call isAuthenticated', async () => {
   const authMock = jest.fn();
   isAuthenticated.mockImplementationOnce(authMock);
 
-  const ctx = { req: { userId: FakeObjectId() } };
+  const findOneMock = {
+    findOne: () => findOneMock,
+    select: () => findOneMock,
+    lean: () => 'chat',
+  };
+  Chat.findOne.mockImplementationOnce(findOneMock.findOne);
+
+  const ctx = { userId: FakeObjectId() };
   await addMessage(null, null, ctx, null);
 
   expect(authMock).toHaveBeenCalledWith(ctx);
 });
 
+test('should get chat', async () => {
+  const findOneMock = {
+    findOne: jest.fn(() => findOneMock),
+    select: () => findOneMock,
+    lean: () => 'chat',
+  };
+  Chat.findOne.mockImplementationOnce(findOneMock.findOne);
+
+  const ctx = { userId: FakeObjectId() };
+  await addMessage(null, null, ctx, null);
+
+  expect(findOneMock.findOne).toHaveBeenCalled();
+});
+
+test('should throw error if chat not found', async () => {
+  const findOneMock = {
+    findOne: jest.fn(() => findOneMock),
+    select: () => findOneMock,
+    lean: () => null,
+  };
+  Chat.findOne.mockImplementationOnce(findOneMock.findOne);
+
+  await expect(() => addMessage(null, null, null, null)).rejects.toThrow(
+    PERMISSIONS_ERROR
+  );
+});
+
 test('should create message for chat', async () => {
   const createMock = jest.fn();
   Message.create.mockImplementationOnce(createMock);
+
+  const findOneMock = {
+    findOne: () => findOneMock,
+    select: () => findOneMock,
+    lean: () => 'chat',
+  };
+  Chat.findOne.mockImplementationOnce(findOneMock.findOne);
 
   const args = {
     input: { chatId: FakeObjectId(), text: faker.lorem.sentence(2) },
@@ -38,7 +78,14 @@ test('should create message for chat', async () => {
   expect(createMock).toHaveBeenCalledWith(args.input);
 });
 
-test('should update chat with message id', async () => {
+test('should update chat with lastMessage', async () => {
+  const findOneMock = {
+    findOne: () => findOneMock,
+    select: () => findOneMock,
+    lean: () => 'chat',
+  };
+  Chat.findOne.mockImplementationOnce(findOneMock.findOne);
+
   const fakeMessage = FakeMessage();
   Message.create.mockImplementationOnce(() => fakeMessage);
 
@@ -54,6 +101,13 @@ test('should update chat with message id', async () => {
 });
 
 test('should publish created message', async () => {
+  const findOneMock = {
+    findOne: () => findOneMock,
+    select: () => findOneMock,
+    lean: () => 'chat',
+  };
+  Chat.findOne.mockImplementationOnce(findOneMock.findOne);
+
   const fakeMessage = FakeMessage();
   Message.create.mockImplementationOnce(() => fakeMessage);
 
@@ -71,6 +125,13 @@ test('should publish created message', async () => {
 });
 
 test('should return message', async () => {
+  const findOneMock = {
+    findOne: () => findOneMock,
+    select: () => findOneMock,
+    lean: () => 'chat',
+  };
+  Chat.findOne.mockImplementationOnce(findOneMock.findOne);
+
   const fakeMessage = FakeMessage();
   Message.create.mockImplementationOnce(() => fakeMessage);
 

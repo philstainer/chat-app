@@ -8,17 +8,22 @@ type User {
   updatedAt: DateTime!
 }
 
+type Token {
+  token: String!
+}
+
 type Query {
   me: User
+  refreshTokens: Token!
 }
 
 type Mutation {
-  register(input: UserRegisterInput!): User!
-  login(input: UserRegisterInput!): User!
+  register(input: UserRegisterInput!): Token!
+  login(input: UserRegisterInput!): Token!
   logout: Boolean
   confirmAccount(input: ConfirmAccountInput!): Boolean
   resetPasswordRequest(input: ResetPasswordRequestInput!): Boolean
-  resetPassword(input: ResetPasswordInput): User!
+  resetPassword(input: ResetPasswordInput): Token!
 }
 
 type Subscription {

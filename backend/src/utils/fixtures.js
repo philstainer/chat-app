@@ -2,8 +2,9 @@ import faker from 'faker';
 import mongoose from 'mongoose';
 
 export const FakeObjectId = () => new mongoose.Types.ObjectId();
+export const FakeToken = () => faker.random.uuid();
 
-export const FakeUser = (extra) => ({
+export const FakeUser = extra => ({
   _id: FakeObjectId(),
   email: faker.internet.email(),
   password: faker.internet.password(8),
@@ -18,7 +19,7 @@ export const FakeUser = (extra) => ({
   ...extra,
 });
 
-export const FakeChat = (extra) => ({
+export const FakeChat = extra => ({
   _id: FakeObjectId(),
   participants: [],
   lastMessage: faker.lorem.sentence(5),
@@ -27,7 +28,7 @@ export const FakeChat = (extra) => ({
   ...extra,
 });
 
-export const FakeMessage = (extra) => ({
+export const FakeMessage = extra => ({
   _id: FakeObjectId(),
   chatId: FakeObjectId(),
   body: faker.lorem.sentence(5),

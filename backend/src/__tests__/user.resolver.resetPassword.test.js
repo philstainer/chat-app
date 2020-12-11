@@ -3,22 +3,31 @@ import bcrypt from 'bcryptjs';
 
 import { userResolver } from '../graphql/user/user.resolver';
 import { User } from '../graphql/user/user.model';
-import { AUTH_LOGGED_IN_ERROR, INVALID_TOKEN_ERROR } from '../utils/constants';
+import {
+  AUTH_LOGGED_IN_ERROR,
+  INVALID_TOKEN_ERROR,
+  REFRESH_TOKEN,
+} from '../utils/constants';
 import { selectedFields } from '../utils/selectedFields';
-import { generateCookie } from '../utils/generateCookie';
-import { FakeObjectId } from '../utils/fixtures';
+import {
+  generateJwtToken,
+  generateRefreshToken,
+  setTokenCookie,
+} from '../utils/helpers';
+
+import { FakeObjectId, FakeToken } from '../utils/fixtures';
 
 const { resetPassword } = userResolver.Mutation;
 
 jest.mock('../graphql/user/user.model.js');
-jest.mock('../utils/generateCookie.js');
 jest.mock('../utils/logger.js');
 jest.mock('../utils/accessEnv');
 jest.mock('../utils/selectedFields');
+jest.mock('../utils/helpers.js');
 jest.mock('bcryptjs');
 
 test('should throw error when logged in', async () => {
-  const ctx = { req: { userId: FakeObjectId() } };
+  const ctx = { userId: FakeObjectId() };
 
   await expect(() => resetPassword(null, null, ctx, null)).rejects.toThrow(
     AUTH_LOGGED_IN_ERROR
@@ -139,7 +148,7 @@ test('should update user with new password', async () => {
   );
 });
 
-test('should generate user cookie', async () => {
+test('should generate tokens and set refresh cookie', async () => {
   // FindOne Mock
   const userMock = {
     findOne: () => userMock,
@@ -149,10 +158,7 @@ test('should generate user cookie', async () => {
   User.findOne.mockImplementationOnce(userMock.findOne);
 
   // FindByIdAndUpdate Mock
-  const updatedUser = {
-    _id: FakeObjectId(),
-  };
-
+  const updatedUser = 'updatedUser';
   const updateMock = {
     findByIdAndUpdate: () => updateMock,
     select: () => updateMock,
@@ -160,20 +166,29 @@ test('should generate user cookie', async () => {
   };
   User.findByIdAndUpdate.mockImplementationOnce(updateMock.findByIdAndUpdate);
 
-  const generateCookieMock = jest.fn();
-  generateCookie.mockImplementationOnce(generateCookieMock);
+  const jwtTokenMock = jest.fn();
+  generateJwtToken.mockImplementationOnce(jwtTokenMock);
 
-  const ctx = {};
+  const refreshToken = { token: faker.random.uuid() };
+  const refreshTokenMock = jest.fn(() => refreshToken);
+  generateRefreshToken.mockImplementationOnce(refreshTokenMock);
+
+  const setTokenMock = jest.fn();
+  setTokenCookie.mockImplementationOnce(setTokenMock);
+
+  const ctx = { req: { ip: faker.internet.ip() }, res: {} };
   await resetPassword(null, null, ctx, null);
 
-  expect(generateCookieMock).toHaveBeenCalledWith(
-    { sub: updatedUser._id },
-    'token',
-    ctx
+  expect(jwtTokenMock).toHaveBeenCalledWith(updatedUser);
+  expect(refreshTokenMock).toHaveBeenCalledWith(updatedUser, ctx.req.ip);
+  expect(setTokenMock).toHaveBeenCalledWith(
+    REFRESH_TOKEN,
+    refreshToken.token,
+    ctx.res
   );
 });
 
-test('should return user', async () => {
+test('should return token', async () => {
   // FindOne Mock
   const userMock = {
     findOne: () => userMock,
@@ -182,19 +197,17 @@ test('should return user', async () => {
   };
   User.findOne.mockImplementationOnce(userMock.findOne);
 
-  // FindByIdAndUpdate Mock
-  const updatedUser = {
-    _id: FakeObjectId(),
-  };
+  const token = FakeToken();
+  generateJwtToken.mockImplementationOnce(() => token);
 
   const updateMock = {
     findByIdAndUpdate: () => updateMock,
     select: () => updateMock,
-    lean: () => updatedUser,
+    lean: () => 'updatedUser',
   };
   User.findByIdAndUpdate.mockImplementationOnce(updateMock.findByIdAndUpdate);
 
   const result = await resetPassword(null, null, null, null);
 
-  expect(result).toBe(updatedUser);
+  expect(result.token).toBe(token);
 });
