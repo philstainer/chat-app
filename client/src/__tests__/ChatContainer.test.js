@@ -9,7 +9,7 @@ import { MESSAGE_ADDED } from '../operations/subscriptions/messageAdded';
 import { ChatContainer } from '../containers/ChatContainer';
 import { activeChat } from '../cache';
 
-window.HTMLElement.prototype.scrollIntoView = function () {};
+window.HTMLElement.prototype.scrollIntoView = () => {};
 
 test('should fetch me and messages on mount', async () => {
   const fakeChat = FakeChat();

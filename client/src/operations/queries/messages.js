@@ -13,7 +13,7 @@ export const MESSAGES = gql`
   }
 `;
 
-export const useMessages = (options = {}) => {
+export const useMessages = options => {
   const query = useQuery(MESSAGES, options);
 
   return query;

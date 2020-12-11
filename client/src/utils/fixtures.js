@@ -1,6 +1,8 @@
 import faker from 'faker';
 
-export const FakeUser = (extra) => ({
+export const FakeToken = () => faker.random.uuid();
+
+export const FakeUser = extra => ({
   _id: faker.random.uuid(),
   email: faker.internet.email(),
   password: faker.internet.password(8),
@@ -15,16 +17,7 @@ export const FakeUser = (extra) => ({
   ...extra,
 });
 
-export const FakeChat = (extra) => ({
-  _id: faker.random.uuid(),
-  participants: [FakeUser(), FakeUser()],
-  lastMessage: FakeMessage(),
-  createdAt: faker.date.recent(),
-  updatedAt: faker.date.recent(),
-  ...extra,
-});
-
-export const FakeMessage = (extra) => ({
+export const FakeMessage = extra => ({
   _id: faker.random.uuid(),
   chatId: faker.random.uuid(),
   text: faker.lorem.sentence(5),
@@ -32,6 +25,15 @@ export const FakeMessage = (extra) => ({
   deliveredTo: [],
   seenBy: [],
   active: faker.random.boolean(),
+  createdAt: faker.date.recent(),
+  updatedAt: faker.date.recent(),
+  ...extra,
+});
+
+export const FakeChat = extra => ({
+  _id: faker.random.uuid(),
+  participants: [FakeUser(), FakeUser()],
+  lastMessage: FakeMessage(),
   createdAt: faker.date.recent(),
   updatedAt: faker.date.recent(),
   ...extra,
