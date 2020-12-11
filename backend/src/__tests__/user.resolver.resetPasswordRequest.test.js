@@ -5,19 +5,19 @@ import { userResolver } from '../graphql/user/user.resolver';
 import { User } from '../graphql/user/user.model';
 import { AUTH_LOGGED_IN_ERROR } from '../utils/constants';
 import { accessEnv } from '../utils/accessEnv';
-import { generateToken } from '../utils/generateToken';
 import { FakeObjectId } from '../utils/fixtures';
+import { randomTokenString } from '../utils/helpers';
 
 const { resetPasswordRequest } = userResolver.Mutation;
 
+jest.mock('../utils/helpers.js');
 jest.mock('../graphql/user/user.model.js');
-jest.mock('../utils/generateToken.js');
 jest.mock('../utils/logger.js');
 jest.mock('../utils/accessEnv');
 jest.mock('@sendgrid/mail');
 
 test('should throw error when logged in', async () => {
-  const ctx = { req: { userId: FakeObjectId() } };
+  const ctx = { userId: FakeObjectId() };
 
   await expect(() =>
     resetPasswordRequest(null, null, ctx, null)
@@ -62,7 +62,7 @@ test('should generate reset token with expiry and send reset email', async () =>
 
   // Reset Token
   const resetToken = 'token';
-  generateToken.mockImplementationOnce(() => Promise.resolve(resetToken));
+  randomTokenString.mockImplementationOnce(() => resetToken);
 
   // Email mock
   const sendEmailMock = jest.fn();

@@ -7,7 +7,7 @@ test('should throw error when not logged in', () => {
 });
 
 test('should not throw error when logged in', () => {
-  const ctx = { req: { userId: FakeObjectId() } };
+  const ctx = { userId: FakeObjectId() };
 
   expect(() => isAuthenticated(ctx)).not.toThrow();
 });

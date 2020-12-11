@@ -22,7 +22,7 @@ test('should call isAuthenticated', () => {
   };
   Chat.find.mockImplementationOnce(chatMock.find);
 
-  const ctx = { req: { userId: FakeObjectId() } };
+  const ctx = { userId: FakeObjectId() };
 
   chats(null, null, ctx, null);
 

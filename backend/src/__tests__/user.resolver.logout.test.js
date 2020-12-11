@@ -11,7 +11,7 @@ test('should call isAuthenticated', () => {
   isAuthenticated.mockImplementation(authMock);
 
   const ctx = {
-    req: { userId: FakeObjectId() },
+    userId: FakeObjectId(),
     res: { clearCookie: jest.fn() },
   };
 
@@ -22,7 +22,7 @@ test('should call isAuthenticated', () => {
 
 test('should clear token cookie', () => {
   const ctx = {
-    req: { userId: FakeObjectId() },
+    userId: FakeObjectId(),
     res: { clearCookie: jest.fn() },
   };
 
@@ -33,7 +33,7 @@ test('should clear token cookie', () => {
 
 test('should return true on success', () => {
   const ctx = {
-    req: { userId: FakeObjectId() },
+    userId: FakeObjectId(),
     res: { clearCookie: jest.fn() },
   };
 

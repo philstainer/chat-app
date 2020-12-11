@@ -27,7 +27,7 @@ test('should call selectedFields', async () => {
   const selectMock = jest.fn();
   selectedFields.mockImplementation(selectMock);
 
-  const ctx = { req: { userId: FakeObjectId() } };
+  const ctx = { userId: FakeObjectId() };
   const info = { name: null };
   await me(null, null, ctx, info);
 
@@ -45,10 +45,10 @@ test('should get user via userId from req on ctx', async () => {
   const selected = '_id name';
   selectedFields.mockImplementation(() => selected);
 
-  const ctx = { req: { userId: FakeObjectId() } };
+  const ctx = { userId: FakeObjectId() };
   await me(null, null, ctx, null);
 
-  expect(userMock.findById).toHaveBeenCalledWith(ctx.req.userId);
+  expect(userMock.findById).toHaveBeenCalledWith(ctx.userId);
   expect(userMock.select).toHaveBeenCalledWith(selected);
   expect(userMock.lean).toHaveBeenCalled();
 });
@@ -66,7 +66,7 @@ test('should return user', async () => {
   };
   User.findById.mockImplementation(userMock.findById);
 
-  const ctx = { req: { userId: FakeObjectId() } };
+  const ctx = { userId: FakeObjectId() };
   const returnedUser = await me(null, null, ctx, null);
 
   expect(returnedUser).toEqual(user);

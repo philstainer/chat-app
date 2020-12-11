@@ -20,7 +20,7 @@ test('should call isAuthenticated', async () => {
   Chat.create.mockImplementationOnce(createMock);
 
   const args = { input: { participants: [FakeObjectId()] } };
-  const ctx = { req: { userId: FakeObjectId() } };
+  const ctx = { userId: FakeObjectId() };
 
   await createChat(null, args, ctx, null);
 
@@ -31,9 +31,9 @@ test('should filter out logged in userId', async () => {
   const createMock = jest.fn();
   Chat.create.mockImplementationOnce(createMock);
 
-  const ctx = { req: { userId: FakeObjectId() } };
+  const ctx = { userId: FakeObjectId() };
   const args = {
-    input: { participants: [ctx.req.userId, FakeObjectId()] },
+    input: { participants: [ctx.userId, FakeObjectId()] },
   };
 
   await createChat(null, args, ctx, null);
@@ -45,7 +45,7 @@ test('should filter out logged in userId', async () => {
 
 test('should throw error when empty participants', async () => {
   const args = { input: { participants: [] } };
-  const ctx = { req: { userId: FakeObjectId() } };
+  const ctx = { userId: FakeObjectId() };
 
   await expect(() => createChat(null, args, ctx, null)).rejects.toThrow(
     INVALID_PARTICIPANTS_ERROR
@@ -57,7 +57,7 @@ test('should create chat with participants and current user', async () => {
   Chat.create.mockImplementationOnce(createMock);
 
   const args = { input: { participants: [FakeObjectId()] } };
-  const ctx = { req: { userId: FakeObjectId() } };
+  const ctx = { userId: FakeObjectId() };
   await createChat(null, args, ctx, null);
 
   expect(createMock).toHaveBeenCalled();
@@ -72,7 +72,7 @@ test('should publish created chat', async () => {
   pubsub.publish.mockImplementationOnce(publishMock);
 
   const args = { input: { participants: [FakeObjectId()] } };
-  const ctx = { req: { userId: FakeObjectId() } };
+  const ctx = { userId: FakeObjectId() };
   await createChat(null, args, ctx, null);
 
   expect(publishMock).toHaveBeenCalledWith(CHAT_CREATED, {
@@ -87,7 +87,7 @@ test('should return chat', async () => {
   Chat.create.mockImplementationOnce(createMock);
 
   const args = { input: { participants: [FakeObjectId()] } };
-  const ctx = { req: { userId: FakeObjectId() } };
+  const ctx = { userId: FakeObjectId() };
   const result = await createChat(null, args, ctx, null);
 
   expect(result).toBe(fakeChat);
