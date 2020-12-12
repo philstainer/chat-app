@@ -1,5 +1,5 @@
 import DataLoader from 'dataloader';
-import { Message } from '../message/message.model';
+import { Message } from '#graphql/message/message.model';
 
 export const messageLoader = () => {
   const loader = new DataLoader(async ids => {

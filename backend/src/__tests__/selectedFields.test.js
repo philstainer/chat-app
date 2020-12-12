@@ -1,6 +1,6 @@
 import graphqlFields from 'graphql-fields';
 
-import { selectedFields } from '../utils/selectedFields';
+import { selectedFields } from '#utils/selectedFields';
 
 jest.mock('graphql-fields');
 

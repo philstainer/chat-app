@@ -1,5 +1,5 @@
-import { chatResolver } from '../graphql/chat/chat.resolver';
-import { FakeObjectId } from '../utils/fixtures';
+import { chatResolver } from '#graphql/chat/chat.resolver';
+import { FakeObjectId } from '#utils/fixtures';
 
 const { participants } = chatResolver.Chat;
 

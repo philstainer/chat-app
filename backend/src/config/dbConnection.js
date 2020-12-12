@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { accessEnv } from '../utils/accessEnv';
+import { accessEnv } from '#utils/accessEnv';
 
 if (accessEnv('NODE_ENV') === 'development') mongoose.set('debug', true);
 

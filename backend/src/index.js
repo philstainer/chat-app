@@ -1,10 +1,10 @@
 import { createServer } from 'http';
-import { app } from './app';
-import { apolloServer } from './graphql/apolloServer';
+import { app } from '#src/app';
+import { apolloServer } from '#graphql/apolloServer';
 
-import { accessEnv } from './utils/accessEnv';
-import { logger } from './utils/logger';
-import { db } from './config/dbConnection';
+import { accessEnv } from '#utils/accessEnv';
+import { logger } from '#utils/logger';
+import { db } from '#config/dbConnection';
 
 import '#src/queues';
 

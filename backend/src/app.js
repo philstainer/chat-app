@@ -2,8 +2,8 @@ import express from 'express';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 
-import { apolloServer } from './graphql/apolloServer';
-import { accessEnv } from './utils/accessEnv';
+import { apolloServer } from '#graphql/apolloServer';
+import { accessEnv } from '#utils/accessEnv';
 
 const app = express();
 

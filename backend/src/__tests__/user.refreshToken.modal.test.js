@@ -1,7 +1,7 @@
 import ms from 'ms';
 
-import { RefreshToken } from '../graphql/user/refreshToken.model';
-import { FakeObjectId } from '../utils/fixtures';
+import { RefreshToken } from '#graphql/user/refreshToken.model';
+import { FakeObjectId } from '#utils/fixtures';
 
 test('should have isExpired virtual property', async () => {
   const refreshToken = new RefreshToken({

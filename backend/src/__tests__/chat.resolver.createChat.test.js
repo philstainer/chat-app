@@ -1,16 +1,16 @@
-import { Chat } from '../graphql/chat/chat.model';
-import { chatResolver } from '../graphql/chat/chat.resolver';
-import { pubsub } from '../graphql/pubsub';
-import { isAuthenticated } from '../utils/isAuthenticated';
-import { FakeChat, FakeObjectId } from '../utils/fixtures';
-import { INVALID_PARTICIPANTS_ERROR, CHAT_CREATED } from '../config/constants';
+import { Chat } from '#graphql/chat/chat.model';
+import { chatResolver } from '#graphql/chat/chat.resolver';
+import { pubsub } from '#graphql/pubsub';
+import { isAuthenticated } from '#utils/isAuthenticated';
+import { FakeChat, FakeObjectId } from '#utils/fixtures';
+import { INVALID_PARTICIPANTS_ERROR, CHAT_CREATED } from '#config/constants';
 
 const { createChat } = chatResolver.Mutation;
 
-jest.mock('../utils/isAuthenticated.js');
-jest.mock('../utils/selectedFields.js');
-jest.mock('../graphql/chat/chat.model.js');
-jest.mock('../graphql/pubsub.js');
+jest.mock('#utils/isAuthenticated.js');
+jest.mock('#utils/selectedFields.js');
+jest.mock('#graphql/chat/chat.model.js');
+jest.mock('#graphql/pubsub.js');
 
 test('should call isAuthenticated', async () => {
   const authMock = jest.fn();

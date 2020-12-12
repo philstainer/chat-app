@@ -1,5 +1,5 @@
 import DataLoader from 'dataloader';
-import { User } from '../user/user.model';
+import { User } from '#graphql/user/user.model';
 
 export const userLoader = () => {
   const loader = new DataLoader(async ids => {

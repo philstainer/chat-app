@@ -1,8 +1,8 @@
 import { gql } from 'apollo-server-express';
 
-import { userSchema } from './user/user.schema';
-import { chatSchema } from './chat/chat.schema';
-import { messageSchema } from './message/message.schema.js';
+import { userSchema } from '#graphql/user/user.schema';
+import { chatSchema } from '#graphql/chat/chat.schema';
+import { messageSchema } from '#graphql/message/message.schema';
 
 const root = gql`
   scalar DateTime

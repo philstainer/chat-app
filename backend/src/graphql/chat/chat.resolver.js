@@ -1,13 +1,10 @@
 import { UserInputError, withFilter } from 'apollo-server-express';
 
-import { pubsub } from '../pubsub';
-import { Chat } from './chat.model';
-import { isAuthenticated } from '../../utils/isAuthenticated';
-import { selectedFields } from '../../utils/selectedFields';
-import {
-  INVALID_PARTICIPANTS_ERROR,
-  CHAT_CREATED,
-} from '../../config/constants';
+import { pubsub } from '#graphql/pubsub';
+import { Chat } from '#graphql/chat/chat.model';
+import { isAuthenticated } from '#utils/isAuthenticated';
+import { selectedFields } from '#utils/selectedFields';
+import { INVALID_PARTICIPANTS_ERROR, CHAT_CREATED } from '#config/constants';
 
 export const chatResolver = {
   Query: {

@@ -1,5 +1,5 @@
 import { createLogger, format, transports } from 'winston';
-import { accessEnv } from './accessEnv';
+import { accessEnv } from '#utils/accessEnv';
 
 const LoggerLevel = {
   error: 'error',

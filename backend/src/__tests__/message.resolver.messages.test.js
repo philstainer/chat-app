@@ -1,17 +1,17 @@
-import { Message } from '../graphql/message/message.model';
-import { Chat } from '../graphql/chat/chat.model';
-import { messageResolver } from '../graphql/message/message.resolver';
-import { isAuthenticated } from '../utils/isAuthenticated';
-import { selectedFields } from '../utils/selectedFields';
-import { FakeObjectId, FakeMessage } from '../utils/fixtures';
-import { PERMISSIONS_ERROR } from '../config/constants';
+import { Message } from '#graphql/message/message.model';
+import { Chat } from '#graphql/chat/chat.model';
+import { messageResolver } from '#graphql/message/message.resolver';
+import { isAuthenticated } from '#utils/isAuthenticated';
+import { selectedFields } from '#utils/selectedFields';
+import { FakeObjectId, FakeMessage } from '#utils/fixtures';
+import { PERMISSIONS_ERROR } from '#config/constants';
 
 const { messages } = messageResolver.Query;
 
-jest.mock('../graphql/message/message.model.js');
-jest.mock('../graphql/chat/chat.model.js');
-jest.mock('../utils/isAuthenticated.js');
-jest.mock('../utils/selectedFields.js');
+jest.mock('#graphql/message/message.model.js');
+jest.mock('#graphql/chat/chat.model.js');
+jest.mock('#utils/isAuthenticated.js');
+jest.mock('#utils/selectedFields.js');
 
 test('should call isAuthenticated', async () => {
   const authMock = jest.fn();

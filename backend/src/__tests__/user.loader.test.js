@@ -1,8 +1,8 @@
-import { User } from '../graphql/user/user.model';
-import { FakeUser } from '../utils/fixtures';
-import { userLoader } from '../graphql/loaders/user.loader';
+import { User } from '#graphql/user/user.model';
+import { FakeUser } from '#utils/fixtures';
+import { userLoader } from '#graphql/loaders/user.loader';
 
-jest.mock('../graphql/user/user.model.js');
+jest.mock('#graphql/user/user.model.js');
 
 test('should filter out duplicates', async () => {
   const foundUsers = [FakeUser(), FakeUser()];

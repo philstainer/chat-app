@@ -1,11 +1,11 @@
 import { withFilter, AuthenticationError } from 'apollo-server-express';
 
-import { pubsub } from '../pubsub';
-import { Message } from './message.model';
-import { Chat } from '../chat/chat.model';
-import { isAuthenticated } from '../../utils/isAuthenticated';
-import { selectedFields } from '../../utils/selectedFields';
-import { MESSAGE_ADDED, PERMISSIONS_ERROR } from '../../config/constants';
+import { pubsub } from '#graphql/pubsub';
+import { Message } from '#graphql/message/message.model';
+import { Chat } from '#graphql/chat/chat.model';
+import { isAuthenticated } from '#utils/isAuthenticated';
+import { selectedFields } from '#utils/selectedFields';
+import { MESSAGE_ADDED, PERMISSIONS_ERROR } from '#config/constants';
 
 const messageResolver = {
   Query: {

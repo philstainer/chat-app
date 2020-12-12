@@ -1,5 +1,5 @@
-import { userLoader } from './user.loader';
-import { messageLoader } from './message.loader';
+import { userLoader } from '#graphql/loaders/user.loader';
+import { messageLoader } from '#graphql/loaders/message.loader';
 
 export const loaders = () => ({
   userLoader: userLoader(),
