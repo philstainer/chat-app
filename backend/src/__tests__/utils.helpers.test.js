@@ -1,16 +1,15 @@
 import faker from 'faker';
 import { sign, verify } from 'jsonwebtoken';
-import { hash } from 'bcryptjs';
 
-import { RefreshToken } from '../graphql/user/refreshToken.model';
-import { accessEnv } from '../utils/accessEnv';
-import { FakeUser, FakeToken } from '../utils/fixtures';
-import * as helpers from '../utils/helpers';
+import { RefreshToken } from '#graphql/user/refreshToken.model';
+import { accessEnv } from '#utils/accessEnv';
+import { FakeUser, FakeToken } from '#utils/fixtures';
+import * as helpers from '#utils/helpers';
 
 jest.mock('bcryptjs');
 jest.mock('jsonwebtoken');
-jest.mock('../utils/accessEnv.js');
-jest.mock('../graphql/user/refreshToken.model.js');
+jest.mock('#utils/accessEnv.js');
+jest.mock('#graphql/user/refreshToken.model.js');
 
 describe('randomTokenString', () => {
   test('should return random hex string', async () => {
@@ -23,21 +22,6 @@ describe('randomTokenString', () => {
     const randomToken = helpers.randomTokenString(20);
 
     expect(randomToken).toHaveLength(40);
-  });
-});
-
-describe('hashPassword', () => {
-  test('should return hashed password', async () => {
-    const password = faker.internet.password(8);
-
-    const hashMock = jest.fn(() => password);
-    hash.mockImplementationOnce(hashMock);
-
-    const result = await helpers.hashPassword(password);
-
-    expect(hashMock).toHaveBeenCalled();
-
-    expect(result).toEqual(password);
   });
 });
 

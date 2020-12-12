@@ -1,19 +1,12 @@
-import { hash } from 'bcryptjs';
 import { randomBytes } from 'crypto';
 import { sign, verify } from 'jsonwebtoken';
 import ms from 'ms';
 
-import { RefreshToken } from '../graphql/user/refreshToken.model';
-import { accessEnv } from './accessEnv';
+import { RefreshToken } from '#graphql/user/refreshToken.model';
+import { accessEnv } from '#utils/accessEnv';
 
 export const randomTokenString = (length = 40) => {
   return randomBytes(length).toString('hex');
-};
-
-export const hashPassword = async password => {
-  const hashedPassword = await hash(password, 10);
-
-  return hashedPassword;
 };
 
 export const setTokenCookie = (name, token, res) => {
