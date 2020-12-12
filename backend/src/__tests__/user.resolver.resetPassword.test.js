@@ -7,7 +7,7 @@ import {
   AUTH_LOGGED_IN_ERROR,
   INVALID_TOKEN_ERROR,
   REFRESH_TOKEN,
-} from '../utils/constants';
+} from '../config/constants';
 import { selectedFields } from '../utils/selectedFields';
 import {
   generateJwtToken,

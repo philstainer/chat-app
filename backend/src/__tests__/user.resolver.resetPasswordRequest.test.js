@@ -3,7 +3,7 @@ import sgMail from '@sendgrid/mail';
 
 import { userResolver } from '../graphql/user/user.resolver';
 import { User } from '../graphql/user/user.model';
-import { AUTH_LOGGED_IN_ERROR } from '../utils/constants';
+import { AUTH_LOGGED_IN_ERROR } from '../config/constants';
 import { accessEnv } from '../utils/accessEnv';
 import { FakeObjectId } from '../utils/fixtures';
 import { randomTokenString } from '../utils/helpers';

@@ -1,6 +1,6 @@
 import { loaders } from './loaders';
 
-import { ACCESS_TOKEN } from '../utils/constants';
+import { ACCESS_TOKEN } from '../config/constants';
 import { verifyJwtToken } from '../utils/helpers';
 
 export const context = async ({ connection, payload, ...ctx }) => {

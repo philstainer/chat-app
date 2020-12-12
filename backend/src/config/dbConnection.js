@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { accessEnv } from './accessEnv';
+import { accessEnv } from '../utils/accessEnv';
 
 if (accessEnv('NODE_ENV') === 'development') mongoose.set('debug', true);
 
@@ -23,7 +23,7 @@ const close = async () => {
 const clear = async () => {
   const { collections } = mongoose.connection;
 
-  Object.keys(collections).map(async (key) => {
+  Object.keys(collections).map(async key => {
     await collections[key].deleteMany();
   });
 };

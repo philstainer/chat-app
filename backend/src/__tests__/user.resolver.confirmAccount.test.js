@@ -2,7 +2,7 @@ import faker from 'faker';
 
 import { userResolver } from '../graphql/user/user.resolver';
 import { User } from '../graphql/user/user.model';
-import { INVALID_TOKEN_ERROR } from '../utils/constants';
+import { INVALID_TOKEN_ERROR } from '../config/constants';
 import { FakeObjectId } from '../utils/fixtures';
 
 const { confirmAccount } = userResolver.Mutation;

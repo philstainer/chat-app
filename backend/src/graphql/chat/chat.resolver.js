@@ -7,7 +7,7 @@ import { selectedFields } from '../../utils/selectedFields';
 import {
   INVALID_PARTICIPANTS_ERROR,
   CHAT_CREATED,
-} from '../../utils/constants';
+} from '../../config/constants';
 
 export const chatResolver = {
   Query: {

@@ -5,7 +5,7 @@ import { Message } from './message.model';
 import { Chat } from '../chat/chat.model';
 import { isAuthenticated } from '../../utils/isAuthenticated';
 import { selectedFields } from '../../utils/selectedFields';
-import { MESSAGE_ADDED, PERMISSIONS_ERROR } from '../../utils/constants';
+import { MESSAGE_ADDED, PERMISSIONS_ERROR } from '../../config/constants';
 
 const messageResolver = {
   Query: {

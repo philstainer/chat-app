@@ -13,7 +13,7 @@ import {
   hashPassword,
   randomTokenString,
 } from '../utils/helpers';
-import { USER_FOUND_ERROR, REFRESH_TOKEN } from '../utils/constants';
+import { USER_FOUND_ERROR, REFRESH_TOKEN } from '../config/constants';
 
 const { register } = userResolver.Mutation;
 

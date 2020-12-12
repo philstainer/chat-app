@@ -13,6 +13,9 @@ export const AUTH_LOGGED_OUT_ERROR = 'You must be logged in to do that';
 export const GENERAL_ERROR = 'Something went wrong';
 export const PERMISSIONS_ERROR = 'You do not have permissions to do that';
 
+// System
+export const SEND_EMAIL_ERROR = 'SEND_EMAIL_ERROR';
+
 // Subscription Types
 export const CHAT_CREATED = 'CHAT_CREATED';
 export const MESSAGE_ADDED = 'MESSAGE_ADDED';

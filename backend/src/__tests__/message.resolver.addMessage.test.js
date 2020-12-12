@@ -6,7 +6,7 @@ import { messageResolver } from '../graphql/message/message.resolver';
 import { isAuthenticated } from '../utils/isAuthenticated';
 import { FakeObjectId, FakeMessage } from '../utils/fixtures';
 import { pubsub } from '../graphql/pubsub';
-import { MESSAGE_ADDED, PERMISSIONS_ERROR } from '../utils/constants';
+import { MESSAGE_ADDED, PERMISSIONS_ERROR } from '../config/constants';
 
 const { addMessage } = messageResolver.Mutation;
 

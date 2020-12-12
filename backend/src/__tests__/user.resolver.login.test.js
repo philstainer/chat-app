@@ -5,7 +5,7 @@ import { User } from '../graphql/user/user.model';
 import { selectedFields } from '../utils/selectedFields';
 
 import { isNotAuthenticated } from '../utils/isNotAuthenticated';
-import { USER_NOT_FOUND_ERROR, REFRESH_TOKEN } from '../utils/constants';
+import { USER_NOT_FOUND_ERROR, REFRESH_TOKEN } from '../config/constants';
 import { FakeObjectId, FakeToken } from '../utils/fixtures';
 import {
   generateJwtToken,

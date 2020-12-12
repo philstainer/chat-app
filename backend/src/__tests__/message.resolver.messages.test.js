@@ -4,7 +4,7 @@ import { messageResolver } from '../graphql/message/message.resolver';
 import { isAuthenticated } from '../utils/isAuthenticated';
 import { selectedFields } from '../utils/selectedFields';
 import { FakeObjectId, FakeMessage } from '../utils/fixtures';
-import { PERMISSIONS_ERROR } from '../utils/constants';
+import { PERMISSIONS_ERROR } from '../config/constants';
 
 const { messages } = messageResolver.Query;
 

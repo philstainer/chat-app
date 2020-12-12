@@ -3,7 +3,7 @@ import { chatResolver } from '../graphql/chat/chat.resolver';
 import { pubsub } from '../graphql/pubsub';
 import { isAuthenticated } from '../utils/isAuthenticated';
 import { FakeChat, FakeObjectId } from '../utils/fixtures';
-import { INVALID_PARTICIPANTS_ERROR, CHAT_CREATED } from '../utils/constants';
+import { INVALID_PARTICIPANTS_ERROR, CHAT_CREATED } from '../config/constants';
 
 const { createChat } = chatResolver.Mutation;
 
