@@ -15,10 +15,6 @@ export const userSchema = gql`
     resetPassword(input: ResetPasswordInput): TokenResult!
   }
 
-  type Subscription {
-    _empty: String
-  }
-
   type User {
     _id: ID!
     username: String!

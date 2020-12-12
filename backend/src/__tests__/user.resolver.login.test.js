@@ -1,25 +1,23 @@
 import faker from 'faker';
 import bcrypt from 'bcryptjs';
-import { userResolver } from '../graphql/user/user.resolver';
-import { User } from '../graphql/user/user.model';
-import { selectedFields } from '../utils/selectedFields';
+import { login } from '#graphql/user/resolvers/login';
+import { User } from '#graphql/user/user.model';
+import { selectedFields } from '#utils/selectedFields';
 
-import { isNotAuthenticated } from '../utils/isNotAuthenticated';
-import { USER_NOT_FOUND_ERROR, REFRESH_TOKEN } from '../config/constants';
-import { FakeObjectId, FakeToken } from '../utils/fixtures';
+import { isNotAuthenticated } from '#utils/isNotAuthenticated';
+import { USER_NOT_FOUND_ERROR, REFRESH_TOKEN } from '#config/constants';
+import { FakeObjectId, FakeToken } from '#utils/fixtures';
 import {
   generateJwtToken,
   generateRefreshToken,
   setTokenCookie,
-} from '../utils/helpers';
+} from '#utils/helpers';
 
-const { login } = userResolver.Mutation;
-
-jest.mock('../utils/accessEnv.js');
-jest.mock('../utils/isNotAuthenticated.js');
-jest.mock('../utils/selectedFields.js');
-jest.mock('../utils/helpers.js');
-jest.mock('../graphql/user/user.model.js');
+jest.mock('#utils/accessEnv.js');
+jest.mock('#utils/isNotAuthenticated.js');
+jest.mock('#utils/selectedFields.js');
+jest.mock('#utils/helpers.js');
+jest.mock('#graphql/user/user.model.js');
 jest.mock('bcryptjs');
 
 test('should call isNotAuthenticated', async () => {

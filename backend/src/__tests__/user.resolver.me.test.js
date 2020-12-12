@@ -1,14 +1,12 @@
 import faker from 'faker';
 
-import { userResolver } from '../graphql/user/user.resolver';
-import { User } from '../graphql/user/user.model';
-import { selectedFields } from '../utils/selectedFields';
-import { FakeObjectId } from '../utils/fixtures';
+import { me } from '#graphql/user/resolvers/me';
+import { User } from '#graphql/user/user.model';
+import { selectedFields } from '#utils/selectedFields';
+import { FakeObjectId } from '#utils/fixtures';
 
-const { me } = userResolver.Query;
-
-jest.mock('../utils/selectedFields.js');
-jest.mock('../graphql/user/user.model.js');
+jest.mock('#utils/selectedFields.js');
+jest.mock('#graphql/user/user.model.js');
 
 test('should return null when not logged in', async () => {
   const result = await me(null, null, null, null);

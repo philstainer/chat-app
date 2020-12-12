@@ -1,7 +1,9 @@
-import { mailSender } from '../config/emailSetup';
-import { sendMailQueue } from '../config/bullConfig';
+import { sendMailQueue } from '#config/bullConfig';
+import { accessEnv } from '#utils/accessEnv';
 
-const resetPasswordEmail = (emailTo, link, name) => {
+export const resetPasswordEmail = (emailTo, token, name) => {
+  const link = `${accessEnv('FRONTEND_URI')}/reset/${token}`;
+
   const subject = 'Reset your email';
   const body = `<p>Dear ${name},</p>
   <p>We heard that you lost your password. Sorry about that!</p>
@@ -19,7 +21,9 @@ const resetPasswordEmail = (emailTo, link, name) => {
   sendMailQueue.add(data, options);
 };
 
-const registrationEmail = (emailTo, link, name) => {
+export const registrationEmail = (emailTo, token, name) => {
+  const link = `${accessEnv('FRONTEND_URI')}/verify/${token}`;
+
   const subject = 'Welcome to Chat-App';
   const body = `<p>Dear ${name},</p>
   <p>We are thrilled to have you.</p>
@@ -36,10 +40,3 @@ const registrationEmail = (emailTo, link, name) => {
   // signup
   sendMailQueue.add(data, options);
 };
-
-// Consumer: this gets called each time the producer receives a new email.
-sendMailQueue.process(async job => {
-  mailSender(job.data);
-});
-
-export const notifications = { registrationEmail, resetPasswordEmail };

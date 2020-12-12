@@ -1,4 +1,19 @@
 {
   "presets": ["@babel/preset-env"],
-  "plugins": ["@babel/plugin-transform-runtime"]
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "root": ["."],
+        "alias": {
+          "#root": "./",
+          "#src": "./src",
+          "#config": "./src/config",
+          "#graphql": "./src/graphql",
+          "#utils": "./src/utils"
+        }
+      }
+    ],
+    "@babel/plugin-transform-runtime"
+  ]
 }

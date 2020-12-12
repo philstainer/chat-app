@@ -1,10 +1,9 @@
-/* eslint-disable no-console */
 import nodemailer from 'nodemailer';
 import sgMail from '@sendgrid/mail';
 
-import { accessEnv } from '../utils/accessEnv';
-import { logger } from '../utils/logger';
-import { SEND_EMAIL_ERROR } from './constants';
+import { accessEnv } from '#utils/accessEnv';
+import { logger } from '#utils/logger';
+import { SEND_EMAIL_ERROR } from '#config/constants';
 
 export const mailSender = async mailData => {
   const isDev = accessEnv('NODE_ENV') === 'development';

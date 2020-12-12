@@ -1,43 +1,41 @@
-import { userResolver } from '../graphql/user/user.resolver';
-import { isAuthenticated } from '../utils/isAuthenticated';
-import { FakeObjectId } from '../utils/fixtures';
+import { logout } from '#graphql/user/resolvers/logout';
+import { isAuthenticated } from '#utils/isAuthenticated';
+import { FakeObjectId } from '#utils/fixtures';
 
-const { logout } = userResolver.Mutation;
+jest.mock('#utils/isAuthenticated.js');
 
-jest.mock('../utils/isAuthenticated.js');
-
-test('should call isAuthenticated', () => {
+test('should call isAuthenticated', async () => {
   const authMock = jest.fn();
-  isAuthenticated.mockImplementation(authMock);
+  isAuthenticated.mockImplementationOnce(authMock);
 
   const ctx = {
     userId: FakeObjectId(),
     res: { clearCookie: jest.fn() },
   };
 
-  logout(null, null, ctx, null);
+  await logout(null, null, ctx, null);
 
   expect(authMock).toHaveBeenCalledWith(ctx);
 });
 
-test('should clear token cookie', () => {
+test('should clear token cookie', async () => {
   const ctx = {
     userId: FakeObjectId(),
     res: { clearCookie: jest.fn() },
   };
 
-  logout(null, null, ctx, null);
+  await logout(null, null, ctx, null);
 
   expect(ctx.res.clearCookie).toHaveBeenCalledWith('token');
 });
 
-test('should return true on success', () => {
+test('should return true on success', async () => {
   const ctx = {
     userId: FakeObjectId(),
     res: { clearCookie: jest.fn() },
   };
 
-  const returnValue = logout(null, null, ctx, null);
+  const returnValue = await logout(null, null, ctx, null);
 
-  expect(returnValue).toEqual(true);
+  expect(returnValue).toBe(true);
 });

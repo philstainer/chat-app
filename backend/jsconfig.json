@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "#root/*": ["./*"],
+      "#src/*": ["./src/*"],
+      "#config/*": ["./src/config/*"],
+      "#graphql/*": ["./src/graphql/*"],
+      "#utils/*": ["./src/utils/*"]
+    }
+  },
+  "exclude": ["build", "node_modules", "static"]
+}

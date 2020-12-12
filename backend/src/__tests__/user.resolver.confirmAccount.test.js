@@ -1,13 +1,11 @@
 import faker from 'faker';
 
-import { userResolver } from '../graphql/user/user.resolver';
-import { User } from '../graphql/user/user.model';
-import { INVALID_TOKEN_ERROR } from '../config/constants';
-import { FakeObjectId } from '../utils/fixtures';
+import { confirmAccount } from '#graphql/user/resolvers/confirmAccount';
+import { User } from '#graphql/user/user.model';
+import { INVALID_TOKEN_ERROR } from '#config/constants';
+import { FakeObjectId } from '#utils/fixtures';
 
-const { confirmAccount } = userResolver.Mutation;
-
-jest.mock('../graphql/user/user.model.js');
+jest.mock('#graphql/user/user.model.js');
 
 test('should find user via token and expiry', async () => {
   const userMock = {

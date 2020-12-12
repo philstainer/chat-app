@@ -1,6 +1,6 @@
-import { isNotAuthenticated } from '../utils/isNotAuthenticated';
-import { AUTH_LOGGED_IN_ERROR } from '../config/constants';
-import { FakeObjectId } from '../utils/fixtures';
+import { isNotAuthenticated } from '#utils/isNotAuthenticated';
+import { AUTH_LOGGED_IN_ERROR } from '#config/constants';
+import { FakeObjectId } from '#utils/fixtures';
 
 test('should throw error when logged in', () => {
   const ctx = { userId: FakeObjectId() };

@@ -6,6 +6,8 @@ import { accessEnv } from './utils/accessEnv';
 import { logger } from './utils/logger';
 import { db } from './config/dbConnection';
 
+import '#src/queues';
+
 const PORT = accessEnv('PORT', 4000);
 
 (async () => {

@@ -2,6 +2,7 @@ import { Schema, model, ObjectId } from 'mongoose';
 
 const UserSchema = new Schema(
   {
+    username: { type: String, required: true, unique: true, trim: true },
     email: {
       type: String,
       required: true,
@@ -24,6 +25,4 @@ const UserSchema = new Schema(
   { timestamps: true }
 );
 
-const User = model('users', UserSchema);
-
-export { User };
+export const User = model('users', UserSchema);

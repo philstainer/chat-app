@@ -1,6 +1,6 @@
-import { isAuthenticated } from '../utils/isAuthenticated';
-import { AUTH_LOGGED_OUT_ERROR } from '../utconfigils/constants';
-import { FakeObjectId } from '../utils/fixtures';
+import { isAuthenticated } from '#utils/isAuthenticated';
+import { AUTH_LOGGED_OUT_ERROR } from '#config/constants';
+import { FakeObjectId } from '#utils/fixtures';
 
 test('should throw error when not logged in', () => {
   expect(() => isAuthenticated()).toThrow(AUTH_LOGGED_OUT_ERROR);

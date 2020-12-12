@@ -1,29 +1,27 @@
 import faker from 'faker';
 import bcrypt from 'bcryptjs';
 
-import { userResolver } from '../graphql/user/user.resolver';
-import { User } from '../graphql/user/user.model';
+import { resetPassword } from '#graphql/user/resolvers/resetPassword';
+import { User } from '#graphql/user/user.model';
 import {
   AUTH_LOGGED_IN_ERROR,
   INVALID_TOKEN_ERROR,
   REFRESH_TOKEN,
-} from '../config/constants';
-import { selectedFields } from '../utils/selectedFields';
+} from '#config/constants';
+import { selectedFields } from '#utils/selectedFields';
 import {
   generateJwtToken,
   generateRefreshToken,
   setTokenCookie,
-} from '../utils/helpers';
+} from '#utils/helpers';
 
-import { FakeObjectId, FakeToken } from '../utils/fixtures';
+import { FakeObjectId, FakeToken } from '#utils/fixtures';
 
-const { resetPassword } = userResolver.Mutation;
-
-jest.mock('../graphql/user/user.model.js');
-jest.mock('../utils/logger.js');
-jest.mock('../utils/accessEnv');
-jest.mock('../utils/selectedFields');
-jest.mock('../utils/helpers.js');
+jest.mock('#graphql/user/user.model.js');
+jest.mock('#utils/logger.js');
+jest.mock('#utils/accessEnv');
+jest.mock('#utils/selectedFields');
+jest.mock('#utils/helpers.js');
 jest.mock('bcryptjs');
 
 test('should throw error when logged in', async () => {

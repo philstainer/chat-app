@@ -1,20 +1,20 @@
 import faker from 'faker';
-import sgMail from '@sendgrid/mail';
 
-import { userResolver } from '../graphql/user/user.resolver';
-import { User } from '../graphql/user/user.model';
-import { AUTH_LOGGED_IN_ERROR } from '../config/constants';
-import { accessEnv } from '../utils/accessEnv';
-import { FakeObjectId } from '../utils/fixtures';
-import { randomTokenString } from '../utils/helpers';
+import { resetPasswordRequest } from '#graphql/user/resolvers/resetPasswordRequest';
+import { User } from '#graphql/user/user.model';
+import { AUTH_LOGGED_IN_ERROR } from '#config/constants';
+import { accessEnv } from '#utils/accessEnv';
+import { FakeObjectId, FakeUser } from '#utils/fixtures';
+import { randomTokenString } from '#utils/helpers';
+import { resetPasswordEmail } from '#utils/notifications';
 
-const { resetPasswordRequest } = userResolver.Mutation;
-
-jest.mock('../utils/helpers.js');
-jest.mock('../graphql/user/user.model.js');
-jest.mock('../utils/logger.js');
-jest.mock('../utils/accessEnv');
-jest.mock('@sendgrid/mail');
+jest.mock('#utils/notifications.js', () => ({
+  resetPasswordEmail: jest.fn(),
+}));
+jest.mock('#utils/helpers.js');
+jest.mock('#graphql/user/user.model.js');
+jest.mock('#utils/logger.js');
+jest.mock('#utils/accessEnv');
 
 test('should throw error when logged in', async () => {
   const ctx = { userId: FakeObjectId() };
@@ -46,7 +46,7 @@ test('should find user via email', async () => {
 });
 
 test('should generate reset token with expiry and send reset email', async () => {
-  const user = { _id: FakeObjectId() };
+  const user = FakeUser();
 
   // FindOne Mock
   const userMock = {
@@ -57,16 +57,15 @@ test('should generate reset token with expiry and send reset email', async () =>
   User.findOne.mockImplementationOnce(userMock.findOne);
 
   // FindByIdAndUpdate Mock
-  const updateMock = jest.fn(() => null);
-  User.findByIdAndUpdate.mockImplementationOnce(updateMock);
+  User.findByIdAndUpdate.mockImplementationOnce(() => {});
 
   // Reset Token
   const resetToken = 'token';
   randomTokenString.mockImplementationOnce(() => resetToken);
 
   // Email mock
-  const sendEmailMock = jest.fn();
-  sgMail.send.mockImplementationOnce(sendEmailMock);
+  const emailMock = jest.fn();
+  resetPasswordEmail.mockImplementationOnce(emailMock);
 
   // Mock from
   const from = faker.internet.email();
@@ -77,16 +76,7 @@ test('should generate reset token with expiry and send reset email', async () =>
   const args = { input: { email: faker.internet.email() } };
   await resetPasswordRequest(null, args, null, null);
 
-  expect(updateMock).toHaveBeenCalledWith(
-    user._id,
-    expect.objectContaining({ resetToken })
-  );
-  expect(sendEmailMock).toHaveBeenCalledWith(
-    expect.objectContaining({
-      from,
-      to: args.input.email,
-    })
-  );
+  expect(emailMock).toHaveBeenCalledWith(user.email, resetToken, user.username);
 });
 
 test('should return true on success', async () => {

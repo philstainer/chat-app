@@ -1,28 +1,29 @@
 import faker from 'faker';
-import sgMail from '@sendgrid/mail';
+import bcrypt from 'bcryptjs';
 
-import { userResolver } from '../graphql/user/user.resolver';
-import { isNotAuthenticated } from '../utils/isNotAuthenticated';
-import { User } from '../graphql/user/user.model';
-import { accessEnv } from '../utils/accessEnv';
-import { FakeObjectId, FakeToken, FakeUser } from '../utils/fixtures';
+import { register } from '#graphql/user/resolvers/register';
+import { isNotAuthenticated } from '#utils/isNotAuthenticated';
+import { User } from '#graphql/user/user.model';
+import { accessEnv } from '#utils/accessEnv';
+import { FakeObjectId, FakeToken, FakeUser } from '#utils/fixtures';
 import {
   generateJwtToken,
   generateRefreshToken,
   setTokenCookie,
-  hashPassword,
   randomTokenString,
-} from '../utils/helpers';
-import { USER_FOUND_ERROR, REFRESH_TOKEN } from '../config/constants';
+} from '#utils/helpers';
+import { registrationEmail } from '#utils/notifications';
+import { REFRESH_TOKEN } from '#config/constants';
 
-const { register } = userResolver.Mutation;
-
-jest.mock('../utils/isNotAuthenticated.js');
-jest.mock('../utils/helpers.js');
-jest.mock('../utils/logger.js');
-jest.mock('../utils/accessEnv');
-jest.mock('../graphql/user/user.model.js');
-jest.mock('@sendgrid/mail');
+jest.mock('#utils/notifications.js', () => ({
+  registrationEmail: jest.fn(),
+}));
+jest.mock('#utils/isNotAuthenticated.js');
+jest.mock('#utils/helpers.js');
+jest.mock('#utils/logger.js');
+jest.mock('#utils/accessEnv');
+jest.mock('#graphql/user/user.model.js');
+jest.mock('bcryptjs');
 
 test('should call isNotAuthenticated', async () => {
   const authMock = jest.fn();
@@ -42,32 +43,6 @@ test('should call isNotAuthenticated', async () => {
   expect(authMock).toHaveBeenCalled();
 });
 
-test('should check if user email exists', async () => {
-  const findOneMock = {
-    findOne: jest.fn(() => findOneMock),
-    select: () => findOneMock,
-    lean: () => null,
-  };
-  User.findOne.mockImplementationOnce(findOneMock.findOne);
-
-  await register(null, null, null, null);
-
-  expect(findOneMock.findOne).toHaveBeenCalled();
-});
-
-test('should throw error when user exists', async () => {
-  const findOneMock = {
-    findOne: jest.fn(() => findOneMock),
-    select: () => findOneMock,
-    lean: () => 'user',
-  };
-  User.findOne.mockImplementationOnce(findOneMock.findOne);
-
-  await expect(() => register(null, null, null, null)).rejects.toThrow(
-    USER_FOUND_ERROR
-  );
-});
-
 test('should create user with hashedPassword and verify token', async () => {
   const findOneMock = {
     findOne: jest.fn(() => findOneMock),
@@ -77,7 +52,7 @@ test('should create user with hashedPassword and verify token', async () => {
   User.findOne.mockImplementationOnce(findOneMock.findOne);
 
   const hashedPassword = faker.internet.password(8);
-  hashPassword.mockImplementationOnce(() => hashedPassword);
+  bcrypt.hash.mockImplementationOnce(() => hashedPassword);
 
   const verifyToken = faker.random.uuid();
   randomTokenString.mockImplementationOnce(() => verifyToken);
@@ -138,6 +113,9 @@ test('should send confirmation email', async () => {
   };
   User.findOne.mockImplementationOnce(findOneMock.findOne);
 
+  const verifyToken = faker.random.uuid();
+  randomTokenString.mockImplementationOnce(() => verifyToken);
+
   User.create.mockImplementationOnce(() => createdUser);
 
   const from = faker.internet.email();
@@ -145,16 +123,15 @@ test('should send confirmation email', async () => {
     .mockImplementationOnce(() => 'url')
     .mockImplementationOnce(() => from);
 
-  const sendEmailMock = jest.fn();
-  sgMail.send.mockImplementationOnce(sendEmailMock);
+  const emailMock = jest.fn();
+  registrationEmail.mockImplementationOnce(emailMock);
 
   await register(null, { input: {} }, null, null);
 
-  expect(sendEmailMock).toHaveBeenCalledWith(
-    expect.objectContaining({
-      from,
-      to: createdUser.email,
-    })
+  expect(emailMock).toHaveBeenCalledWith(
+    createdUser.email,
+    verifyToken,
+    createdUser.username
   );
 });
 
