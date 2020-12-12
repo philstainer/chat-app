@@ -9,6 +9,12 @@ services:
     volumes:
       - mongodata:/data/db
 
+  redis:
+    container_name: 'redis'
+    image: redis:latest
+    ports:
+      - 6379:6379
+
   backend:
     container_name: 'backend'
     build:
@@ -17,6 +23,7 @@ services:
       target: 'dev'
     depends_on:
       - mongodb
+      - redis
     environment:
       BACKEND_COOKIE_SECRET: ${BACKEND_COOKIE_SECRET}
       MONGO_URI: 'mongodb://mongodb/${MONGO_DATABASE}'
@@ -24,6 +31,7 @@ services:
       SENDGRID_API_KEY: ${SENDGRID_API_KEY}
       SENDGRID_API_FROM: ${SENDGRID_API_FROM}
       FRONTEND_URI: ${FRONTEND_URI}
+      REDIS_URL: 'redis://redis:6379'
     volumes:
       - './backend:/app/backend'
       # - '/app/backend/node_modules/'

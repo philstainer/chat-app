@@ -1,9 +1,7 @@
 import { AuthenticationError, UserInputError } from 'apollo-server-express';
 import bcrypt from 'bcryptjs';
-import ejs from 'ejs';
-import path from 'path';
-import sgMail from '@sendgrid/mail';
 import ms from 'ms';
+import { notifications } from '../../utils/notifications';
 
 import { RefreshToken } from './refreshToken.model';
 import { User } from './user.model';
@@ -16,7 +14,6 @@ import {
   setTokenCookie,
 } from '../../utils/helpers';
 
-import { logger } from '../../utils/logger';
 import { isNotAuthenticated } from '../../utils/isNotAuthenticated';
 import { isAuthenticated } from '../../utils/isAuthenticated';
 import { selectedFields } from '../../utils/selectedFields';
@@ -24,9 +21,9 @@ import {
   USER_NOT_FOUND_ERROR,
   INVALID_TOKEN_ERROR,
   INVALID_REFRESH_TOKEN_ERROR,
-  USER_FOUND_ERROR,
   REFRESH_TOKEN,
-} from '../../utils/constants';
+  GENERAL_ERROR,
+} from '../../config/constants';
 import { accessEnv } from '../../utils/accessEnv';
 
 const userResolver = {
@@ -84,8 +81,10 @@ const userResolver = {
         .lean();
 
       if (foundUser) {
-        logger.error(USER_FOUND_ERROR);
-        throw new AuthenticationError(USER_FOUND_ERROR);
+        return {
+          __typename: 'SystemError',
+          message: GENERAL_ERROR,
+        };
       }
 
       // Create User
@@ -106,23 +105,17 @@ const userResolver = {
 
       setTokenCookie(REFRESH_TOKEN, refreshToken?.token, ctx?.res);
 
-      // Generate and send email
-      const html = await ejs.renderFile(
-        path.join(__dirname, '../../templates/confirm-account.ejs'),
-        {
-          URL: accessEnv('FRONTEND_URI'),
-          CODE: createdUser?.verifyToken,
-        }
+      const verificationLink = `${accessEnv(
+        'FRONTEND_URI'
+      )}/verify/${verifyToken}`;
+      await notifications.registrationEmail(
+        createdUser?.email,
+        verificationLink,
+        'test'
       );
 
-      await sgMail.send({
-        to: createdUser?.email,
-        from: accessEnv('SENDGRID_API_FROM'),
-        subject: 'Account confirmation',
-        html,
-      });
-
       return {
+        __typename: 'Token',
         token,
       };
     },
@@ -190,7 +183,7 @@ const userResolver = {
           { resetTokenExpiry: { $lte: Date.now() } },
         ],
       })
-        .select('_id')
+        .select('_id email username')
         .lean();
 
       if (foundUser) {
@@ -204,21 +197,12 @@ const userResolver = {
           resetTokenExpiry,
         });
 
-        // Generate and send reset email
-        const html = await ejs.renderFile(
-          path.join(__dirname, '../../templates/reset-password.ejs'),
-          {
-            URL: accessEnv('FRONTEND_URI'),
-            TOKEN: resetToken,
-          }
+        const emailLink = `${accessEnv('FRONTEND_URI')}/reset/${resetToken}`;
+        await notifications.resetPasswordEmail(
+          foundUser?.email,
+          emailLink,
+          foundUser?.username
         );
-
-        await sgMail.send({
-          to: args?.input?.email,
-          from: accessEnv('SENDGRID_API_FROM'),
-          subject: 'Reset Password',
-          html,
-        });
       }
 
       return true;
