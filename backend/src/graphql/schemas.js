@@ -1,25 +1,19 @@
 import { gql } from 'apollo-server-express';
 
-import userSchema from './user/user.schema.graphql';
-import chatSchema from './chat/chat.schema.graphql';
-import messageSchema from './message/message.schema.graphql';
+import { userSchema } from './user/user.schema';
+import { chatSchema } from './chat/chat.schema';
+import { messageSchema } from './message/message.schema.js';
 
 const root = gql`
   scalar DateTime
 
-  type Query {
-    _empty: String
+  interface Error {
+    message: String!
   }
 
-  type Mutation {
-    _empty: String
-  }
-
-  type Subscription {
-    _empty: String
+  type SystemError implements Error {
+    message: String!
   }
 `;
 
-const schemas = [root, userSchema, chatSchema, messageSchema];
-
-export { schemas };
+export const schemas = [root, userSchema, chatSchema, messageSchema];
