@@ -2,7 +2,6 @@ import faker from 'faker';
 import bcrypt from 'bcryptjs';
 
 import { register } from '#graphql/user/resolvers/register';
-import { isNotAuthenticated } from '#utils/isNotAuthenticated';
 import { User } from '#graphql/user/user.model';
 import { accessEnv } from '#utils/accessEnv';
 import { FakeObjectId, FakeToken, FakeUser } from '#utils/fixtures';
@@ -18,30 +17,11 @@ import { REFRESH_TOKEN } from '#config/constants';
 jest.mock('#utils/notifications.js', () => ({
   registrationEmail: jest.fn(),
 }));
-jest.mock('#utils/isNotAuthenticated.js');
 jest.mock('#utils/helpers.js');
 jest.mock('#utils/logger.js');
 jest.mock('#utils/accessEnv');
 jest.mock('#graphql/user/user.model.js');
 jest.mock('bcryptjs');
-
-test('should call isNotAuthenticated', async () => {
-  const authMock = jest.fn();
-  isNotAuthenticated.mockImplementationOnce(authMock);
-
-  const findOneMock = {
-    findOne: () => findOneMock,
-    select: () => findOneMock,
-    lean: () => null,
-  };
-  User.findOne.mockImplementationOnce(findOneMock.findOne);
-
-  const ctx = { userId: FakeObjectId() };
-
-  await register(null, null, ctx, null);
-
-  expect(authMock).toHaveBeenCalled();
-});
 
 test('should create user with hashedPassword and verify token', async () => {
   const findOneMock = {

@@ -1,15 +1,15 @@
 import { gql } from 'apollo-server-express';
 
 export const chatSchema = gql`
-  type Query {
-    chats: [Chat!]!
+  extend type Query {
+    chats: [Chat!]! @isAuthenticated
   }
 
-  type Mutation {
-    createChat(input: CreateChatInput!): Chat!
+  extend type Mutation {
+    createChat(input: CreateChatInput!): Chat! @isAuthenticated
   }
 
-  type Subscription {
+  extend type Subscription {
     chatCreated: Chat!
   }
 

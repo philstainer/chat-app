@@ -3,34 +3,15 @@ import faker from 'faker';
 import { Message } from '#graphql/message/message.model';
 import { Chat } from '#graphql/chat/chat.model';
 import { messageResolver } from '#graphql/message/message.resolver';
-import { isAuthenticated } from '#utils/isAuthenticated';
 import { FakeObjectId, FakeMessage } from '#utils/fixtures';
 import { pubsub } from '#graphql/pubsub';
 import { MESSAGE_ADDED, PERMISSIONS_ERROR } from '#config/constants';
 
 const { addMessage } = messageResolver.Mutation;
 
-jest.mock('#utils/isAuthenticated.js');
 jest.mock('#graphql/message/message.model.js');
 jest.mock('#graphql/chat/chat.model.js');
 jest.mock('#graphql/pubsub.js');
-
-test('should call isAuthenticated', async () => {
-  const authMock = jest.fn();
-  isAuthenticated.mockImplementationOnce(authMock);
-
-  const findOneMock = {
-    findOne: () => findOneMock,
-    select: () => findOneMock,
-    lean: () => 'chat',
-  };
-  Chat.findOne.mockImplementationOnce(findOneMock.findOne);
-
-  const ctx = { userId: FakeObjectId() };
-  await addMessage(null, null, ctx, null);
-
-  expect(authMock).toHaveBeenCalledWith(ctx);
-});
 
 test('should get chat', async () => {
   const findOneMock = {

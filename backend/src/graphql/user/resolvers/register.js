@@ -7,13 +7,10 @@ import {
   generateRefreshToken,
   setTokenCookie,
 } from '#utils/helpers';
-import { isNotAuthenticated } from '#utils/isNotAuthenticated';
 import { registrationEmail } from '#utils/notifications';
 import { REFRESH_TOKEN } from '#config/constants';
 
 export const register = async (parent, args, ctx, info) => {
-  isNotAuthenticated(ctx);
-
   // Create User
   const password = await hash(args?.input?.password, 10);
   const verifyToken = randomTokenString();
@@ -39,7 +36,6 @@ export const register = async (parent, args, ctx, info) => {
   );
 
   return {
-    __typename: 'Token',
     token,
   };
 };

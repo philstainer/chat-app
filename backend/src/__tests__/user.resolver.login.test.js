@@ -4,7 +4,6 @@ import { login } from '#graphql/user/resolvers/login';
 import { User } from '#graphql/user/user.model';
 import { selectedFields } from '#utils/selectedFields';
 
-import { isNotAuthenticated } from '#utils/isNotAuthenticated';
 import { USER_NOT_FOUND_ERROR, REFRESH_TOKEN } from '#config/constants';
 import { FakeObjectId, FakeToken } from '#utils/fixtures';
 import {
@@ -14,38 +13,21 @@ import {
 } from '#utils/helpers';
 
 jest.mock('#utils/accessEnv.js');
-jest.mock('#utils/isNotAuthenticated.js');
 jest.mock('#utils/selectedFields.js');
 jest.mock('#utils/helpers.js');
 jest.mock('#graphql/user/user.model.js');
-jest.mock('bcryptjs');
-
-test('should call isNotAuthenticated', async () => {
-  const userMock = {
-    findOne: () => userMock,
-    select: () => userMock,
-    lean: () => 'user',
-  };
-  User.findOne.mockImplementation(userMock.findOne);
-  bcrypt.compare.mockImplementation(() => true);
-
-  const ctx = { userId: FakeObjectId() };
-
-  await login(null, null, ctx, null);
-
-  expect(isNotAuthenticated).toHaveBeenCalledWith(ctx);
-});
+jest.mock('bcryptjs', () => ({ compare: jest.fn(() => true) }));
 
 test('should call selectFields', async () => {
+  const fieldsMock = jest.fn();
+  selectedFields.mockImplementationOnce(fieldsMock);
+
   const userMock = {
     findOne: () => userMock,
     select: () => userMock,
     lean: () => 'user',
   };
-  User.findOne.mockImplementation(userMock.findOne);
-
-  const fieldsMock = jest.fn();
-  selectedFields.mockImplementation(fieldsMock);
+  User.findOne.mockImplementationOnce(userMock.findOne);
 
   const info = { name: 1 };
   await login(null, null, null, info);
@@ -54,15 +36,15 @@ test('should call selectFields', async () => {
 });
 
 test('should get user via email', async () => {
+  const selected = '_id name';
+  selectedFields.mockImplementationOnce(() => selected);
+
   const userMock = {
     findOne: jest.fn(() => userMock),
     select: jest.fn(() => userMock),
     lean: jest.fn(() => 'user'),
   };
-  User.findOne.mockImplementation(userMock.findOne);
-
-  const selected = '_id name';
-  selectedFields.mockImplementation(() => selected);
+  User.findOne.mockImplementationOnce(userMock.findOne);
 
   const args = {
     input: {
@@ -86,7 +68,7 @@ test('should throw error when user not found', async () => {
     select: () => userMock,
     lean: () => null,
   };
-  User.findOne.mockImplementation(userMock.findOne);
+  User.findOne.mockImplementationOnce(userMock.findOne);
 
   await expect(() => login()).rejects.toThrow(USER_NOT_FOUND_ERROR);
 });
@@ -104,10 +86,10 @@ test('should call bcrypt compare', async () => {
     select: () => userMock,
     lean: () => user,
   };
-  User.findOne.mockImplementation(userMock.findOne);
+  User.findOne.mockImplementationOnce(userMock.findOne);
 
   const passwordMock = jest.fn(() => true);
-  bcrypt.compare.mockImplementation(passwordMock);
+  bcrypt.compare.mockImplementationOnce(passwordMock);
 
   const args = { input: { password } };
   await login(null, args);
@@ -121,10 +103,10 @@ test('should throw error when password compare fails', async () => {
     select: () => userMock,
     lean: () => 'user',
   };
-  User.findOne.mockImplementation(userMock.findOne);
+  User.findOne.mockImplementationOnce(userMock.findOne);
 
   const passwordMock = jest.fn(() => false);
-  bcrypt.compare.mockImplementation(passwordMock);
+  bcrypt.compare.mockImplementationOnce(passwordMock);
 
   await expect(() => login()).rejects.toThrow(USER_NOT_FOUND_ERROR);
 });
@@ -139,7 +121,7 @@ test('should generate tokens and set refresh cookie', async () => {
   };
   User.findOne.mockImplementationOnce(userMock.findOne);
 
-  bcrypt.compare.mockImplementation(() => true);
+  bcrypt.compare.mockImplementationOnce(() => true);
 
   const jwtTokenMock = jest.fn();
   generateJwtToken.mockImplementationOnce(jwtTokenMock);
@@ -174,7 +156,7 @@ test('should return token', async () => {
     select: () => userMock,
     lean: () => user,
   };
-  User.findOne.mockImplementation(userMock.findOne);
+  User.findOne.mockImplementationOnce(userMock.findOne);
 
   const token = FakeToken();
   generateJwtToken.mockImplementationOnce(() => token);

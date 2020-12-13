@@ -7,12 +7,19 @@ import { messageSchema } from '#graphql/message/message.schema';
 const root = gql`
   scalar DateTime
 
-  interface Error {
-    message: String!
+  directive @isAuthenticated on FIELD_DEFINITION
+  directive @isGuest on FIELD_DEFINITION
+
+  type Query {
+    root: String
   }
 
-  type SystemError implements Error {
-    message: String!
+  type Mutation {
+    root: String
+  }
+
+  type Subscription {
+    root: String
   }
 `;
 

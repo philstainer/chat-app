@@ -3,7 +3,6 @@ import { hash } from 'bcryptjs';
 
 import { User } from '#graphql/user/user.model';
 import { selectedFields } from '#utils/selectedFields';
-import { isNotAuthenticated } from '#utils/isNotAuthenticated';
 import {
   generateJwtToken,
   generateRefreshToken,
@@ -12,8 +11,6 @@ import {
 import { INVALID_TOKEN_ERROR, REFRESH_TOKEN } from '#config/constants';
 
 export const resetPassword = async (parent, args, ctx, info) => {
-  isNotAuthenticated(ctx);
-
   // Find user with non expired token
   const foundUser = await User.findOne({
     resetToken: args?.input?.token,

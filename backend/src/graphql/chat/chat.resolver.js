@@ -2,16 +2,12 @@ import { UserInputError, withFilter } from 'apollo-server-express';
 
 import { pubsub } from '#graphql/pubsub';
 import { Chat } from '#graphql/chat/chat.model';
-import { isAuthenticated } from '#utils/isAuthenticated';
 import { selectedFields } from '#utils/selectedFields';
 import { INVALID_PARTICIPANTS_ERROR, CHAT_CREATED } from '#config/constants';
 
 export const chatResolver = {
   Query: {
     chats: async (parent, args, ctx, info) => {
-      // Should be logged in
-      isAuthenticated(ctx);
-
       // Should generate selectedFields via info
       const selected = selectedFields(info);
 
@@ -29,9 +25,6 @@ export const chatResolver = {
   },
   Mutation: {
     createChat: async (parent, args, ctx, info) => {
-      // Should be logged in
-      isAuthenticated(ctx);
-
       // Filter out logged in user id
       const participants = args?.input?.participants.filter(
         item => item !== ctx?.userId
@@ -57,6 +50,7 @@ export const chatResolver = {
       subscribe: withFilter(
         () => pubsub.asyncIterator([CHAT_CREATED]),
         async (payload, variables, ctx) => {
+          throw new Error('asda');
           if (!ctx?.userId) return false;
 
           // Only send to participants

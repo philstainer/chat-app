@@ -1,18 +1,18 @@
 import { gql } from 'apollo-server-express';
 
 export const userSchema = gql`
-  type Query {
-    me: User
-    refreshTokens: TokenResult!
+  extend type Query {
+    me: User @isAuthenticated
+    refreshTokens: Token!
   }
 
-  type Mutation {
-    register(input: UserRegisterInput!): TokenResult!
-    login(input: UserLoginInput!): TokenResult!
-    logout: Boolean
+  extend type Mutation {
+    register(input: UserRegisterInput!): Token! @isGuest
+    login(input: UserLoginInput!): Token! @isGuest
+    logout: Boolean @isAuthenticated
     confirmAccount(input: ConfirmAccountInput!): Boolean
-    resetPasswordRequest(input: ResetPasswordRequestInput!): Boolean
-    resetPassword(input: ResetPasswordInput): TokenResult!
+    resetPasswordRequest(input: ResetPasswordRequestInput!): Boolean @isGuest
+    resetPassword(input: ResetPasswordInput): Token! @isGuest
   }
 
   type User {
@@ -29,7 +29,6 @@ export const userSchema = gql`
   type Token {
     token: String!
   }
-  union TokenResult = Token | SystemError
 
   input UserRegisterInput {
     username: String!

@@ -3,16 +3,12 @@ import { withFilter, AuthenticationError } from 'apollo-server-express';
 import { pubsub } from '#graphql/pubsub';
 import { Message } from '#graphql/message/message.model';
 import { Chat } from '#graphql/chat/chat.model';
-import { isAuthenticated } from '#utils/isAuthenticated';
 import { selectedFields } from '#utils/selectedFields';
 import { MESSAGE_ADDED, PERMISSIONS_ERROR } from '#config/constants';
 
 const messageResolver = {
   Query: {
     messages: async (parent, args, ctx, info) => {
-      // Should be logged in
-      isAuthenticated(ctx);
-
       // Should be a participant in chat
       const foundChat = await Chat.findOne({
         _id: args?.input?.chatId,
@@ -41,9 +37,6 @@ const messageResolver = {
   },
   Mutation: {
     addMessage: async (parent, args, ctx, info) => {
-      // Should be logged in
-      isAuthenticated(ctx);
-
       // Should be a participant in chat
       const foundChat = await Chat.findOne({
         _id: args?.input?.chatId,

@@ -1,7 +1,6 @@
 import { Message } from '#graphql/message/message.model';
 import { Chat } from '#graphql/chat/chat.model';
 import { messageResolver } from '#graphql/message/message.resolver';
-import { isAuthenticated } from '#utils/isAuthenticated';
 import { selectedFields } from '#utils/selectedFields';
 import { FakeObjectId, FakeMessage } from '#utils/fixtures';
 import { PERMISSIONS_ERROR } from '#config/constants';
@@ -10,35 +9,7 @@ const { messages } = messageResolver.Query;
 
 jest.mock('#graphql/message/message.model.js');
 jest.mock('#graphql/chat/chat.model.js');
-jest.mock('#utils/isAuthenticated.js');
 jest.mock('#utils/selectedFields.js');
-
-test('should call isAuthenticated', async () => {
-  const authMock = jest.fn();
-  isAuthenticated.mockImplementationOnce(authMock);
-
-  const findOneMock = {
-    findOne: () => findOneMock,
-    select: () => findOneMock,
-    lean: () => 'chat',
-  };
-  Chat.findOne.mockImplementationOnce(findOneMock.findOne);
-
-  const messageMock = {
-    find: () => messageMock,
-    select: () => messageMock,
-    sort: () => messageMock,
-    limit: () => messageMock,
-    skip: () => messageMock,
-    lean: () => [],
-  };
-  Message.find.mockImplementationOnce(messageMock.find);
-
-  const ctx = { userId: FakeObjectId() };
-  await messages(null, null, ctx, null);
-
-  expect(authMock).toHaveBeenCalledWith(ctx);
-});
 
 test('should get chat', async () => {
   const findOneMock = {

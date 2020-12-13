@@ -3,7 +3,6 @@ import bcrypt from 'bcryptjs';
 
 import { User } from '#graphql/user/user.model';
 import { selectedFields } from '#utils/selectedFields';
-import { isNotAuthenticated } from '#utils/isNotAuthenticated';
 import {
   generateJwtToken,
   generateRefreshToken,
@@ -12,8 +11,6 @@ import {
 import { USER_NOT_FOUND_ERROR, REFRESH_TOKEN } from '#config/constants';
 
 export const login = async (parent, args, ctx, info) => {
-  isNotAuthenticated(ctx);
-
   const selected = selectedFields(info);
 
   const foundUser = await User.findOne({ email: args?.input?.email })
@@ -26,7 +23,6 @@ export const login = async (parent, args, ctx, info) => {
     args?.input?.password,
     foundUser?.password
   );
-
   if (!isValid) throw new AuthenticationError(USER_NOT_FOUND_ERROR);
 
   // Generate tokens and set cookie

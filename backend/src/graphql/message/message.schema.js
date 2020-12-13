@@ -1,15 +1,15 @@
 import { gql } from 'apollo-server-express';
 
 export const messageSchema = gql`
-  type Query {
-    messages(input: MessagesInput!): [Message!]!
+  extend type Query {
+    messages(input: MessagesInput!): [Message!]! @isAuthenticated
   }
 
-  type Mutation {
-    addMessage(input: MessageInput!): Message!
+  extend type Mutation {
+    addMessage(input: MessageInput!): Message! @isAuthenticated
   }
 
-  type Subscription {
+  extend type Subscription {
     messageAdded: Message!
   }
 
