@@ -3,11 +3,7 @@ import bcrypt from 'bcryptjs';
 
 import { resetPassword } from '#graphql/user/resolvers/resetPassword';
 import { User } from '#graphql/user/user.model';
-import {
-  AUTH_LOGGED_IN_ERROR,
-  INVALID_TOKEN_ERROR,
-  REFRESH_TOKEN,
-} from '#config/constants';
+import { INVALID_TOKEN_ERROR, REFRESH_TOKEN } from '#config/constants';
 import { selectedFields } from '#utils/selectedFields';
 import {
   generateJwtToken,
@@ -23,14 +19,6 @@ jest.mock('#utils/accessEnv');
 jest.mock('#utils/selectedFields');
 jest.mock('#utils/helpers.js');
 jest.mock('bcryptjs');
-
-test('should throw error when logged in', async () => {
-  const ctx = { userId: FakeObjectId() };
-
-  await expect(() => resetPassword(null, null, ctx, null)).rejects.toThrow(
-    AUTH_LOGGED_IN_ERROR
-  );
-});
 
 test('should find user via resetToken', async () => {
   // FindOne Mock

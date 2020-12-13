@@ -1,9 +1,8 @@
 import faker from 'faker';
-import { sign, verify } from 'jsonwebtoken';
 
 import { RefreshToken } from '#graphql/user/refreshToken.model';
 import { accessEnv } from '#utils/accessEnv';
-import { FakeUser, FakeToken } from '#utils/fixtures';
+import { FakeUser } from '#utils/fixtures';
 import * as helpers from '#utils/helpers';
 
 jest.mock('bcryptjs');
@@ -90,86 +89,5 @@ describe('generateRefreshToken', () => {
       expect.objectContaining({ createdByIp: ipAddress, user: user._id })
     );
     expect(refreshToken).toBe(createdRefreshToken);
-  });
-});
-
-describe('generateJwtToken', () => {
-  test('should generate jwt token with user', async () => {
-    const user = FakeUser();
-
-    const secret = 'secret123';
-    accessEnv.mockImplementationOnce(() => secret);
-
-    const token = FakeToken();
-    const signMock = jest.fn(() => token);
-    sign.mockImplementationOnce(signMock);
-
-    const result = await helpers.generateJwtToken(user);
-
-    expect(signMock).toHaveBeenCalledWith(
-      { sub: user._id },
-      secret,
-      expect.anything()
-    );
-
-    expect(result).toBe(token);
-  });
-
-  test('should reject with error when failed to sign token', async () => {
-    const user = FakeUser();
-
-    const errorMessage = 'Failed to verify token';
-    sign.mockImplementationOnce(() => {
-      throw new Error(errorMessage);
-    });
-
-    await expect(() => helpers.generateJwtToken(user)).rejects.toThrow(
-      errorMessage
-    );
-  });
-});
-
-describe('verifyJwtToken', () => {
-  test('should remove Bearer from jwt token', async () => {
-    const token = FakeToken();
-    const bearerToken = `Bearer ${token}`;
-
-    const secret = 'secret123';
-    accessEnv.mockImplementationOnce(() => secret);
-
-    const verifyMock = jest.fn();
-    verify.mockImplementationOnce(verifyMock);
-
-    await helpers.verifyJwtToken(bearerToken);
-
-    expect(verifyMock).toHaveBeenCalledWith(token, secret, expect.anything());
-  });
-
-  test('should verify jwt token', async () => {
-    const token = FakeToken();
-
-    const secret = 'secret123';
-    accessEnv.mockImplementationOnce(() => secret);
-
-    const verifyMock = jest.fn(() => token);
-    verify.mockImplementationOnce(verifyMock);
-
-    const result = await helpers.verifyJwtToken(token);
-
-    expect(verifyMock).toHaveBeenCalledWith(token, secret, expect.anything());
-
-    expect(result).toBe(token);
-  });
-
-  test('should return false when failed to verify token', async () => {
-    const token = FakeToken();
-
-    verify.mockImplementationOnce(() => {
-      throw new Error('Failed to verify token');
-    });
-
-    const result = await helpers.verifyJwtToken(token);
-
-    expect(result).toBe(false);
   });
 });

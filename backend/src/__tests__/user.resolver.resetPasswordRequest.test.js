@@ -2,9 +2,8 @@ import faker from 'faker';
 
 import { resetPasswordRequest } from '#graphql/user/resolvers/resetPasswordRequest';
 import { User } from '#graphql/user/user.model';
-import { AUTH_LOGGED_IN_ERROR } from '#config/constants';
 import { accessEnv } from '#utils/accessEnv';
-import { FakeObjectId, FakeUser } from '#utils/fixtures';
+import { FakeUser } from '#utils/fixtures';
 import { randomTokenString } from '#utils/helpers';
 import { resetPasswordEmail } from '#utils/notifications';
 
@@ -15,14 +14,6 @@ jest.mock('#utils/helpers.js');
 jest.mock('#graphql/user/user.model.js');
 jest.mock('#utils/logger.js');
 jest.mock('#utils/accessEnv');
-
-test('should throw error when logged in', async () => {
-  const ctx = { userId: FakeObjectId() };
-
-  await expect(() =>
-    resetPasswordRequest(null, null, ctx, null)
-  ).rejects.toThrow(AUTH_LOGGED_IN_ERROR);
-});
 
 test('should find user via email', async () => {
   // FindOne Mock
