@@ -1,7 +1,7 @@
 import ms from 'ms';
 
 import { User } from '#graphql/user/user.model';
-import { randomTokenString } from '#utils/helpers';
+import { randomTokenString } from '#utils/randomTokenString';
 import { resetPasswordEmail } from '#utils/notifications';
 
 export const resetPasswordRequest = async (parent, args, ctx, info) => {

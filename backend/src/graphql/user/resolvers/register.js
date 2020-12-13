@@ -1,41 +1,46 @@
+import { ApolloError } from 'apollo-server-express';
 import { hash } from 'bcryptjs';
 
 import { User } from '#graphql/user/user.model';
-import {
-  randomTokenString,
-  generateJwtToken,
-  generateRefreshToken,
-  setTokenCookie,
-} from '#utils/helpers';
+import { generateRefreshToken } from '#utils/generateRefreshToken';
+import { randomTokenString } from '#utils/randomTokenString';
 import { registrationEmail } from '#utils/notifications';
-import { REFRESH_TOKEN } from '#config/constants';
+import { signAsync } from '#utils/jwt';
+import { setCookie } from '#utils/setCookie';
+import { logger } from '#utils/logger';
+import { REFRESH_TOKEN, GENERAL_ERROR } from '#config/constants';
 
 export const register = async (parent, args, ctx, info) => {
-  // Create User
-  const password = await hash(args?.input?.password, 10);
-  const verifyToken = randomTokenString();
+  try {
+    // Create User
+    const password = await hash(args?.input?.password, 10);
+    const verifyToken = randomTokenString();
 
-  const createdUser = await User.create({
-    ...args?.input,
-    password,
-    verifyToken,
-  });
+    const createdUser = await User.create({
+      ...args?.input,
+      password,
+      verifyToken,
+    });
 
-  // Generate tokens and set cookie
-  const ipAddress = ctx?.req?.ip;
+    // Generate tokens and set cookie
+    const ipAddress = ctx?.req?.ip;
 
-  const token = await generateJwtToken(createdUser);
-  const refreshToken = await generateRefreshToken(createdUser, ipAddress);
+    const token = await signAsync({ sub: createdUser?._id });
+    const refreshToken = await generateRefreshToken(createdUser, ipAddress);
 
-  setTokenCookie(REFRESH_TOKEN, refreshToken?.token, ctx?.res);
+    setCookie(REFRESH_TOKEN, refreshToken?.token, ctx?.res);
 
-  await registrationEmail(
-    createdUser?.email,
-    verifyToken,
-    createdUser?.username
-  );
+    await registrationEmail(
+      createdUser?.email,
+      verifyToken,
+      createdUser?.username
+    );
 
-  return {
-    token,
-  };
+    return {
+      token,
+    };
+  } catch (error) {
+    logger.error(error);
+    throw new ApolloError(GENERAL_ERROR);
+  }
 };

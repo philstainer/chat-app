@@ -4,13 +4,13 @@ import { resetPasswordRequest } from '#graphql/user/resolvers/resetPasswordReque
 import { User } from '#graphql/user/user.model';
 import { accessEnv } from '#utils/accessEnv';
 import { FakeUser } from '#utils/fixtures';
-import { randomTokenString } from '#utils/helpers';
+import { randomTokenString } from '#utils/randomTokenString';
 import { resetPasswordEmail } from '#utils/notifications';
 
 jest.mock('#utils/notifications.js', () => ({
   resetPasswordEmail: jest.fn(),
 }));
-jest.mock('#utils/helpers.js');
+jest.mock('#utils/randomTokenString.js');
 jest.mock('#graphql/user/user.model.js');
 jest.mock('#utils/logger.js');
 jest.mock('#utils/accessEnv');

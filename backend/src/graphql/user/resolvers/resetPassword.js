@@ -3,12 +3,10 @@ import { hash } from 'bcryptjs';
 
 import { User } from '#graphql/user/user.model';
 import { selectedFields } from '#utils/selectedFields';
-import {
-  generateJwtToken,
-  generateRefreshToken,
-  setTokenCookie,
-} from '#utils/helpers';
+import { generateRefreshToken } from '#utils/generateRefreshToken';
 import { INVALID_TOKEN_ERROR, REFRESH_TOKEN } from '#config/constants';
+import { signAsync } from '#utils/jwt';
+import { setCookie } from '#utils/setCookie';
 
 export const resetPassword = async (parent, args, ctx, info) => {
   // Find user with non expired token
@@ -39,10 +37,10 @@ export const resetPassword = async (parent, args, ctx, info) => {
   // Generate tokens and set cookie
   const ipAddress = ctx?.req?.ip;
 
-  const token = await generateJwtToken(updatedUser);
+  const token = await signAsync({ sub: updatedUser?._id });
   const refreshToken = await generateRefreshToken(updatedUser, ipAddress);
 
-  setTokenCookie(REFRESH_TOKEN, refreshToken?.token, ctx?.res);
+  setCookie(REFRESH_TOKEN, refreshToken?.token, ctx?.res);
 
   return {
     token,

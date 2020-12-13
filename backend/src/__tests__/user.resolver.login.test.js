@@ -3,18 +3,18 @@ import bcrypt from 'bcryptjs';
 import { login } from '#graphql/user/resolvers/login';
 import { User } from '#graphql/user/user.model';
 import { selectedFields } from '#utils/selectedFields';
+import { signAsync } from '#utils/jwt';
 
 import { USER_NOT_FOUND_ERROR, REFRESH_TOKEN } from '#config/constants';
-import { FakeObjectId, FakeToken } from '#utils/fixtures';
-import {
-  generateJwtToken,
-  generateRefreshToken,
-  setTokenCookie,
-} from '#utils/helpers';
+import { FakeObjectId, FakeToken, FakeUser } from '#utils/fixtures';
+import { generateRefreshToken } from '#utils/generateRefreshToken';
+import { setCookie } from '#utils/setCookie';
 
+jest.mock('#utils/setCookie');
+jest.mock('#utils/jwt');
 jest.mock('#utils/accessEnv.js');
 jest.mock('#utils/selectedFields.js');
-jest.mock('#utils/helpers.js');
+jest.mock('#utils/generateRefreshToken.js');
 jest.mock('#graphql/user/user.model.js');
 jest.mock('bcryptjs', () => ({ compare: jest.fn(() => true) }));
 
@@ -113,7 +113,7 @@ test('should throw error when password compare fails', async () => {
 
 test('should generate tokens and set refresh cookie', async () => {
   // FindOne Mock
-  const foundUser = 'foundUser';
+  const foundUser = FakeUser();
   const userMock = {
     findOne: () => userMock,
     select: () => userMock,
@@ -124,19 +124,19 @@ test('should generate tokens and set refresh cookie', async () => {
   bcrypt.compare.mockImplementationOnce(() => true);
 
   const jwtTokenMock = jest.fn();
-  generateJwtToken.mockImplementationOnce(jwtTokenMock);
+  signAsync.mockImplementationOnce(jwtTokenMock);
 
   const refreshToken = { token: FakeToken() };
   const refreshTokenMock = jest.fn(() => refreshToken);
   generateRefreshToken.mockImplementationOnce(refreshTokenMock);
 
   const setTokenMock = jest.fn();
-  setTokenCookie.mockImplementationOnce(setTokenMock);
+  setCookie.mockImplementationOnce(setTokenMock);
 
   const ctx = { req: { ip: faker.internet.ip() }, res: {} };
   await login(null, null, ctx, null);
 
-  expect(jwtTokenMock).toHaveBeenCalledWith(foundUser);
+  expect(jwtTokenMock).toHaveBeenCalledWith({ sub: foundUser._id });
   expect(refreshTokenMock).toHaveBeenCalledWith(foundUser, ctx.req.ip);
   expect(setTokenMock).toHaveBeenCalledWith(
     REFRESH_TOKEN,
@@ -159,7 +159,7 @@ test('should return token', async () => {
   User.findOne.mockImplementationOnce(userMock.findOne);
 
   const token = FakeToken();
-  generateJwtToken.mockImplementationOnce(() => token);
+  signAsync.mockImplementationOnce(() => token);
 
   const result = await login();
 

@@ -4,33 +4,28 @@ import bcrypt from 'bcryptjs';
 import { register } from '#graphql/user/resolvers/register';
 import { User } from '#graphql/user/user.model';
 import { accessEnv } from '#utils/accessEnv';
-import { FakeObjectId, FakeToken, FakeUser } from '#utils/fixtures';
-import {
-  generateJwtToken,
-  generateRefreshToken,
-  setTokenCookie,
-  randomTokenString,
-} from '#utils/helpers';
+import { FakeToken, FakeUser } from '#utils/fixtures';
+import { generateRefreshToken } from '#utils/generateRefreshToken';
+import { randomTokenString } from '#utils/randomTokenString';
 import { registrationEmail } from '#utils/notifications';
-import { REFRESH_TOKEN } from '#config/constants';
+import { REFRESH_TOKEN, GENERAL_ERROR } from '#config/constants';
+import { signAsync } from '#utils/jwt';
+import { setCookie } from '#utils/setCookie';
+import { logger } from '#utils/logger';
 
 jest.mock('#utils/notifications.js', () => ({
   registrationEmail: jest.fn(),
 }));
-jest.mock('#utils/helpers.js');
+jest.mock('#utils/jwt');
+jest.mock('#utils/setCookie');
+jest.mock('#utils/randomTokenString.js');
+jest.mock('#utils/generateRefreshToken.js');
 jest.mock('#utils/logger.js');
 jest.mock('#utils/accessEnv');
 jest.mock('#graphql/user/user.model.js');
 jest.mock('bcryptjs');
 
 test('should create user with hashedPassword and verify token', async () => {
-  const findOneMock = {
-    findOne: jest.fn(() => findOneMock),
-    select: () => findOneMock,
-    lean: () => null,
-  };
-  User.findOne.mockImplementationOnce(findOneMock.findOne);
-
   const hashedPassword = faker.internet.password(8);
   bcrypt.hash.mockImplementationOnce(() => hashedPassword);
 
@@ -51,7 +46,7 @@ test('should create user with hashedPassword and verify token', async () => {
 });
 
 test('should generate tokens and set refresh cookie', async () => {
-  const createdUser = 'createdUser';
+  const createdUser = FakeUser();
 
   const findOneMock = {
     findOne: jest.fn(() => findOneMock),
@@ -63,20 +58,20 @@ test('should generate tokens and set refresh cookie', async () => {
   User.create.mockImplementationOnce(() => createdUser);
 
   const jwtTokenMock = jest.fn();
-  generateJwtToken.mockImplementationOnce(jwtTokenMock);
+  signAsync.mockImplementationOnce(jwtTokenMock);
 
   const refreshToken = { token: FakeToken() };
   const refreshTokenMock = jest.fn(() => refreshToken);
   generateRefreshToken.mockImplementationOnce(refreshTokenMock);
 
   const setTokenMock = jest.fn();
-  setTokenCookie.mockImplementationOnce(setTokenMock);
+  setCookie.mockImplementationOnce(setTokenMock);
 
   const ctx = { req: { ip: faker.internet.ip() } };
   await register(null, null, ctx, null);
 
-  expect(jwtTokenMock).toHaveBeenCalledWith(createdUser);
-  expect(refreshTokenMock).toHaveBeenCalledWith('createdUser', ctx.req.ip);
+  expect(jwtTokenMock).toHaveBeenCalledWith({ sub: createdUser._id });
+  expect(refreshTokenMock).toHaveBeenCalledWith(createdUser, ctx.req.ip);
   expect(setTokenMock).toHaveBeenCalledWith(
     REFRESH_TOKEN,
     refreshToken.token,
@@ -126,9 +121,26 @@ test('should return token', async () => {
   User.create.mockImplementationOnce(() => {});
 
   const token = FakeToken();
-  generateJwtToken.mockImplementationOnce(() => token);
+  signAsync.mockImplementationOnce(() => token);
 
   const result = await register(null, null, null, null);
 
   expect(result.token).toEqual(token);
+});
+
+test('should throw ApolloError on registration failure', async () => {
+  const error = new Error('Error');
+
+  randomTokenString.mockImplementationOnce(() => {
+    throw error;
+  });
+
+  const loggerMock = jest.fn();
+  logger.error.mockImplementationOnce(loggerMock);
+
+  await expect(() => register(null, null, null, null)).rejects.toThrow(
+    GENERAL_ERROR
+  );
+
+  expect(loggerMock).toHaveBeenCalledWith(error);
 });
