@@ -11,37 +11,43 @@ import {
 } from '#config/constants';
 
 export const refreshTokens = async (parent, args, ctx, info) => {
-  const ipAddress = ctx?.req?.ip;
-
+  // Throw error when refresh token doesn't exist
   const token = ctx?.req?.signedCookies?.[REFRESH_TOKEN];
   if (!token) throw new AuthenticationError(INVALID_REFRESH_TOKEN_ERROR);
 
-  const decodedToken = await decodeAsync(ctx?.token);
-  const isExpired = Date.now() >= decodedToken.exp * 1000;
+  // Throw error when decoded access token is not expired
+  const decodedAccessToken = await decodeAsync(ctx.token);
+  const isExpired = Date.now() >= decodedAccessToken.exp * 1000;
   if (!isExpired) throw new AuthenticationError(TOKEN_NOT_EXPIRED);
 
-  const refreshToken = await RefreshToken.findOne({ token }).populate('user');
-  if (!refreshToken || !refreshToken.isActive) {
+  // Throw error when refresh token doesn't exist and clear cookie
+  const foundRefreshToken = await RefreshToken.findOne({ token }).populate(
+    'user'
+  );
+  if (!foundRefreshToken || !foundRefreshToken.isActive) {
     ctx.res.clearCookie(REFRESH_TOKEN);
 
     throw new AuthenticationError(INVALID_REFRESH_TOKEN_ERROR);
   }
 
-  const { user } = refreshToken;
-
+  // Generate new refresh token and revoke old one
+  const { user } = foundRefreshToken;
+  const ipAddress = ctx?.req.ip;
   const newRefreshToken = await generateRefreshToken(user, ipAddress);
 
-  refreshToken.revoked = Date.now();
-  refreshToken.revokedByIp = ipAddress;
-  refreshToken.replacedByToken = newRefreshToken.token;
+  foundRefreshToken.revoked = Date.now();
+  foundRefreshToken.revokedByIp = ipAddress;
+  foundRefreshToken.replacedByToken = newRefreshToken.token;
 
-  await refreshToken.save();
+  await foundRefreshToken.save();
 
-  const jwtToken = await signAsync({ sub: user._id });
+  // Generate new access token and set refresh token cookie
+  const newAccessToken = await signAsync({ sub: user._id });
 
-  setCookie(REFRESH_TOKEN, newRefreshToken.token, ctx?.res);
+  setCookie(REFRESH_TOKEN, newRefreshToken.token, ctx.res);
 
+  // Return created access token
   return {
-    token: jwtToken,
+    token: newAccessToken,
   };
 };
