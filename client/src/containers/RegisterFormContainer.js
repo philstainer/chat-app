@@ -6,12 +6,13 @@ export const RegisterFormContainer = () => {
   const history = useHistory();
   const { mutate } = useRegister();
 
-  const onSubmit = async ({ email, password }) => {
+  const onSubmit = async ({ username, email, password }) => {
     try {
-      await mutate({ variables: { registerInput: { email, password } } });
+      await mutate({
+        variables: { registerInput: { username, email, password } },
+      });
     } catch (error) {
-      if (error?.message.match(/already logged in/i))
-        return history.replace('/');
+      if (error?.message.match(/already logged in/i)) history.replace('/');
     }
   };
 

@@ -7,10 +7,7 @@ import { $Form } from '../styles/$Form';
 import { Button } from './Button';
 
 const schema = yup.object().shape({
-  email: yup
-    .string()
-    .email('Invalid email address')
-    .required('This field is required'),
+  emailOrUsername: yup.string().required('This field is required'),
   password: yup.string().required('This field is required'),
 });
 
@@ -23,9 +20,14 @@ export const LoginForm = ({ onSubmit }) => {
 
   return (
     <$Form onSubmit={handleSubmit(onSubmit)}>
-      <$Form.Label htmlFor="email">EMAIL</$Form.Label>
-      <$Form.Input id="email" name="email" type="text" ref={register} />
-      <$Form.InputError>{errors.email?.message}</$Form.InputError>
+      <$Form.Label htmlFor="emailOrUsername">USERNAME / EMAIL</$Form.Label>
+      <$Form.Input
+        id="emailOrUsername"
+        name="emailOrUsername"
+        type="text"
+        ref={register}
+      />
+      <$Form.InputError>{errors.emailOrUsername?.message}</$Form.InputError>
 
       <$Form.Label htmlFor="password">PASSWORD</$Form.Label>
       <$Form.Input

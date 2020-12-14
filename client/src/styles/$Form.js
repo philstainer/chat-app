@@ -6,8 +6,12 @@ export const $Form = styled.form`
   flex-direction: column;
   margin: ${rem('50px')} 0;
 
+  ${({ psmall }) => psmall && `margin: ${rem('30px')} 0;`}
+
   & > button {
     margin-top: ${rem('50px')};
+
+    ${({ psmall }) => psmall && `margin-top: ${rem('30px')} 0;`}
   }
 `;
 $Form.displayName = '$Form';

@@ -12,13 +12,14 @@ import { accessToken } from '../cache';
 import { ACCESS_TOKEN } from '../utils/constants';
 
 test('should call register mutation on form submit', async () => {
+  const username = faker.internet.userName();
   const email = faker.internet.email();
   const password = 'Pa33ord12345!';
 
   const registerMock = {
     request: {
       query: REGISTER,
-      variables: { registerInput: { email, password } },
+      variables: { registerInput: { username, email, password } },
     },
     result: jest.fn(() => ({ data: { register: { token: FakeToken() } } })),
   };
@@ -29,11 +30,13 @@ test('should call register mutation on form submit', async () => {
     </MockedProvider>
   );
 
+  const usernameInput = screen.getByLabelText(/username/i);
   const emailInput = screen.getByLabelText(/email/i);
   const passwordInput = screen.getByLabelText(/create password/i);
   const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
   const registerButton = screen.getByText(/register/i);
 
+  fireEvent.change(usernameInput, { target: { value: username } });
   fireEvent.change(emailInput, { target: { value: email } });
   fireEvent.change(passwordInput, { target: { value: password } });
   fireEvent.change(confirmPasswordInput, { target: { value: password } });
@@ -44,6 +47,7 @@ test('should call register mutation on form submit', async () => {
 });
 
 test('should update localStorage with token and set accessToken', async () => {
+  const username = faker.internet.userName();
   const email = faker.internet.email();
   const password = 'Pa33ord12345!';
   const token = FakeToken();
@@ -54,7 +58,7 @@ test('should update localStorage with token and set accessToken', async () => {
   const registerMock = {
     request: {
       query: REGISTER,
-      variables: { registerInput: { email, password } },
+      variables: { registerInput: { username, email, password } },
     },
     result: jest.fn(() => ({ data: { register: { token } } })),
   };
@@ -65,11 +69,13 @@ test('should update localStorage with token and set accessToken', async () => {
     </MockedProvider>
   );
 
+  const usernameInput = screen.getByLabelText(/username/i);
   const emailInput = screen.getByLabelText(/email/i);
   const passwordInput = screen.getByLabelText(/create password/i);
   const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
   const registerButton = screen.getByText(/register/i);
 
+  fireEvent.change(usernameInput, { target: { value: username } });
   fireEvent.change(emailInput, { target: { value: email } });
   fireEvent.change(passwordInput, { target: { value: password } });
   fireEvent.change(confirmPasswordInput, { target: { value: password } });
@@ -83,13 +89,14 @@ test('should update localStorage with token and set accessToken', async () => {
 });
 
 test('should redirect on already logged in error', async () => {
+  const username = faker.internet.userName();
   const email = faker.internet.email();
   const password = 'Pa33ord12345!';
 
   const registerMock = {
     request: {
       query: REGISTER,
-      variables: { registerInput: { email, password } },
+      variables: { registerInput: { username, email, password } },
     },
     result: jest.fn(() => ({
       errors: [new GraphQLError('already logged in')],
@@ -103,11 +110,13 @@ test('should redirect on already logged in error', async () => {
     { route: '/register' }
   );
 
+  const usernameInput = screen.getByLabelText(/username/i);
   const emailInput = screen.getByLabelText(/email/i);
   const passwordInput = screen.getByLabelText(/create password/i);
   const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
   const registerButton = screen.getByText(/register/i);
 
+  fireEvent.change(usernameInput, { target: { value: username } });
   fireEvent.change(emailInput, { target: { value: email } });
   fireEvent.change(passwordInput, { target: { value: password } });
   fireEvent.change(confirmPasswordInput, { target: { value: password } });
@@ -120,13 +129,14 @@ test('should redirect on already logged in error', async () => {
 });
 
 test('should not redirect on already logged in error', async () => {
+  const username = faker.internet.userName();
   const email = faker.internet.email();
   const password = 'Pa33ord12345!';
 
   const registerMock = {
     request: {
       query: REGISTER,
-      variables: { registerInput: { email, password } },
+      variables: { registerInput: { username, email, password } },
     },
     result: jest.fn(() => ({
       errors: [new GraphQLError('some other error')],
@@ -140,11 +150,13 @@ test('should not redirect on already logged in error', async () => {
     { route: '/register' }
   );
 
+  const usernameInput = screen.getByLabelText(/username/i);
   const emailInput = screen.getByLabelText(/email/i);
   const passwordInput = screen.getByLabelText(/create password/i);
   const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
   const registerButton = screen.getByText(/register/i);
 
+  fireEvent.change(usernameInput, { target: { value: username } });
   fireEvent.change(emailInput, { target: { value: email } });
   fireEvent.change(passwordInput, { target: { value: password } });
   fireEvent.change(confirmPasswordInput, { target: { value: password } });

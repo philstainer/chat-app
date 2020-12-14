@@ -18,10 +18,10 @@ test('should render form', async () => {
     </MockedProvider>
   );
 
-  const emailInput = screen.getByLabelText(/email/i);
+  const emailOrUsernameInput = screen.getByLabelText(/email/i);
   const passwordInput = screen.getByLabelText(/password/i);
 
-  expect(emailInput).toBeInTheDocument();
+  expect(emailOrUsernameInput).toBeInTheDocument();
   expect(passwordInput).toBeInTheDocument();
 });
 
@@ -43,14 +43,14 @@ test('should render errors on submit', async () => {
 });
 
 test('should call login mutation on form submit', async () => {
-  const email = faker.internet.email();
+  const emailOrUsername = faker.internet.email();
   const password = 'Pa33ord12345!';
   const token = FakeToken();
 
   const loginMock = {
     request: {
       query: LOGIN,
-      variables: { loginInput: { email, password } },
+      variables: { loginInput: { emailOrUsername, password } },
     },
     result: jest.fn(() => ({ data: { login: { token } } })),
   };
@@ -61,11 +61,13 @@ test('should call login mutation on form submit', async () => {
     </MockedProvider>
   );
 
-  const emailInput = screen.getByLabelText(/email/i);
+  const emailOrUsernameInput = screen.getByLabelText(/email/i);
   const passwordInput = screen.getByLabelText(/password/i);
   const submitButton = screen.getByRole('button', { name: /login/i });
 
-  fireEvent.change(emailInput, { target: { value: email } });
+  fireEvent.change(emailOrUsernameInput, {
+    target: { value: emailOrUsername },
+  });
   fireEvent.change(passwordInput, { target: { value: password } });
 
   fireEvent.click(submitButton);
@@ -74,7 +76,7 @@ test('should call login mutation on form submit', async () => {
 });
 
 test('should update localStorage with token and set accessToken', async () => {
-  const email = faker.internet.email();
+  const emailOrUsername = faker.internet.email();
   const password = 'Pa33ord12345!';
   const token = FakeToken();
 
@@ -84,7 +86,7 @@ test('should update localStorage with token and set accessToken', async () => {
   const loginMock = {
     request: {
       query: LOGIN,
-      variables: { loginInput: { email, password } },
+      variables: { loginInput: { emailOrUsername, password } },
     },
     result: jest.fn(() => ({ data: { login: { token } } })),
   };
@@ -95,11 +97,13 @@ test('should update localStorage with token and set accessToken', async () => {
     </MockedProvider>
   );
 
-  const emailInput = screen.getByLabelText(/email/i);
+  const emailOrUsernameInput = screen.getByLabelText(/email/i);
   const passwordInput = screen.getByLabelText(/password/i);
   const button = screen.getByText(/login/i);
 
-  fireEvent.change(emailInput, { target: { value: email } });
+  fireEvent.change(emailOrUsernameInput, {
+    target: { value: emailOrUsername },
+  });
   fireEvent.change(passwordInput, { target: { value: password } });
 
   fireEvent.click(button);
@@ -111,13 +115,13 @@ test('should update localStorage with token and set accessToken', async () => {
 });
 
 test('should redirect on already logged in error', async () => {
-  const email = faker.internet.email();
+  const emailOrUsername = faker.internet.email();
   const password = 'Pa33ord12345!';
 
   const loginMock = {
     request: {
       query: LOGIN,
-      variables: { loginInput: { email, password } },
+      variables: { loginInput: { emailOrUsername, password } },
     },
     result: jest.fn(() => ({
       errors: [new GraphQLError('already logged in')],
@@ -131,11 +135,13 @@ test('should redirect on already logged in error', async () => {
     { route: '/login' }
   );
 
-  const emailInput = screen.getByLabelText(/email/i);
+  const emailOrUsernameInput = screen.getByLabelText(/email/i);
   const passwordInput = screen.getByLabelText(/password/i);
   const submitButton = screen.getByRole('button', { name: /login/i });
 
-  fireEvent.change(emailInput, { target: { value: email } });
+  fireEvent.change(emailOrUsernameInput, {
+    target: { value: emailOrUsername },
+  });
   fireEvent.change(passwordInput, { target: { value: password } });
 
   fireEvent.click(submitButton);
@@ -146,13 +152,13 @@ test('should redirect on already logged in error', async () => {
 });
 
 test('should not redirect on already logged in error', async () => {
-  const email = faker.internet.email();
+  const emailOrUsername = faker.internet.email();
   const password = 'Pa33ord12345!';
 
   const loginMock = {
     request: {
       query: LOGIN,
-      variables: { loginInput: { email, password } },
+      variables: { loginInput: { emailOrUsername, password } },
     },
     result: jest.fn(() => ({
       errors: [new GraphQLError('some other error')],
@@ -166,11 +172,13 @@ test('should not redirect on already logged in error', async () => {
     { route: '/login' }
   );
 
-  const emailInput = screen.getByLabelText(/email/i);
+  const emailOrUsernameInput = screen.getByLabelText(/email/i);
   const passwordInput = screen.getByLabelText(/password/i);
   const submitButton = screen.getByRole('button', { name: /login/i });
 
-  fireEvent.change(emailInput, { target: { value: email } });
+  fireEvent.change(emailOrUsernameInput, {
+    target: { value: emailOrUsername },
+  });
   fireEvent.change(passwordInput, { target: { value: password } });
 
   fireEvent.click(submitButton);

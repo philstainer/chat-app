@@ -7,6 +7,7 @@ import { $Form } from '../styles/$Form';
 import { Button } from './Button';
 
 const schema = yup.object().shape({
+  username: yup.string().required('This field is required'),
   email: yup
     .string()
     .email('Invalid email address')
@@ -32,7 +33,17 @@ export const RegisterForm = ({ onSubmit }) => {
   const { isSubmitting } = formState;
 
   return (
-    <$Form onSubmit={handleSubmit(onSubmit)}>
+    <$Form onSubmit={handleSubmit(onSubmit)} psmall>
+      <$Form.Label htmlFor="username">USERNAME</$Form.Label>
+      <$Form.Input
+        id="username"
+        name="username"
+        type="text"
+        ref={register}
+        data-testid="username"
+      />
+      <$Form.InputError>{errors.username?.message}</$Form.InputError>
+
       <$Form.Label htmlFor="email">EMAIL</$Form.Label>
       <$Form.Input
         id="email"

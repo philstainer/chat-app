@@ -18,7 +18,7 @@ test('should render errors on submit', async () => {
   fireEvent.click(registerButton);
 
   await waitFor(() =>
-    expect(screen.getAllByText(/field is required/i)).toHaveLength(3)
+    expect(screen.getAllByText(/field is required/i)).toHaveLength(4)
   );
 });
 
@@ -52,14 +52,17 @@ test('should submit valid form', async () => {
 
   render(<RegisterForm onSubmit={onSubmitMock} />);
 
+  const usernameInput = screen.getByLabelText(/username/i);
   const emailInput = screen.getByLabelText(/email/i);
   const passwordInput = screen.getByLabelText(/create password/i);
   const confirmPasswordInput = screen.getByLabelText(/confirm password/i);
   const registerButton = screen.getByText(/register/i);
 
+  const username = faker.internet.userName();
   const email = faker.internet.email();
   const strongPassword = 'Pa33ord12345!';
 
+  fireEvent.change(usernameInput, { target: { value: username } });
   fireEvent.change(emailInput, { target: { value: email } });
   fireEvent.change(passwordInput, { target: { value: strongPassword } });
   fireEvent.change(confirmPasswordInput, { target: { value: strongPassword } });

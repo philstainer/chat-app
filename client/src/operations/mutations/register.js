@@ -15,6 +15,7 @@ const update = (cache, { data }) => {
   const { token } = data.register;
 
   localStorage.setItem(ACCESS_TOKEN, token);
+
   accessToken(token);
 };
 

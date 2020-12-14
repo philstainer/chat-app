@@ -4,7 +4,7 @@ import { accessToken } from '../../cache';
 import { ACCESS_TOKEN } from '../../utils/constants';
 
 export const LOGIN = gql`
-  mutation login($loginInput: UserRegisterInput!) {
+  mutation login($loginInput: UserLoginInput!) {
     login(input: $loginInput) {
       token
     }
