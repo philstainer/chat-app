@@ -2,7 +2,6 @@ import faker from 'faker';
 import bcrypt from 'bcryptjs';
 import { login } from '#graphql/user/resolvers/login';
 import { User } from '#graphql/user/user.model';
-import { selectedFields } from '#utils/selectedFields';
 import { signAsync } from '#utils/jwt';
 
 import { USER_NOT_FOUND_ERROR, REFRESH_TOKEN } from '#config/constants';
@@ -13,88 +12,20 @@ import { setCookie } from '#utils/setCookie';
 jest.mock('#utils/setCookie');
 jest.mock('#utils/jwt');
 jest.mock('#utils/accessEnv.js');
-jest.mock('#utils/selectedFields.js');
 jest.mock('#utils/generateRefreshToken.js');
 jest.mock('#graphql/user/user.model.js');
 jest.mock('bcryptjs', () => ({ compare: jest.fn(() => true) }));
 
-test('should call selectFields', async () => {
-  const fieldsMock = jest.fn();
-  selectedFields.mockImplementationOnce(fieldsMock);
-
-  const userMock = {
-    findOne: () => userMock,
-    select: () => userMock,
-    lean: () => 'user',
-  };
-  User.findOne.mockImplementationOnce(userMock.findOne);
-
-  const info = { name: 1 };
-  await login(null, null, null, info);
-
-  expect(fieldsMock).toHaveBeenCalledWith(info);
-});
-
-test('should get user via email', async () => {
-  const selected = '_id name';
-  selectedFields.mockImplementationOnce(() => selected);
-
-  const userMock = {
-    findOne: jest.fn(() => userMock),
-    select: jest.fn(() => userMock),
-    lean: jest.fn(() => 'user'),
-  };
-  User.findOne.mockImplementationOnce(userMock.findOne);
-
-  const args = {
-    input: {
-      email: faker.internet.email(),
-      password: faker.internet.password(8),
-    },
-  };
-
-  await login(null, args, null, null);
-
-  expect(userMock.findOne).toHaveBeenCalledWith(
-    expect.objectContaining({ email: args.input.email })
-  );
-  expect(userMock.select).toHaveBeenCalledWith(`${selected} password`);
-  expect(userMock.lean).toHaveBeenCalled();
-});
-
 test('should throw error when user not found', async () => {
   const userMock = {
-    findOne: () => userMock,
+    findOne: jest.fn(() => userMock),
     select: () => userMock,
     lean: () => null,
   };
   User.findOne.mockImplementationOnce(userMock.findOne);
 
   await expect(() => login()).rejects.toThrow(USER_NOT_FOUND_ERROR);
-});
-
-test('should call bcrypt compare', async () => {
-  const password = faker.internet.password(8);
-
-  const user = {
-    email: faker.internet.email(),
-    password,
-  };
-
-  const userMock = {
-    findOne: () => userMock,
-    select: () => userMock,
-    lean: () => user,
-  };
-  User.findOne.mockImplementationOnce(userMock.findOne);
-
-  const passwordMock = jest.fn(() => true);
-  bcrypt.compare.mockImplementationOnce(passwordMock);
-
-  const args = { input: { password } };
-  await login(null, args);
-
-  expect(passwordMock).toHaveBeenCalledWith(password, password);
+  expect(userMock.findOne).toHaveBeenCalled();
 });
 
 test('should throw error when password compare fails', async () => {
@@ -109,6 +40,7 @@ test('should throw error when password compare fails', async () => {
   bcrypt.compare.mockImplementationOnce(passwordMock);
 
   await expect(() => login()).rejects.toThrow(USER_NOT_FOUND_ERROR);
+  expect(passwordMock).toHaveBeenCalled();
 });
 
 test('should generate tokens and set refresh cookie', async () => {
@@ -121,10 +53,10 @@ test('should generate tokens and set refresh cookie', async () => {
   };
   User.findOne.mockImplementationOnce(userMock.findOne);
 
-  bcrypt.compare.mockImplementationOnce(() => true);
+  bcrypt.compare.mockResolvedValueOnce(true);
 
-  const jwtTokenMock = jest.fn();
-  signAsync.mockImplementationOnce(jwtTokenMock);
+  const signMock = jest.fn();
+  signAsync.mockImplementationOnce(signMock);
 
   const refreshToken = { token: FakeToken() };
   const refreshTokenMock = jest.fn(() => refreshToken);
@@ -136,7 +68,7 @@ test('should generate tokens and set refresh cookie', async () => {
   const ctx = { req: { ip: faker.internet.ip() }, res: {} };
   await login(null, null, ctx, null);
 
-  expect(jwtTokenMock).toHaveBeenCalledWith({ sub: foundUser._id });
+  expect(signMock).toHaveBeenCalledWith({ sub: foundUser._id });
   expect(refreshTokenMock).toHaveBeenCalledWith(foundUser, ctx.req.ip);
   expect(setTokenMock).toHaveBeenCalledWith(
     REFRESH_TOKEN,
@@ -159,9 +91,12 @@ test('should return token', async () => {
   User.findOne.mockImplementationOnce(userMock.findOne);
 
   const token = FakeToken();
-  signAsync.mockImplementationOnce(() => token);
+  signAsync.mockResolvedValueOnce(token);
 
-  const result = await login();
+  generateRefreshToken.mockResolvedValueOnce({ token: FakeToken() });
+
+  const ctx = { req: { ip: faker.internet.ip() }, res: {} };
+  const result = await login(null, null, ctx);
 
   expect(result.token).toBe(token);
 });
