@@ -50,7 +50,6 @@ export const chatResolver = {
       subscribe: withFilter(
         () => pubsub.asyncIterator([CHAT_CREATED]),
         async (payload, variables, ctx) => {
-          throw new Error('asda');
           if (!ctx?.userId) return false;
 
           // Only send to participants
