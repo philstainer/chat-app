@@ -57,10 +57,10 @@ test('should render chats', async () => {
   await waitFor(() => expect(chatMock.result).toHaveBeenCalled());
 
   const firstChatParticipant = screen.getByText(
-    fakeChats[0].participants[1].email
+    fakeChats[0].participants[1].username
   );
   const secondChatParticipant = screen.getByText(
-    fakeChats[1].participants[1].email
+    fakeChats[1].participants[1].username
   );
   expect(firstChatParticipant).toBeInTheDocument();
   expect(secondChatParticipant).toBeInTheDocument();

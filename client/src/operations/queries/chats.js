@@ -6,8 +6,8 @@ export const CHATS = gql`
       _id
       participants {
         _id
+        username
         image
-        email
       }
       lastMessage {
         _id

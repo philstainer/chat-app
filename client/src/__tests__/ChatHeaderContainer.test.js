@@ -15,12 +15,13 @@ test('should render header', async () => {
   const video = screen.getByTestId('video');
   const phone = screen.getByTestId('phone');
 
-  const image = screen.getByRole('img', { name: /participants/i });
-  const email = screen.getByTestId('email');
+  const images = screen.getAllByRole('img', { name: /participant/i });
+  const usernames = screen.getByTestId('usernames');
+
+  expect(images).toHaveLength(2);
+  expect(usernames).toBeInTheDocument();
 
   expect(arrow).toBeInTheDocument();
   expect(video).toBeInTheDocument();
   expect(phone).toBeInTheDocument();
-  expect(image).toBeInTheDocument();
-  expect(email).toBeInTheDocument();
 });

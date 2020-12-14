@@ -4,6 +4,7 @@ export const FakeToken = () => faker.random.uuid();
 
 export const FakeUser = extra => ({
   _id: faker.random.uuid(),
+  username: faker.internet.userName(),
   email: faker.internet.email(),
   password: faker.internet.password(8),
   image: faker.image.image(),

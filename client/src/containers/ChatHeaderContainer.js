@@ -8,7 +8,16 @@ export const ChatHeaderContainer = () => {
 
   const handleCloseChat = () => activeChat(null);
 
-  const { image, email } = rActiveChat?.participants?.[1];
+  const usernames = rActiveChat.participants
+    .map(user => user.username)
+    .join(', ');
+  const images = rActiveChat.participants.map(user => user.image);
 
-  return <ChatHeader email={email} image={image} closeChat={handleCloseChat} />;
+  return (
+    <ChatHeader
+      usernames={usernames}
+      images={images}
+      closeChat={handleCloseChat}
+    />
+  );
 };

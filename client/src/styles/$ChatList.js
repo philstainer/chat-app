@@ -33,6 +33,12 @@ $ChatList.Name = styled.p`
   font-size: ${({ theme }) => theme?.fontSizes?.small};
   font-weight: ${({ theme }) => theme?.fontWeights?.bold};
   margin-bottom: ${rem('5px')};
+
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 `;
 $ChatList.Name.displayName = '$ChatList.Name';
 

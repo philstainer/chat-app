@@ -4,7 +4,7 @@ export const ME = gql`
   query me {
     me {
       _id
-      email
+      username
       image
       verified
     }

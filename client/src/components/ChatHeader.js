@@ -5,21 +5,33 @@ import { $ChatList } from '../styles/$ChatList';
 import { $ProfileImage } from '../styles/$ProfileImage';
 import { $Icons } from '../styles/$Icons';
 
-export const ChatHeader = ({ email, image, closeChat }) => {
+export const ChatHeader = ({ usernames, images, closeChat }) => {
   return (
     <$App.Header>
       <$Icons.ArrowLeft size={24} onClick={closeChat} data-testid="arrow" />
 
-      <$ProfileImage
-        src={image}
-        alt="participants"
-        size={40}
-        mright={10}
-        mleft={10}
-      />
+      {images.map((image, index) => {
+        const key = `image-${index + 1}`;
+        const marginLeft = index === 0 ? 10 : '-35';
+        const zIndex = images.length - index;
+
+        return (
+          <$ProfileImage
+            key={key}
+            src={image}
+            alt="participant"
+            size={42}
+            mright={10}
+            mleft={marginLeft}
+            index={zIndex}
+          />
+        );
+      })}
 
       <$ChatList.Content>
-        <$ChatList.Name data-testid="email">{email}</$ChatList.Name>
+        <$ChatList.Name data-testid="usernames" title={usernames}>
+          {usernames}
+        </$ChatList.Name>
       </$ChatList.Content>
 
       <$Icons.Video
@@ -34,7 +46,7 @@ export const ChatHeader = ({ email, image, closeChat }) => {
 };
 
 ChatHeader.propTypes = {
-  email: PropTypes.string.isRequired,
-  image: PropTypes.string.isRequired,
+  usernames: PropTypes.string.isRequired,
+  images: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
   closeChat: PropTypes.func.isRequired,
 };
