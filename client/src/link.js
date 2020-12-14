@@ -36,17 +36,17 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 
   operation.setContext(() => ({
     headers: {
-      'x-access-token': token ? `Bearer ${token}` : '',
+      [ACCESS_TOKEN]: token ? `Bearer ${token}` : '',
     },
   }));
 
   return forward(operation);
 });
 
-export const refreshToken = async () => {
+export const refreshToken = async token => {
   const request = await fetch(BACKEND_HOST, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', [ACCESS_TOKEN]: token },
     credentials: 'include',
     body: JSON.stringify({
       query: 'query refreshTokens { refreshTokens { token } }',
@@ -65,7 +65,7 @@ const withToken = setContext(async () => {
     const expirationTime = exp * 1000;
 
     if (Date.now() >= expirationTime) {
-      const { data, errors } = await refreshToken();
+      const { data, errors } = await refreshToken(token);
 
       // Logged out completely when refresh token is invalid
       if (errors?.[0].message.match(/refresh token invalid or expired/i)) {
