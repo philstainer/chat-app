@@ -1,9 +1,7 @@
 import { Chat } from '#graphql/chat/chat.model';
-import { chatResolver } from '#graphql/chat/chat.resolver';
+import { chats } from '#graphql/chat/resolvers/chats';
 import { selectedFields } from '#utils/selectedFields';
 import { FakeChat } from '#utils/fixtures';
-
-const { chats } = chatResolver.Query;
 
 jest.mock('#utils/selectedFields.js');
 jest.mock('#graphql/chat/chat.model.js');

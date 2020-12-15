@@ -11,6 +11,7 @@ export const chatSchema = gql`
 
   extend type Subscription {
     chatCreated: Chat!
+    chat: ChatSubscriptionPayload!
   }
 
   type Chat {
@@ -21,5 +22,10 @@ export const chatSchema = gql`
 
   input CreateChatInput {
     participants: [ID!]!
+  }
+
+  type ChatSubscriptionPayload {
+    mutation: MutationType!
+    data: Chat!
   }
 `;

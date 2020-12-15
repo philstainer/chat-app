@@ -1,7 +1,5 @@
-import { chatResolver } from '#graphql/chat/chat.resolver';
+import { participants } from '#graphql/chat/resolvers/participants';
 import { FakeObjectId } from '#utils/fixtures';
-
-const { participants } = chatResolver.Chat;
 
 test('should call loader', async () => {
   const parent = {

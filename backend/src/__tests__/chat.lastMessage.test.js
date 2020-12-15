@@ -1,7 +1,5 @@
-import { chatResolver } from '#graphql/chat/chat.resolver';
+import { lastMessage } from '#graphql/chat/resolvers/lastMessage';
 import { FakeObjectId } from '#utils/fixtures';
-
-const { lastMessage } = chatResolver.Chat;
 
 test('should not call loader when lastMessage is null', async () => {
   const parent = {

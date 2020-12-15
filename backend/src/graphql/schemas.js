@@ -10,6 +10,12 @@ const root = gql`
   directive @isAuthenticated on FIELD_DEFINITION
   directive @isGuest on FIELD_DEFINITION
 
+  enum MutationType {
+    CREATE
+    UPDATE
+    DELETE
+  }
+
   type Query {
     root: String
   }

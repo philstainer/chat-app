@@ -14,8 +14,14 @@ export const GENERAL_ERROR = 'Something went wrong';
 export const PERMISSIONS_ERROR = 'You do not have permissions to do that';
 
 // Subscription Types
-export const CHAT_CREATED = 'CHAT_CREATED';
+export const CHAT = 'CHAT';
 export const MESSAGE_ADDED = 'MESSAGE_ADDED';
+
+export const MUTATION = {
+  CREATE: 'CREATE',
+  UPDATE: 'UPDATE',
+  DELETE: 'DELETE',
+};
 
 // Tokens
 export const REFRESH_TOKEN = 'x-refresh-token';

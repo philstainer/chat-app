@@ -1,10 +1,8 @@
 import { Chat } from '#graphql/chat/chat.model';
-import { chatResolver } from '#graphql/chat/chat.resolver';
+import { createChat } from '#graphql/chat/resolvers/createChat';
 import { pubsub } from '#graphql/pubsub';
 import { FakeChat, FakeObjectId } from '#utils/fixtures';
-import { INVALID_PARTICIPANTS_ERROR, CHAT_CREATED } from '#config/constants';
-
-const { createChat } = chatResolver.Mutation;
+import { INVALID_PARTICIPANTS_ERROR, CHAT, MUTATION } from '#config/constants';
 
 jest.mock('#utils/selectedFields.js');
 jest.mock('#graphql/chat/chat.model.js');
@@ -58,8 +56,11 @@ test('should publish created chat', async () => {
   const ctx = { userId: FakeObjectId() };
   await createChat(null, args, ctx, null);
 
-  expect(publishMock).toHaveBeenCalledWith(CHAT_CREATED, {
-    chatCreated: fakeChat,
+  expect(publishMock).toHaveBeenCalledWith(CHAT, {
+    chat: {
+      mutation: MUTATION.CREATE,
+      data: fakeChat,
+    },
   });
 });
 
