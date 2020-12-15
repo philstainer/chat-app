@@ -5,20 +5,21 @@ import { $ChatList } from '../styles/$ChatList';
 import { $ProfileImage } from '../styles/$ProfileImage';
 import { $Icons } from '../styles/$Icons';
 
-export const ChatHeader = ({ usernames, images, closeChat }) => {
+export const ChatHeader = ({ participants, closeChat }) => {
+  const usernames = participants.map(user => user.username).join(', ');
+
   return (
     <$App.Header>
       <$Icons.ArrowLeft size={24} onClick={closeChat} data-testid="arrow" />
 
-      {images.map((image, index) => {
-        const key = `image-${index + 1}`;
+      {participants.map((participant, index) => {
         const marginLeft = index === 0 ? 10 : '-35';
-        const zIndex = images.length - index;
+        const zIndex = participants.length - index;
 
         return (
           <$ProfileImage
-            key={key}
-            src={image}
+            key={participant._id}
+            src={participant.image}
             alt="participant"
             size={42}
             mright={10}
@@ -46,7 +47,12 @@ export const ChatHeader = ({ usernames, images, closeChat }) => {
 };
 
 ChatHeader.propTypes = {
-  usernames: PropTypes.string.isRequired,
-  images: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+  participants: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      username: PropTypes.string.isRequired,
+      image: PropTypes.string.isRequired,
+    })
+  ).isRequired,
   closeChat: PropTypes.func.isRequired,
 };
