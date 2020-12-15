@@ -15,7 +15,7 @@ export const PERMISSIONS_ERROR = 'You do not have permissions to do that';
 
 // Subscription Types
 export const CHAT = 'CHAT';
-export const MESSAGE_ADDED = 'MESSAGE_ADDED';
+export const MESSAGE = 'MESSAGE';
 
 export const MUTATION = {
   CREATE: 'CREATE',

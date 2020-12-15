@@ -10,7 +10,7 @@ export const messageSchema = gql`
   }
 
   extend type Subscription {
-    messageAdded: Message!
+    message: MessageSubscriptionPayload!
   }
 
   type Message {
@@ -29,5 +29,10 @@ export const messageSchema = gql`
   input MessageInput {
     chatId: ID!
     text: String!
+  }
+
+  type MessageSubscriptionPayload {
+    mutation: MutationType!
+    data: Message!
   }
 `;

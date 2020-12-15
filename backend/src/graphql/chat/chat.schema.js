@@ -10,7 +10,6 @@ export const chatSchema = gql`
   }
 
   extend type Subscription {
-    chatCreated: Chat!
     chat: ChatSubscriptionPayload!
   }
 

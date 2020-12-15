@@ -1,87 +1,20 @@
-import { withFilter, AuthenticationError } from 'apollo-server-express';
-
-import { pubsub } from '#graphql/pubsub';
-import { Message } from '#graphql/message/message.model';
-import { Chat } from '#graphql/chat/chat.model';
-import { selectedFields } from '#utils/selectedFields';
-import { MESSAGE_ADDED, PERMISSIONS_ERROR } from '#config/constants';
+import { messages } from '#graphql/message/resolvers/messages';
+import { addMessage } from '#graphql/message/resolvers/addMessage';
+import { message } from '#graphql/message/resolvers/message';
+import { sender } from '#graphql/message/resolvers/sender';
 
 const messageResolver = {
   Query: {
-    messages: async (parent, args, ctx, info) => {
-      // Should be a participant in chat
-      const foundChat = await Chat.findOne({
-        _id: args?.input?.chatId,
-        participants: { $in: [ctx?.userId] },
-      })
-        .select('_id')
-        .lean();
-
-      if (!foundChat) throw new AuthenticationError(PERMISSIONS_ERROR);
-
-      // Should generate selectedFields via info
-      const selected = selectedFields(info);
-
-      // Should get all messages for chat
-      const foundMessages = await Message.find({
-        chatId: args?.input?.chatId,
-      })
-        .select(selected)
-        .sort({ createdAt: 'desc' })
-        .limit(args?.input?.limit ?? 20)
-        .skip(args?.input?.skip ?? 0)
-        .lean();
-
-      return foundMessages.reverse();
-    },
+    messages,
   },
   Mutation: {
-    addMessage: async (parent, args, ctx, info) => {
-      // Should be a participant in chat
-      const foundChat = await Chat.findOne({
-        _id: args?.input?.chatId,
-        participants: { $in: [ctx?.userId] },
-      })
-        .select('_id participants')
-        .lean();
-      if (!foundChat) throw new AuthenticationError(PERMISSIONS_ERROR);
-
-      // Should create new message
-      const createdMessage = await Message.create({
-        chatId: args?.input?.chatId,
-        text: args?.input?.text,
-        sender: ctx?.userId,
-      });
-
-      // Update chat with last message id
-      const chat = await Chat.findByIdAndUpdate(args?.input?.chatId, {
-        $set: { lastMessage: createdMessage?._id },
-      });
-
-      // Publish chat to subscriptions
-      pubsub.publish(MESSAGE_ADDED, {
-        chat,
-        messageAdded: createdMessage,
-      });
-
-      // Should return message
-      return createdMessage;
-    },
+    addMessage,
   },
   Subscription: {
-    messageAdded: {
-      subscribe: withFilter(
-        () => pubsub.asyncIterator([MESSAGE_ADDED]),
-        (payload, variables, ctx) => {
-          return payload.chat.participants.includes(ctx.userId);
-        }
-      ),
-    },
+    message,
   },
   Message: {
-    sender: (parent, args, ctx, info) => {
-      return ctx.userLoader.load(parent.sender.toString());
-    },
+    sender,
   },
 };
 
