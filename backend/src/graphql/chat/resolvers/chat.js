@@ -1,16 +1,18 @@
-import { withFilter } from 'apollo-server-express';
+import { withFilter, AuthenticationError } from 'apollo-server-express';
 
 import { pubsub } from '#graphql/pubsub';
-import { CHAT } from '#config/constants';
+import { CHAT, NOT_AUTHORIZED } from '#config/constants';
 
 export const chat = {
   subscribe: withFilter(
-    () => pubsub.asyncIterator([CHAT]),
-    async (payload, variables, ctx) => {
-      if (!ctx?.userId) return false;
+    (root, args, ctx) => {
+      if (!ctx?.userId) throw new AuthenticationError(NOT_AUTHORIZED);
 
+      return pubsub.asyncIterator([CHAT]);
+    },
+    async (payload, variables, ctx) => {
       // Only send to participants
-      return payload.chatCreated.participants.includes(ctx?.userId);
+      return payload.chat.data.participants.includes(ctx?.userId);
     }
   ),
 };
